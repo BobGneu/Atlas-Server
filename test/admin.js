@@ -105,14 +105,51 @@ describe('Administrator User', function() {
             });
         });
 
-        it("Adding a user", function(done) {
-            browser.text("#user-add").should.eql("Add User");
-            browser.fill("username", "testUser").fill("password", "user-pass").pressButton("Save", function() {
+        describe("Adding a user", function() {
+            it("form exists", function() {
+                browser.text("#user-add").should.eql("Add User");
+            });
 
-                // Confirm that the page shows that user. 
+            it("should block empty input", function(done) {
+                browser.text("#user-add").should.eql("Add User");
+                browser.fill("username", "").fill("password", "").pressButton("Save", function() {
 
-                done();
-            })
+                    browser.text("#content").should.match(/username is required/);
+                    browser.text("#content").should.match(/password is required/);
+
+                    done();
+                });
+            });
+
+            it("should block empty usernames", function(done) {
+                browser.text("#user-add").should.eql("Add User");
+                browser.fill("username", "").fill("password", "password").pressButton("Save", function() {
+
+                    browser.text("#content").should.match(/username is required/);
+
+                    done();
+                });
+            });
+
+            it("should block empty passwords", function(done) {
+                browser.text("#user-add").should.eql("Add User");
+                browser.fill("username", "username").fill("password", "").pressButton("Save", function() {
+
+                    browser.text("#content").should.match(/password is required/);
+
+                    done();
+                });
+            });
+
+            it("should Capture duplicate users", function(done) {
+                browser.text("#user-add").should.eql("Add User");
+                browser.fill("username", "testUser").fill("password", "user-pass").pressButton("Save", function() {
+
+                    // Confirm that the page shows that user. 
+
+                    done();
+                });
+            });
         });
 
         it("User list is present", function() {

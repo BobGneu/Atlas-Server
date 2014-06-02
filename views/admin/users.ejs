@@ -1,6 +1,7 @@
 <div id="user-add"><h2>Add User</h2>
+<%= (typeof(errors) !== 'undefined') ? errors : "" %>
 <div id="login" class="body">
-	<form class="pure-form" method="POST" action="/admin/users">
+	<form class="pure-form" method="POST" action="/admin/users/">
 		<input name="username" placeholder="Username" value=""/>
 		<input name="password" type="password" placeholder="Password" value=""/>
 		
