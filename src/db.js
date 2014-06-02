@@ -16,3 +16,7 @@ var TrackingDataModel = mongoose.model('TrackingData', new Schema({
 }));
 
 mongoose.connect('mongodb://localhost/atlas');
+
+exports.Application = ApplicationModel;
+exports.User = UserModel;
+exports.TrackingData = TrackingDataModel;

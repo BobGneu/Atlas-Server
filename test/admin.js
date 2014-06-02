@@ -160,11 +160,9 @@ describe('Administrator User', function() {
                 });
             });
 
-            it("should Capture duplicate users", function(done) {
+            it("should be able to create a new user", function(done) {
                 browser.text("#user-add").should.eql("Add User");
-                browser.fill("username", "testUser").fill("password", "user-pass").pressButton("Save", function() {
-
-                    // Confirm that the page shows that user. 
+                browser.fill("username", "myUsername").fill("password", "myPassword").pressButton("Save", function() {
 
                     done();
                 });
