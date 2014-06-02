@@ -3,7 +3,7 @@ var should = require("should");
 
 var pkg = require("../package.json");
 
-describe('Atlas', function() {
+describe('Administrator User', function() {
     var browser = {};
 
     beforeEach(function(done) {
@@ -23,11 +23,9 @@ describe('Atlas', function() {
         });
     });
 
-    describe('Administrator User', function() {
-        it("Can Log In as Admin", function() {            
-            // Form submitted, new page loaded.
-            browser.success.should.be.true;
-            browser.window.location.pathname.should.endWith("/admin/overview");
-        });
+    it("Can Log In", function() {
+        // Form submitted, new page loaded.
+        browser.success.should.be.true;
+        browser.window.location.pathname.should.endWith("/admin/overview");
     });
 });
