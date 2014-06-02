@@ -6,7 +6,7 @@ router.get('/', function (req, res) {
 	console.log(req.headers.host);
 
 	res.render('admin/login', {
-		layout: 'admin'
+		layout: 'layout'
 	});
 });
 
@@ -38,7 +38,11 @@ router.post('/users', function (req, res) {
 });
 
 router.post('/', function (req, res) {
-	res.redirect("/admin/overview");
+
+	if (req.body.username === 'testAdmin')
+		res.redirect("/admin/overview");
+	else
+		res.redirect("/admin/");
 });
 
 module.exports = router;

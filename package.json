@@ -11,7 +11,8 @@
     "url": "https://github.com/BobGneu/Atlas-Server.git"
   },
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "mongo": "mongod --dbpath ./data &"
   },
   "dependencies": {
     "express": "~4.2.0",
@@ -33,6 +34,7 @@
   "devDependencies": {
     "nodemon": "~1.0.20",
     "mocha": "~1.20.0",
-    "should": "~4.0.0"
+    "should": "~4.0.0",
+    "zombie": "~2.0.0-alpha31"
   }
 }
