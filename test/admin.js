@@ -130,12 +130,31 @@ describe('Administrator User', function() {
                     done();
                 });
             });
+            it("should block short usernames", function(done) {
+                browser.text("#user-add").should.eql("Add User");
+                browser.fill("username", "2222").fill("password", "password").pressButton("Save", function() {
+
+                    browser.text("#content").should.match(/username has invalid characters/);
+
+                    done();
+                });
+            });
 
             it("should block empty passwords", function(done) {
                 browser.text("#user-add").should.eql("Add User");
                 browser.fill("username", "username").fill("password", "").pressButton("Save", function() {
 
                     browser.text("#content").should.match(/password is required/);
+
+                    done();
+                });
+            });
+
+            it("should block short passwords", function(done) {
+                browser.text("#user-add").should.eql("Add User");
+                browser.fill("username", "username").fill("password", "22222").pressButton("Save", function() {
+
+                    browser.text("#content").should.match(/password has invalid characters/);
 
                     done();
                 });

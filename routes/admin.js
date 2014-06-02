@@ -30,19 +30,20 @@ router.get('/tracking', function(req, res) {
 
 router.get('/users', function(req, res) {
     res.render('admin/users', {
-        layout: 'admin', errors: req.session.errors
+        layout: 'admin',
+        errors: req.session.errors
     });
 });
 
 router.post('/users', form( // Form filter and validation middleware
     filter("username").trim(),
-    validate("username").required().is(/^\w+$/),
+    validate("username").required().is(/^[\w]\w{5,900}$/),
     filter("password").trim(),
-    validate("password").required().is(/^[\w+-/&*()\[\]]{6,900}$/)
+    validate("password").required("Password Required").is(/^[\w+-/&*()\[\]]{6,900}$/)
 ), function(req, res) {
     if (!req.form.isValid) {
         // Handle errors
-        req.session.errors = req.form.errors; 
+        req.session.errors = req.form.errors;
     } else {
         req.session.errors = {};
     }
