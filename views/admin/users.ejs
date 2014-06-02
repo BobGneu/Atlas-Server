@@ -1,0 +1,13 @@
+<div>
+<% form_for("user", {action: "users"}, function(f) { %>
+
+    <%- f.label_for("username") %>
+    <%- f.text_field("username") %>
+
+    <%- f.label_for("password") %>
+    <%- f.password_field("password") %>
+
+    <%- f.submit() %>
+
+<% }) %>
+</div>
