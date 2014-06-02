@@ -2,9 +2,6 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/', function (req, res) {
-
-	console.log(req.headers.host);
-
 	res.render('admin/login', {
 		layout: 'layout'
 	});
@@ -28,12 +25,15 @@ router.get('/tracking', function (req, res) {
 });
 
 router.get('/users', function (req, res) {
+
 	res.render('admin/users', {
 		layout: 'admin'
 	});
 });
 
 router.post('/users', function (req, res) {
+
+	console.log(req.body);
 	res.redirect("/admin/users");
 });
 

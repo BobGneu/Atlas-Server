@@ -79,4 +79,44 @@ describe('Administrator User', function() {
             });
         });
     });
+
+    describe("Tracking", function() {
+
+        beforeEach(function(done) {
+            browser.clickLink("Tracking", function() {
+                browser.window.location.pathname.should.eql("/admin/tracking/");
+
+                done();
+            });
+        });
+
+        it("Statistics Page present", function() {
+            browser.text("#statistics").should.eql("Statistics");
+        });
+    });
+
+    describe("Users", function() {
+
+        beforeEach(function(done) {
+            browser.clickLink("Users", function() {
+                browser.window.location.pathname.should.eql("/admin/users/");
+
+                done();
+            });
+        });
+
+        it("Adding a user", function(done) {
+            browser.text("#user-add").should.eql("Add User");
+            browser.fill("username", "testUser").fill("password", "user-pass").pressButton("Save", function() {
+
+                // Confirm that the page shows that user. 
+
+                done();
+            })
+        });
+
+        it("User list is present", function() {
+            browser.text("#user-listing").should.eql("Users");
+        });
+    });
 });

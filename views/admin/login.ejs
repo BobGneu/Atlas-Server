@@ -1,17 +1,10 @@
 <h2>Login</h2>
 <hr />
 <div id="login" class="body">
-	<form class="well" method="POST" action="/admin">
-		<div>
-			<label>Username</label>
-			<input name="username" class="" value=""/>
-		</div>
-		<div>
-			<label>Password</label>
-			<input name="password" type="password" class="" value=""/>
-		</div>
-		<div class="submit">
-			<input class="btn btn-primary btn-large right" type="submit" value="Login" />
-		</div>
+	<form class="pure-form" method="POST" action="/admin">
+		<input name="username" placeholder="Username" value=""/>
+		<input name="password" type="password" placeholder="Password" value=""/>
+	
+		<input class="pure-button pure-button-primary" type="submit" value="Login" />
 	</form>
 </div>
