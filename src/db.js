@@ -50,4 +50,6 @@ exports.TrackingData = mongoose.model('TrackingData', new Schema({
 	}
 }));
 
+exports.ObjectId = mongoose.Types.ObjectId;
+
 mongoose.connect('mongodb://localhost/atlas');
