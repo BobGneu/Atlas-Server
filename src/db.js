@@ -2,19 +2,25 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-var ApplicationModel = mongoose.model('Application', new Schema({
+exports.Application = mongoose.model('Application', new Schema({
 	Name: {
 		type: String,
 		required: true,
-		lowercase: true
+		lowercase: true,
+		index: {
+			unique: true
+		}
 	}
 }));
 
-var UserModel = mongoose.model('User', new Schema({
+exports.User = mongoose.model('User', new Schema({
 	Name: {
 		type: String,
 		required: true,
-		lowercase: true
+		lowercase: true,
+		index: {
+			unique: true
+		}
 	},
 	Email: {
 		type: String,
@@ -29,16 +35,15 @@ var UserModel = mongoose.model('User', new Schema({
 	}
 }));
 
-var TrackingDataModel = mongoose.model('TrackingData', new Schema({
+exports.TrackingData = mongoose.model('TrackingData', new Schema({
 	Name: {
 		type: String,
 		required: true,
-		lowercase: true
+		lowercase: true,
+		index: {
+			unique: true
+		}
 	}
 }));
 
 mongoose.connect('mongodb://localhost/atlas');
-
-exports.User = UserModel;
-exports.Application = ApplicationModel;
-exports.TrackingData = TrackingDataModel;
