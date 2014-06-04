@@ -1,10 +1,12 @@
+"use strict"
+
 var express = require('express');
 var path = require('path');
 var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var package = require('./package.json');
+var pkg = require('./package.json');
 var responseTime = require('response-time');
 var session = require('express-session');
 
@@ -42,7 +44,7 @@ app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.locals.title = 'Atlas';
-app.locals.version = package.version;
+app.locals.version = pkg.version;
 
 app.use('/', routes);
 app.use('/admin', admin);
