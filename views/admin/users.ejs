@@ -15,17 +15,17 @@
 	<% if (users.length > 0) { %>
 	<table id="user-table">
 		<tr>
-			<th>Name</th>
+			<th>Username</th>
 			<th>Email</th>
 			<th>UID</th>
 			<th>Actions</th>
 		</tr>
 		<% for(var i=0; i<users.length; i++) { %>
 		<tr>
-			<td class="name"><%= users[i].Name %></td>
+			<td class="name"><a href="/admin/users/<%= users[i].id %>"><%= users[i].Name %></a></td>
 			<td class="email"><a href="mailto:<%= users[i].Email %>"><%= users[i].Email %></a></td>
 			<td class="uid"><a href="/admin/tracking/<%= users[i].UID %>"><%= users[i].UID %></a></td>
-			<td class="actions"><a href="admin/users/<%= users[i].id %>">Status</a> <a href="#?id=<%= users[i].id %>">Edit</a> <a href="#?id=<%= users[i].id %>">Delete</a></td>
+			<td class="actions"><a href="/admin/users/<%= users[i].id %>" alt="Status">Status</a> <a href="/admin/users/edit/<%= users[i].id %>" alt="Edit">Edit</a> <a href="/admin/users/delete/<%= users[i].id %>" alt="Delete">Delete</a></td>
 		</tr>
 		<% } %>
 	</table>

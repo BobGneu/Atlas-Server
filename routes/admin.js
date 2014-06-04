@@ -22,6 +22,22 @@ var authenticate = function (user, passwordHash, fn) {
 
 var router = express.Router();
 
+router.param("id", function (res, req, next, id) {
+	models.User.find({
+		_id: new models.ObjectId(id)
+	}, function (err, user) {
+		if (err) {
+			return next(err);
+		} else if (!user) {
+			return next(new Error('failed to load user'));
+		}
+
+		req.user = user[0];
+
+		next();
+	});
+});
+
 router.get('/', function (req, res) {
 	res.render('admin/login', {
 		layout: 'layout'
@@ -112,6 +128,14 @@ router.post('/users', form( // Form filter and validation middleware
 		req.session.errors = req.form.errors;
 		res.status(400).redirect('/admin/users/');
 	}
+});
+
+// http://localhost:3000/admin/users/delete/538f904906c0bf8249d8fd6b
+router.get('/users/delete/:id', function (req, res) {
+
+	models.User.remove(res.user, function (e) {
+		res.redirect('/admin/users/');
+	});
 });
 
 router.post('/', function (req, res) {

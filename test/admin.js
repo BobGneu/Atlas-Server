@@ -199,24 +199,12 @@ describe('Administrator User', function () {
 
 				browser.text("#messages").should.match(/username must be at least 6 characters in length/);
 
-				var foundUsername = false;
+				var table = helper.Table2Object(browser, "user-table");
 
-				var table = browser.document.getElementById("user-table");
-				if (typeof (table) !== 'undefined') {
-					for (var i = table.childNodes.length - 1; i >= 0; i--) { // 
-						for (var j = table.childNodes[i].childNodes.length - 1; j >= 1; j--) { // tr
-							for (var k = table.childNodes[i].childNodes[j].childNodes.length - 1; k >= 0; k--) { // td
-								var tmp = table.childNodes[i].childNodes[j].childNodes[k].textContent;
+				table.found.should.be.true;
+				table.should.property('username');
 
-								if (tmp === "a") {
-									foundUsername = true;
-								}
-							};
-						};
-					};
-				};
-
-				(foundUsername).should.be.false;
+				table.username.should.not.containEql("a");
 
 				done();
 			});
@@ -232,40 +220,65 @@ describe('Administrator User', function () {
 			browser.fill("username", username).fill("email", email).fill("uid", uid).fill("password", "myPassword").pressButton("Save", function () {
 				browser.statusCode.should.equal(201);
 
-				var foundUsername = false;
-				var foundEmail = false;
-				var foundUID = false;
+				var table = helper.Table2Object(browser, "user-table");
 
-				var table = browser.document.getElementById("user-table");
-				if (typeof (table) !== 'undefined') {
-					for (var i = table.childNodes.length - 1; i >= 0; i--) { // 
-						for (var j = table.childNodes[i].childNodes.length - 1; j >= 1; j--) { // tr
-							for (var k = table.childNodes[i].childNodes[j].childNodes.length - 1; k >= 0; k--) { // td
-								var tmp = table.childNodes[i].childNodes[j].childNodes[k].textContent;
+				table.found.should.be.true;
 
-								if (tmp === username) {
-									foundUsername = true;
-								}
+				table.should.property('username');
+				table.username.should.containEql(username);
 
-								if (tmp === email) {
-									foundEmail = true;
-								}
+				table.should.property('email');
+				table.email.should.containEql(email);
 
-								if (tmp === uid) {
-									foundUID = true;
-								}
-							};
-						};
-					};
-				};
-
-				(foundUID).should.be.true;
-
-				(foundEmail).should.be.true;
-
-				(foundUsername).should.be.true;
+				table.should.property('uid');
+				table.uid.should.containEql(uid);
 
 				done();
+			});
+		});
+
+		it("should be able to delete an existing user", function (done) {
+
+			var username = helper.generate.username();
+			var uid = helper.generate.uid();
+			var email = helper.generate.email(username);
+
+			browser.text("#user-add").should.eql("Add User");
+			browser.fill("username", username).fill("email", email).fill("uid", uid).fill("password", "myPassword").pressButton("Save", function () {
+				browser.statusCode.should.equal(201);
+
+				var table = helper.Table2Object(browser, "user-table");
+
+				table.found.should.be.true;
+
+				table.should.property('username');
+				table.username.should.containEql(username);
+
+				table.should.property('email');
+				table.email.should.containEql(email);
+
+				table.should.property('uid');
+				table.uid.should.containEql(uid);
+
+				var id = browser.link(username).getAttribute("href").split("/")[3];
+
+				browser.clickLink("A[href$='" + id + "'][alt='Delete']", function (e, b, s) {
+
+					var table = helper.Table2Object(browser, "user-table");
+
+					table.found.should.be.true;
+
+					table.should.property('username');
+					table.username.should.not.containEql(username);
+
+					table.should.property('email');
+					table.email.should.not.containEql(email);
+
+					table.should.property('uid');
+					table.uid.should.not.containEql(uid);
+
+					done();
+				});
 			});
 		});
 
