@@ -33,7 +33,6 @@ describe('Administrator User', function () {
 	});
 
 	it("Can Log In", function () {
-		// Form submitted, new page loaded.
 		browser.success.should.be.true;
 		browser.window.location.pathname.should.endWith("/admin/overview");
 	});
@@ -160,6 +159,7 @@ describe('Administrator User', function () {
 		it("email address is required", function (done) {
 
 			var username = helper.generate.username();
+
 			browser.text("#user-add").should.eql("Add User");
 			browser.pressButton("Save", function () {
 
