@@ -94,11 +94,11 @@ router.post('/users', form( // Form filter and validation middleware
 				console.log("known");
 			}
 
-			res.redirect('/admin/users/');
+			res.status(201).redirect('/admin/users/');
 		});
 	} else {
 		req.session.errors = req.form.errors;
-		res.redirect('/admin/users/');
+		res.status(400).redirect('/admin/users/');
 	}
 });
 

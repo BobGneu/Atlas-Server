@@ -212,6 +212,24 @@ describe('Administrator User', function () {
 
 				browser.text("#messages").should.match(/username must be at least 6 characters in length/);
 
+				var foundUsername = false;
+
+				var table = browser.document.getElementById("user-table");
+
+				for (var i = table.childNodes.length - 1; i >= 0; i--) { // 
+					for (var j = table.childNodes[i].childNodes.length - 1; j >= 1; j--) { // tr
+						for (var k = table.childNodes[i].childNodes[j].childNodes.length - 1; k >= 0; k--) { // td
+							var tmp = table.childNodes[i].childNodes[j].childNodes[k].textContent;
+
+							if (tmp === "a") {
+								foundUsername = true;
+							}
+						};
+					};
+				};
+
+				(foundUsername).should.be.false;
+
 				done();
 			});
 		});
@@ -224,6 +242,8 @@ describe('Administrator User', function () {
 
 			browser.text("#user-add").should.eql("Add User");
 			browser.fill("username", username).fill("email", email).fill("uid", uid).fill("password", "myPassword").pressButton("Save", function () {
+
+				browser.statusCode.should.equal(201);
 
 				var foundUsername = false;
 				var foundEmail = false;
