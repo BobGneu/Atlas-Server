@@ -59,8 +59,10 @@ router.get('/users', function (req, res) {
 
 router.post('/users', form( // Form filter and validation middleware
 	filter("username").trim(),
-	validate("username").required().is(/^[a-zA-Z]\w{5,900}$/),
+	filter("email").trim(),
 	filter("password").trim(),
+	validate("username").required().is(/^[a-zA-Z]\w{5,900}$/),
+	validate("email").required().isEmail(),
 	validate("password").required("Password Required").is(/^[\w\s+-/&*()\[\]]{6,900}$/)
 ), function (req, res) {
 
@@ -69,10 +71,8 @@ router.post('/users', form( // Form filter and validation middleware
 			if (typeof user !== 'undefined' && user.length === 0) {
 				var user = new models.User({
 					Name: req.form.username,
+					Email: req.form.email,
 					PasswordHash: passwordHash.generate(req.form.password)
-				});
-				user.save(function (err, user) {
-					console.log(user);
 				});
 			} else if (typeof err === 'undefined') {
 				// error loading the user.

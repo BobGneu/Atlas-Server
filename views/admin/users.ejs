@@ -1,9 +1,10 @@
 <div id="user-add"><h2>Add User</h2>
-	<%= (typeof(errors) !== 'undefined') ? errors : "" %>
+	<div id="messages"><%= (typeof(errors) !== 'undefined') ? errors : "" %></div>
 	<div id="login" class="body">
 		<form class="pure-form" method="POST" action="/admin/users/">
-			<input name="username" placeholder="Username" value=""/>
-			<input name="password" type="password" placeholder="Password" value=""/>
+			<input name="username" placeholder="Username" />
+			<input name="email" placeholder="Email Address" />
+			<input name="password" type="password" placeholder="Password" />
 			
 			<input class="pure-button pure-button-primary" type="submit" value="Save" />
 		</form>

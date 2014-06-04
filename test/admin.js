@@ -3,6 +3,10 @@ var should = require("should");
 
 var pkg = require("../package.json");
 
+function randomInt(low, high) {
+	return Math.floor(Math.random() * (high - low) + low);
+}
+
 describe('Administrator User', function () {
 	var browser = {};
 
@@ -111,30 +115,34 @@ describe('Administrator User', function () {
 			});
 
 			it("should block empty input", function (done) {
+
 				browser.text("#user-add").should.eql("Add User");
 				browser.fill("username", "").fill("password", "").pressButton("Save", function () {
 
-					browser.text("#content").should.match(/username is required/);
-					browser.text("#content").should.match(/password is required/);
+					browser.text("#messages").should.match(/username is required/);
+					browser.text("#messages").should.match(/password is required/);
 
 					done();
 				});
 			});
 
 			it("should block empty usernames", function (done) {
+
 				browser.text("#user-add").should.eql("Add User");
 				browser.fill("username", "").fill("password", "password").pressButton("Save", function () {
 
-					browser.text("#content").should.match(/username is required/);
+					browser.text("#messages").should.match(/username is required/);
 
 					done();
 				});
 			});
 			it("should block short usernames", function (done) {
-				browser.text("#user-add").should.eql("Add User");
-				browser.fill("username", "2222").fill("password", "password").pressButton("Save", function () {
 
-					browser.text("#content").should.match(/username has invalid characters/);
+				var username = "user#" + randomInt(10000000, 100000000);
+				browser.text("#user-add").should.eql("Add User");
+				browser.fill("username", username).fill("password", "password").pressButton("Save", function () {
+
+					browser.text("#messages").should.match(/username has invalid characters/);
 
 					done();
 				});
@@ -144,25 +152,30 @@ describe('Administrator User', function () {
 				browser.text("#user-add").should.eql("Add User");
 				browser.fill("username", "username").fill("password", "").pressButton("Save", function () {
 
-					browser.text("#content").should.match(/password is required/);
+					browser.text("#messages").should.match(/password is required/);
 
 					done();
 				});
 			});
 
 			it("should block short passwords", function (done) {
-				browser.text("#user-add").should.eql("Add User");
-				browser.fill("username", "username").fill("password", "22222").pressButton("Save", function () {
 
-					browser.text("#content").should.match(/password has invalid characters/);
+				var username = "user#" + randomInt(10000000, 100000000);
+
+				browser.text("#user-add").should.eql("Add User");
+				browser.fill("username", username).fill("password", "22222").pressButton("Save", function () {
+
+					browser.text("#messages").should.match(/password has invalid characters/);
 
 					done();
 				});
 			});
 
 			it("should be able to create a new user", function (done) {
+
+				var username = "user#" + randomInt(10000000, 100000000);
 				browser.text("#user-add").should.eql("Add User");
-				browser.fill("username", "myUsername").fill("password", "myPassword").pressButton("Save", function () {
+				browser.fill("username", username).fill("email", "user@website.com").fill("password", "myPassword").pressButton("Save", function () {
 
 					done();
 				});
