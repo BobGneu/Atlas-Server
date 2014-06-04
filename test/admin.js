@@ -3,174 +3,174 @@ var should = require("should");
 
 var pkg = require("../package.json");
 
-describe('Administrator User', function() {
-    var browser = {};
+describe('Administrator User', function () {
+	var browser = {};
 
-    beforeEach(function(done) {
-        browser = new Browser({});
+	beforeEach(function (done) {
+		browser = new Browser({});
 
-        browser.visit("http://localhost:3000/", function() {
-            browser.success.should.be.true;
+		browser.visit("http://localhost:3000/", function () {
+			browser.success.should.be.true;
 
-            browser.window.location.pathname.should.eql("/");
-            browser.clickLink("Login", function() {
-                browser.window.location.pathname.should.endWith("/admin/");
-                browser.fill("username", "testAdmin").fill("password", "admin-pass").pressButton("Login", function() {
+			browser.window.location.pathname.should.eql("/");
+			browser.clickLink("Login", function () {
+				browser.window.location.pathname.should.endWith("/admin/");
+				browser.fill("username", "testAdmin").fill("password", "admin-pass").pressButton("Login", function () {
 
-                    done();
-                })
-            });
-        });
-    });
+					done();
+				})
+			});
+		});
+	});
 
-    it("Can Log In", function() {
-        // Form submitted, new page loaded.
-        browser.success.should.be.true;
-        browser.window.location.pathname.should.endWith("/admin/overview");
-    });
+	it("Can Log In", function () {
+		// Form submitted, new page loaded.
+		browser.success.should.be.true;
+		browser.window.location.pathname.should.endWith("/admin/overview");
+	});
 
-    describe("Menu Navigation", function() {
-        it('should have a Home link', function() {
-            should.exist(browser.link("Home"));
-        });
+	describe("Menu Navigation", function () {
+		it('should have a Home link', function () {
+			should.exist(browser.link("Home"));
+		});
 
-        it('should have a Tracking link', function() {
-            should.exist(browser.link("Tracking"));
-        });
+		it('should have a Tracking link', function () {
+			should.exist(browser.link("Tracking"));
+		});
 
-        it('should have a Users link', function() {
-            should.exist(browser.link("Users"));
-        });
+		it('should have a Users link', function () {
+			should.exist(browser.link("Users"));
+		});
 
-        it('should have a Logout link', function() {
-            should.exist(browser.link("Logout"));
-        });
+		it('should have a Logout link', function () {
+			should.exist(browser.link("Logout"));
+		});
 
-        it('Home should return to /admin/', function(done) {
-            browser.clickLink("Home", function() {
-                browser.window.location.pathname.should.eql("/admin/");
+		it('Home should return to /admin/', function (done) {
+			browser.clickLink("Home", function () {
+				browser.window.location.pathname.should.eql("/admin/");
 
-                done();
-            });
-        });
+				done();
+			});
+		});
 
-        it('Tracking should return to /admin/tracking/', function(done) {
-            browser.clickLink("Tracking", function() {
-                browser.window.location.pathname.should.eql("/admin/tracking/");
+		it('Tracking should return to /admin/tracking/', function (done) {
+			browser.clickLink("Tracking", function () {
+				browser.window.location.pathname.should.eql("/admin/tracking/");
 
-                done();
-            });
-        });
+				done();
+			});
+		});
 
-        it('Users should return to /admin/users/', function(done) {
-            browser.clickLink("Users", function() {
-                browser.window.location.pathname.should.eql("/admin/users/");
+		it('Users should return to /admin/users/', function (done) {
+			browser.clickLink("Users", function () {
+				browser.window.location.pathname.should.eql("/admin/users/");
 
-                done();
-            });
-        });
+				done();
+			});
+		});
 
-        it('Logout should redirect to /', function(done) {
-            browser.clickLink("Logout", function() {
+		it('Logout should redirect to /', function (done) {
+			browser.clickLink("Logout", function () {
 
-                browser.window.location.pathname.should.eql("/");
+				browser.window.location.pathname.should.eql("/");
 
-                done();
-            });
-        });
-    });
+				done();
+			});
+		});
+	});
 
-    describe("Tracking", function() {
+	describe("Tracking", function () {
 
-        beforeEach(function(done) {
-            browser.clickLink("Tracking", function() {
-                browser.window.location.pathname.should.eql("/admin/tracking/");
+		beforeEach(function (done) {
+			browser.clickLink("Tracking", function () {
+				browser.window.location.pathname.should.eql("/admin/tracking/");
 
-                done();
-            });
-        });
+				done();
+			});
+		});
 
-        it("Statistics Page present", function() {
-            browser.text("#statistics").should.eql("Statistics");
-        });
-    });
+		it("Statistics Page present", function () {
+			browser.text("#statistics").should.eql("Statistics");
+		});
+	});
 
-    describe("Users", function() {
+	describe("Users", function () {
 
-        beforeEach(function(done) {
-            browser.clickLink("Users", function() {
-                browser.window.location.pathname.should.eql("/admin/users/");
+		beforeEach(function (done) {
+			browser.clickLink("Users", function () {
+				browser.window.location.pathname.should.eql("/admin/users/");
 
-                done();
-            });
-        });
+				done();
+			});
+		});
 
-        describe("Adding a user", function() {
-            it("form exists", function() {
-                browser.text("#user-add").should.eql("Add User");
-            });
+		describe("Adding a user", function () {
+			it("form exists", function () {
+				browser.text("#user-add").should.eql("Add User");
+			});
 
-            it("should block empty input", function(done) {
-                browser.text("#user-add").should.eql("Add User");
-                browser.fill("username", "").fill("password", "").pressButton("Save", function() {
+			it("should block empty input", function (done) {
+				browser.text("#user-add").should.eql("Add User");
+				browser.fill("username", "").fill("password", "").pressButton("Save", function () {
 
-                    browser.text("#content").should.match(/username is required/);
-                    browser.text("#content").should.match(/password is required/);
+					browser.text("#content").should.match(/username is required/);
+					browser.text("#content").should.match(/password is required/);
 
-                    done();
-                });
-            });
+					done();
+				});
+			});
 
-            it("should block empty usernames", function(done) {
-                browser.text("#user-add").should.eql("Add User");
-                browser.fill("username", "").fill("password", "password").pressButton("Save", function() {
+			it("should block empty usernames", function (done) {
+				browser.text("#user-add").should.eql("Add User");
+				browser.fill("username", "").fill("password", "password").pressButton("Save", function () {
 
-                    browser.text("#content").should.match(/username is required/);
+					browser.text("#content").should.match(/username is required/);
 
-                    done();
-                });
-            });
-            it("should block short usernames", function(done) {
-                browser.text("#user-add").should.eql("Add User");
-                browser.fill("username", "2222").fill("password", "password").pressButton("Save", function() {
+					done();
+				});
+			});
+			it("should block short usernames", function (done) {
+				browser.text("#user-add").should.eql("Add User");
+				browser.fill("username", "2222").fill("password", "password").pressButton("Save", function () {
 
-                    browser.text("#content").should.match(/username has invalid characters/);
+					browser.text("#content").should.match(/username has invalid characters/);
 
-                    done();
-                });
-            });
+					done();
+				});
+			});
 
-            it("should block empty passwords", function(done) {
-                browser.text("#user-add").should.eql("Add User");
-                browser.fill("username", "username").fill("password", "").pressButton("Save", function() {
+			it("should block empty passwords", function (done) {
+				browser.text("#user-add").should.eql("Add User");
+				browser.fill("username", "username").fill("password", "").pressButton("Save", function () {
 
-                    browser.text("#content").should.match(/password is required/);
+					browser.text("#content").should.match(/password is required/);
 
-                    done();
-                });
-            });
+					done();
+				});
+			});
 
-            it("should block short passwords", function(done) {
-                browser.text("#user-add").should.eql("Add User");
-                browser.fill("username", "username").fill("password", "22222").pressButton("Save", function() {
+			it("should block short passwords", function (done) {
+				browser.text("#user-add").should.eql("Add User");
+				browser.fill("username", "username").fill("password", "22222").pressButton("Save", function () {
 
-                    browser.text("#content").should.match(/password has invalid characters/);
+					browser.text("#content").should.match(/password has invalid characters/);
 
-                    done();
-                });
-            });
+					done();
+				});
+			});
 
-            it("should be able to create a new user", function(done) {
-                browser.text("#user-add").should.eql("Add User");
-                browser.fill("username", "myUsername").fill("password", "myPassword").pressButton("Save", function() {
+			it("should be able to create a new user", function (done) {
+				browser.text("#user-add").should.eql("Add User");
+				browser.fill("username", "myUsername").fill("password", "myPassword").pressButton("Save", function () {
 
-                    done();
-                });
-            });
-        });
+					done();
+				});
+			});
+		});
 
-        it("User list is present", function() {
-            browser.text("#user-listing").should.eql("Users");
-        });
-    });
+		it("User list is present", function () {
+			browser.text("#user-listing").should.startWith("Users");
+		});
+	});
 });
