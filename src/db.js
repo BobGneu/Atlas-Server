@@ -32,6 +32,10 @@ exports.User = mongoose.model('User', new Schema({
 		select: false,
 		required: true,
 		lowercase: true
+	},
+	UID: {
+		type: String,
+		required: true
 	}
 }));
 

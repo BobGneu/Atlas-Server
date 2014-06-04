@@ -59,23 +59,33 @@ router.post('/users', form( // Form filter and validation middleware
 	filter("username").trim(),
 	filter("email").trim(),
 	filter("password").trim(),
-	validate("username").required().is(/^[a-zA-Z][\w_-|#]{5,900}$/),
+	filter("uid").trim(),
+	validate("username").required().custom(function (value) {
+		if (value.length < 6) {
+			throw new Error("%s must be at least 6 characters in length.");
+		}
+	}).is(/^[a-zA-Z][\w_\-\.]{5,900}$/),
 	validate("email").required().isEmail(),
-	validate("password").required("Password Required").is(/^[\w\s+-/&*()\[\]]{6,900}$/)
+	validate("password").required().custom(function (value) {
+		if (value.length < 6) {
+			throw new Error("%s must be at least 6 characters in length.");
+		}
+	}).is(/^[\w\s+-/&*()\[\]]{6,900}$/),
+	validate("uid").required()
 ), function (req, res) {
 
 	if (req.form.isValid) {
 
 		authenticate(req.body.username, passwordHash.generate(req.body.password), function (err, user) {
+
 			if (typeof user !== 'undefined' && user.length === 0) {
 				var user = new models.User({
 					Name: req.form.username,
 					Email: req.form.email,
+					UID: req.form.uid,
 					PasswordHash: passwordHash.generate(req.form.password)
 				});
-				user.save(function (err, user) {
-					console.log(user);
-				});
+				user.save(function (err, user) {});
 			} else if (typeof err === 'undefined') {
 				// error loading the user.
 				console.log("null");

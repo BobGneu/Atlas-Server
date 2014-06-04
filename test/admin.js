@@ -126,97 +126,134 @@ describe('Administrator User', function () {
 			});
 		});
 
-		describe("Adding a user", function () {
-			it("form exists", function () {
-				browser.text("#user-add").should.eql("Add User");
+		it("form exists", function () {
+			browser.text("#user-add").should.eql("Add User");
+		});
+
+		it("should block empty input", function (done) {
+
+			browser.text("#user-add").should.eql("Add User");
+			browser.pressButton("Save", function () {
+
+				should.exist(browser.document.getElementById("messages"));
+
+				browser.text("#messages").should.match(/username is required/);
+				browser.text("#messages").should.match(/password is required/);
+
+				done();
 			});
+		});
 
-			it("should block empty input", function (done) {
+		it("username is required", function (done) {
 
-				browser.text("#user-add").should.eql("Add User");
-				browser.pressButton("Save", function () {
+			browser.text("#user-add").should.eql("Add User");
+			browser.pressButton("Save", function () {
 
-					browser.text("#messages").should.match(/username is required/);
-					browser.text("#messages").should.match(/password is required/);
+				should.exist(browser.document.getElementById("messages"));
 
-					done();
-				});
+				browser.text("#messages").should.match(/username is required/);
+
+				done();
 			});
+		});
 
-			it("should block empty usernames", function (done) {
+		it("uid is required", function (done) {
 
-				browser.text("#user-add").should.eql("Add User");
-				browser.fill("password", "password").pressButton("Save", function () {
+			browser.text("#user-add").should.eql("Add User");
+			browser.pressButton("Save", function () {
 
-					browser.text("#messages").should.match(/username is required/);
+				should.exist(browser.document.getElementById("messages"));
 
-					done();
-				});
+				browser.text("#messages").should.match(/uid is required/);
+
+				done();
 			});
-			it("email address is required", function (done) {
+		});
 
-				var username = "user#" + randomInt(10000000, 100000000);
-				browser.text("#user-add").should.eql("Add User");
-				browser.fill("username", username).fill("password", "password").pressButton("Save", function () {
+		it("email address is required", function (done) {
 
-					browser.text("#messages").should.match(/email is required/);
+			var username = "user#" + randomInt(10000000, 100000000);
+			browser.text("#user-add").should.eql("Add User");
+			browser.pressButton("Save", function () {
 
-					done();
-				});
+				browser.text("#messages").should.match(/email is required/);
+
+				done();
 			});
+		});
 
-			it("should block empty passwords", function (done) {
-				browser.text("#user-add").should.eql("Add User");
-				browser.fill("username", "username").pressButton("Save", function () {
+		it("should block empty passwords", function (done) {
+			browser.text("#user-add").should.eql("Add User");
+			browser.pressButton("Save", function () {
 
-					browser.text("#messages").should.match(/password is required/);
+				browser.text("#messages").should.match(/password is required/);
 
-					done();
-				});
+				done();
 			});
+		});
 
-			it("should block short passwords", function (done) {
+		it("should block short passwords", function (done) {
 
-				var username = "user#" + randomInt(10000000, 100000000);
+			var username = "user#" + randomInt(10000000, 100000000);
 
-				browser.text("#user-add").should.eql("Add User");
-				browser.fill("username", username).fill("password", "22222").pressButton("Save", function () {
+			browser.text("#user-add").should.eql("Add User");
+			browser.fill("username", username).fill("password", "a").pressButton("Save", function () {
 
-					browser.text("#messages").should.match(/password has invalid characters/);
+				browser.text("#messages").should.match(/password must be at least 6 characters in length/);
 
-					done();
-				});
+				done();
 			});
+		});
 
-			it("should be able to create a new user", function (done) {
+		it("should block short usernames", function (done) {
 
-				var username = "user#" + randomInt(10000000, 100000000);
-				var email = username + "@website.com";
+			browser.text("#user-add").should.eql("Add User");
+			browser.fill("username", "a").pressButton("Save", function () {
 
-				browser.text("#user-add").should.eql("Add User");
-				browser.fill("username", username).fill("email", email).fill("password", "myPassword").pressButton("Save", function () {
+				browser.text("#messages").should.match(/username must be at least 6 characters in length/);
 
-					var foundUsername = false;
-					var foundEmail = false;
+				done();
+			});
+		});
 
-					var table = browser.document.getElementById("user-table");
+		it("should be able to create a new user", function (done) {
 
-					for (var i = table.childNodes.length - 1; i >= 0; i--) { // 
-						console.log(table.childNodes[i].childNodes.length);
-						for (var j = table.childNodes[i].childNodes.length - 1; j >= 1; j--) { // tr
-							for (var k = table.childNodes[i].childNodes[j].childNodes.length - 1; k >= 0; k--) { // td
-								var tmp = table.childNodes[i].childNodes[j].childNodes[k].textContent;
+			var username = "user." + randomInt(10000000, 100000000);
+			var uid = "" + randomInt(10000000, 100000000);
+			var email = username + "@gneu.org";
 
-								console.log(username + " <> " + tmp);
-							};
+			browser.text("#user-add").should.eql("Add User");
+			browser.fill("username", username).fill("email", email).fill("uid", uid).fill("password", "myPassword").pressButton("Save", function () {
+
+				var foundUsername = false;
+				var foundEmail = false;
+				var foundUID = false;
+
+				var table = browser.document.getElementById("user-table");
+
+				for (var i = table.childNodes.length - 1; i >= 0; i--) { // 
+					for (var j = table.childNodes[i].childNodes.length - 1; j >= 1; j--) { // tr
+						for (var k = table.childNodes[i].childNodes[j].childNodes.length - 1; k >= 0; k--) { // td
+							var tmp = table.childNodes[i].childNodes[j].childNodes[k].textContent;
+
+							if (tmp === username) {
+								foundUsername = true;
+							}
+
+							if (tmp === email) {
+								foundEmail = true;
+							}
+
+							if (tmp === uid) {
+								foundUID = true;
+							}
 						};
 					};
+				};
 
-					(foundUsername).should.be.true;
-					(foundEmail).should.be.true;
+				(foundUID && foundEmail && foundUsername).should.be.true;
 
-					done();
-				});
+				done();
 			});
 		});
 
