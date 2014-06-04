@@ -4,7 +4,7 @@ var should = require("should");
 var debug = require('debug')('atlas-server');
 var app = require('../app');
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 3001);
 
 var pkg = require("../package.json");
 
@@ -26,7 +26,7 @@ describe('Non-Logged In User', function () {
 	beforeEach(function (done) {
 		browser = new Browser({});
 
-		browser.visit("http://localhost:3000/", function () {
+		browser.visit("http://localhost:" + app.get("port"), function () {
 			browser.success.should.be.true;
 
 			browser.window.location.pathname.should.eql("/");
@@ -34,6 +34,7 @@ describe('Non-Logged In User', function () {
 			done();
 		});
 	});
+
 	it('Application should be running', function () {
 		browser.success.should.be.true;
 	});

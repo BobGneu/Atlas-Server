@@ -4,7 +4,7 @@ var should = require("should");
 var debug = require('debug')('atlas-server');
 var app = require('../app');
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 3001);
 
 var pkg = require("../package.json");
 
@@ -30,7 +30,7 @@ describe('Administrator User', function () {
 	beforeEach(function (done) {
 		browser = new Browser({});
 
-		browser.visit("http://localhost:3000/", function () {
+		browser.visit("http://localhost:" + app.get("port"), function () {
 			browser.success.should.be.true;
 
 			browser.window.location.pathname.should.eql("/");
@@ -191,12 +191,30 @@ describe('Administrator User', function () {
 			it("should be able to create a new user", function (done) {
 
 				var username = "user#" + randomInt(10000000, 100000000);
+				var email = username + "@website.com";
+
 				browser.text("#user-add").should.eql("Add User");
-				browser.fill("username", username).fill("email", "user@website.com").fill("password", "myPassword").pressButton("Save", function () {
+				browser.fill("username", username).fill("email", email).fill("password", "myPassword").pressButton("Save", function () {
+
+					var foundUsername = false;
+					var foundEmail = false;
 
 					var table = browser.document.getElementById("user-table");
 
-					console.log(table.innerhtml);
+					for (var i = table.childNodes.length - 1; i >= 0; i--) { // 
+						console.log(table.childNodes[i].childNodes.length);
+						for (var j = table.childNodes[i].childNodes.length - 1; j >= 1; j--) { // tr
+							for (var k = table.childNodes[i].childNodes[j].childNodes.length - 1; k >= 0; k--) { // td
+								var tmp = table.childNodes[i].childNodes[j].childNodes[k].textContent;
+
+								console.log(username + " <> " + tmp);
+							};
+						};
+					};
+
+					(foundUsername).should.be.true;
+					(foundEmail).should.be.true;
+
 					done();
 				});
 			});

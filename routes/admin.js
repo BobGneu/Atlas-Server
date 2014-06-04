@@ -15,8 +15,6 @@ var restrict = function (req, res, next) {
 };
 
 var authenticate = function (user, passwordHash, fn) {
-	console.log('authenticating %s:%s', user, passwordHash);
-
 	models.User.find({
 		name: user
 	}, fn);
@@ -65,9 +63,6 @@ router.post('/users', form( // Form filter and validation middleware
 	validate("email").required().isEmail(),
 	validate("password").required("Password Required").is(/^[\w\s+-/&*()\[\]]{6,900}$/)
 ), function (req, res) {
-
-	console.log(req.form);
-	console.log(req.form.errors);
 
 	if (req.form.isValid) {
 

@@ -4,24 +4,32 @@
 		<form class="pure-form" method="POST" action="/admin/users/">
 			<input name="username" placeholder="Username" />
 			<input name="email" placeholder="Email Address" />
-			<input name="password" type="password" placeholder="Password" />
-			
+			<input name="uid" placeholder="UniqueID" />
+			<input name="password" type="password" placeholder="Password" />			
 			<input class="pure-button pure-button-primary" type="submit" value="Save" />
 		</form>
 	</div>
 </div>
 <div id="user-listing">
 	<h2>Users</h2>
+	<% if (users.length > 0) { %>
 	<table id="user-table">
 		<tr>
 			<th>Name</th>
 			<th>Email</th>
+			<th>UID</th>
+			<th>Actions</th>
 		</tr>
 		<% for(var i=0; i<users.length; i++) { %>
 		<tr>
-			<td><%= users[i].Name %></td>
-			<td><a href="mailto:<%= users[i].Email %>"><%= users[i].Email %></a></td>
+			<td class="name"><%= users[i].Name %></td>
+			<td class="email"><a href="mailto:<%= users[i].Email %>"><%= users[i].Email %></a></td>
+			<td class="uid"><a href="/admin/tracking/<%= users[i].uid %>"><%= users[i].uid %></a></td>
+			<td class="actions"><a href="#?id=<%= users[i].id %>">Status</a> <a href="#?id=<%= users[i].id %>">Edit</a> <a href="#?id=<%= users[i].id %>">Delete</a></td>
 		</tr>
 		<% } %>
 	</table>
+	<% } else { %>
+	<div>There are no users to list.</div>
+	<% } %>
 </div>

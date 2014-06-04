@@ -16,7 +16,8 @@ var expressLayouts = require('express-ejs-layouts')
 
 var app = express();
 
-require('express-helpers')(app);
+var helpers = require('express-helpers');
+helpers(app);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,11 +27,16 @@ app.use(expressLayouts);
 
 app.use(responseTime());
 app.use(favicon());
-app.use(logger('dev'));
+// app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
-app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}));
+app.use(session({
+	secret: 'keyboard cat',
+	cookie: {
+		maxAge: 60000
+	}
+}));
 
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
