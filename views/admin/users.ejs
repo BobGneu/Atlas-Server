@@ -12,13 +12,15 @@
 </div>
 <div id="user-listing">
 	<h2>Users</h2>
-	<table>
+	<table id="user-table">
 		<tr>
 			<th>Name</th>
+			<th>Email</th>
 		</tr>
 		<% for(var i=0; i<users.length; i++) { %>
 		<tr>
 			<td><%= users[i].Name %></td>
+			<td><a href="mailto:<%= users[i].Email %>"><%= users[i].Email %></a></td>
 		</tr>
 		<% } %>
 	</table>

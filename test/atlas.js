@@ -1,104 +1,121 @@
 var Browser = require("zombie");
 var should = require("should");
 
+var debug = require('debug')('atlas-server');
+var app = require('../app');
+
+app.set('port', process.env.PORT || 3000);
+
 var pkg = require("../package.json");
 
-describe('Non-Logged In User', function() {
-    var browser = {};
+describe('Non-Logged In User', function () {
 
-    beforeEach(function(done) {
-        browser = new Browser({});
+	before(function (done) {
+		this.server = app.listen(app.get('port'), function () {
+			debug('Express server listening on port ' + app.get('port'));
+			done();
+		});
+	});
 
-        browser.visit("http://localhost:3000/", function() {
-            browser.success.should.be.true;
+	after(function (done) {
+		this.server.close(done);
+	});
 
-            browser.window.location.pathname.should.eql("/");
+	var browser = {};
 
-            done();
-        });
-    });
-    it('Application should be running', function() {
-        browser.success.should.be.true;
-    });
+	beforeEach(function (done) {
+		browser = new Browser({});
 
-    it('Title should be set to Atlas Control Panel', function() {
-        browser.window.title.should.startWith("Atlas Control Panel");
-    });
+		browser.visit("http://localhost:3000/", function () {
+			browser.success.should.be.true;
 
-    it('Title should include the version', function() {
-        browser.window.title.should.endWith(" v." + pkg.version);
-    });
+			browser.window.location.pathname.should.eql("/");
 
-    it('The page should have the header', function() {
-        should.exist(browser.document.getElementById("header"));
-    });
+			done();
+		});
+	});
+	it('Application should be running', function () {
+		browser.success.should.be.true;
+	});
 
-    it('The page should have the footer', function() {
-        should.exist(browser.document.getElementById("footer"));
-    });
+	it('Title should be set to Atlas Control Panel', function () {
+		browser.window.title.should.startWith("Atlas Control Panel");
+	});
 
-    it('The page should have the menu', function() {
-        should.exist(browser.document.getElementById("menu"));
-    });
+	it('Title should include the version', function () {
+		browser.window.title.should.endWith(" v." + pkg.version);
+	});
 
-    describe("Header", function() {
-        it('should have the application name', function() {
-            browser.text("#header").should.eql("Atlas Control Panel");
-        });
-    });
+	it('The page should have the header', function () {
+		should.exist(browser.document.getElementById("header"));
+	});
 
-    describe("Footer", function() {
-        it('should have the copyright notification', function() {
-            browser.text("#footer").should.endWith("Copyright Gneu LLC. © 2014");
-        });
+	it('The page should have the footer', function () {
+		should.exist(browser.document.getElementById("footer"));
+	});
 
-        it('should have a link to gneu.org', function() {
-            var link = browser.link("Gneu");
+	it('The page should have the menu', function () {
+		should.exist(browser.document.getElementById("menu"));
+	});
 
-            should.exist(link);
-            link.href.should.eql("http://gneu.org/");
-        });
+	describe("Header", function () {
+		it('should have the application name', function () {
+			browser.text("#header").should.eql("Atlas Control Panel");
+		});
+	});
 
-        it('should have a link to the issues page on github', function() {
-            var link = browser.link("Issues");
+	describe("Footer", function () {
+		it('should have the copyright notification', function () {
+			browser.text("#footer").should.endWith("Copyright Gneu LLC. © 2014");
+		});
 
-            should.exist(link);
-            link.href.should.eql("https://github.com/BobGneu/Atlas-Server/issues");
+		it('should have a link to gneu.org', function () {
+			var link = browser.link("Gneu");
 
-            browser.text("#footer").should.match(/Issues/);
-        });
+			should.exist(link);
+			link.href.should.eql("http://gneu.org/");
+		});
 
-        it('should have a link to the wiki page on github', function() {
-            var link = browser.link("Wiki");
+		it('should have a link to the issues page on github', function () {
+			var link = browser.link("Issues");
 
-            should.exist(link);
-            link.href.should.eql("https://github.com/BobGneu/Atlas-Server/wiki");
+			should.exist(link);
+			link.href.should.eql("https://github.com/BobGneu/Atlas-Server/issues");
 
-            browser.text("#footer").should.match(/Wiki/);
-        });
+			browser.text("#footer").should.match(/Issues/);
+		});
 
-        it('should have the version shown', function() {
-            browser.text("#footer").should.startWith("v." + pkg.version);
-        });
-    });
+		it('should have a link to the wiki page on github', function () {
+			var link = browser.link("Wiki");
 
-    describe("Body", function() { // Unlogged in user 
-        it('should have the intro blurb shown', function() {
-            browser.text("#content").should.eql("Alpha Lock, Analytics & Tracking Atlas provides two way communication between your application and your server, providing custom event tracking and analytics.");
-        });
-    });
+			should.exist(link);
+			link.href.should.eql("https://github.com/BobGneu/Atlas-Server/wiki");
 
-    it("Can't log in", function(done) {
-        browser.clickLink("Login", function() {
-            browser.window.location.pathname.should.endWith("/admin/");
-            browser.fill("username", "").fill("password", "").pressButton("Login", function() {
+			browser.text("#footer").should.match(/Wiki/);
+		});
 
-                // Form submitted, new page loaded.
-                browser.success.should.be.true;
-                browser.window.location.pathname.should.endWith("/admin/");
+		it('should have the version shown', function () {
+			browser.text("#footer").should.startWith("v." + pkg.version);
+		});
+	});
 
-                done();
-            })
-        });
-    });
+	describe("Body", function () { // Unlogged in user 
+		it('should have the intro blurb shown', function () {
+			browser.text("#content").should.eql("Alpha Lock, Analytics & Tracking Atlas provides two way communication between your application and your server, providing custom event tracking and analytics.");
+		});
+	});
+
+	it("Can't log in", function (done) {
+		browser.clickLink("Login", function () {
+			browser.window.location.pathname.should.endWith("/admin/");
+			browser.fill("username", "").fill("password", "").pressButton("Login", function () {
+
+				// Form submitted, new page loaded.
+				browser.success.should.be.true;
+				browser.window.location.pathname.should.endWith("/admin/");
+
+				done();
+			})
+		});
+	});
 });

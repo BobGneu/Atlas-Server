@@ -1,6 +1,11 @@
 var Browser = require("zombie");
 var should = require("should");
 
+var debug = require('debug')('atlas-server');
+var app = require('../app');
+
+app.set('port', process.env.PORT || 3000);
+
 var pkg = require("../package.json");
 
 function randomInt(low, high) {
@@ -8,6 +13,18 @@ function randomInt(low, high) {
 }
 
 describe('Administrator User', function () {
+
+	before(function (done) {
+		this.server = app.listen(app.get('port'), function () {
+			debug('Express server listening on port ' + app.get('port'));
+			done();
+		});
+	});
+
+	after(function (done) {
+		this.server.close(done);
+	});
+
 	var browser = {};
 
 	beforeEach(function (done) {
@@ -117,7 +134,7 @@ describe('Administrator User', function () {
 			it("should block empty input", function (done) {
 
 				browser.text("#user-add").should.eql("Add User");
-				browser.fill("username", "").fill("password", "").pressButton("Save", function () {
+				browser.pressButton("Save", function () {
 
 					browser.text("#messages").should.match(/username is required/);
 					browser.text("#messages").should.match(/password is required/);
@@ -129,20 +146,20 @@ describe('Administrator User', function () {
 			it("should block empty usernames", function (done) {
 
 				browser.text("#user-add").should.eql("Add User");
-				browser.fill("username", "").fill("password", "password").pressButton("Save", function () {
+				browser.fill("password", "password").pressButton("Save", function () {
 
 					browser.text("#messages").should.match(/username is required/);
 
 					done();
 				});
 			});
-			it("should block short usernames", function (done) {
+			it("email address is required", function (done) {
 
 				var username = "user#" + randomInt(10000000, 100000000);
 				browser.text("#user-add").should.eql("Add User");
 				browser.fill("username", username).fill("password", "password").pressButton("Save", function () {
 
-					browser.text("#messages").should.match(/username has invalid characters/);
+					browser.text("#messages").should.match(/email is required/);
 
 					done();
 				});
@@ -150,7 +167,7 @@ describe('Administrator User', function () {
 
 			it("should block empty passwords", function (done) {
 				browser.text("#user-add").should.eql("Add User");
-				browser.fill("username", "username").fill("password", "").pressButton("Save", function () {
+				browser.fill("username", "username").pressButton("Save", function () {
 
 					browser.text("#messages").should.match(/password is required/);
 
@@ -177,6 +194,9 @@ describe('Administrator User', function () {
 				browser.text("#user-add").should.eql("Add User");
 				browser.fill("username", username).fill("email", "user@website.com").fill("password", "myPassword").pressButton("Save", function () {
 
+					var table = browser.document.getElementById("user-table");
+
+					console.log(table.innerhtml);
 					done();
 				});
 			});

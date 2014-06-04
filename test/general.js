@@ -1,61 +1,78 @@
 var Browser = require("zombie");
 var should = require("should");
 
+var debug = require('debug')('atlas-server');
+var app = require('../app');
+
+app.set('port', process.env.PORT || 3000);
+
 var pkg = require("../package.json");
 
-describe('General User', function() {
-    var browser = {};
+describe('General User', function () {
 
-    beforeEach(function(done) {
-        browser = new Browser({});
+	before(function (done) {
+		this.server = app.listen(app.get('port'), function () {
+			debug('Express server listening on port ' + app.get('port'));
+			done();
+		});
+	});
 
-        browser.visit("http://localhost:3000/", function() {
-            browser.success.should.be.true;
+	after(function (done) {
+		this.server.close(done);
+	});
 
-            browser.window.location.pathname.should.eql("/");
+	var browser = {};
 
-            done();
-        });
-    });
+	beforeEach(function (done) {
+		browser = new Browser({});
 
-    describe("Menu Navigation", function() {
-        it('should have a Home link', function() {
-            should.exist(browser.link("Home"));
-        });
+		browser.visit("http://localhost:3000/", function () {
+			browser.success.should.be.true;
 
-        it('should have a Login link', function() {
-            should.exist(browser.link("Login"));
-        });
+			browser.window.location.pathname.should.eql("/");
 
-        it('Home should return to /', function(done) {
-            browser.clickLink("Home", function() {
-                browser.window.location.pathname.should.eql("/");
+			done();
+		});
+	});
 
-                done();
-            });
-        });
+	describe("Menu Navigation", function () {
+		it('should have a Home link', function () {
+			should.exist(browser.link("Home"));
+		});
 
-        it('Login should redirect to /admin/', function(done) {
-            browser.clickLink("Login", function() {
+		it('should have a Login link', function () {
+			should.exist(browser.link("Login"));
+		});
 
-                browser.window.location.pathname.should.eql("/admin/");
+		it('Home should return to /', function (done) {
+			browser.clickLink("Home", function () {
+				browser.window.location.pathname.should.eql("/");
 
-                done();
-            });
-        });
-    });
+				done();
+			});
+		});
 
-    it("Can't log in", function(done) {
-        browser.clickLink("Login", function() {
-            browser.window.location.pathname.should.endWith("/admin/");
-            browser.fill("username", "testUser").fill("password", "user-pass").pressButton("Login", function() {
+		it('Login should redirect to /admin/', function (done) {
+			browser.clickLink("Login", function () {
 
-                // Form submitted, new page loaded.
-                browser.success.should.be.true;
-                browser.window.location.pathname.should.endWith("/admin/");
+				browser.window.location.pathname.should.eql("/admin/");
 
-                done();
-            })
-        });
-    });
+				done();
+			});
+		});
+	});
+
+	it("Can't log in", function (done) {
+		browser.clickLink("Login", function () {
+			browser.window.location.pathname.should.endWith("/admin/");
+			browser.fill("username", "testUser").fill("password", "user-pass").pressButton("Login", function () {
+
+				// Form submitted, new page loaded.
+				browser.success.should.be.true;
+				browser.window.location.pathname.should.endWith("/admin/");
+
+				done();
+			})
+		});
+	});
 });
