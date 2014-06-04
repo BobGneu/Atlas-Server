@@ -1,26 +1,12 @@
 var Browser = require("zombie");
 var should = require("should");
 
-var helpers = require('./testHelper');
-
-var debug = require('debug')('atlas-server');
-var app = require('../app');
-
-app.set('port', process.env.PORT || 3001);
-
-var pkg = require("../package.json");
-
-function randomInt(low, high) {
-	return Math.floor(Math.random() * (high - low) + low);
-}
+var helper = require('./testHelper');
 
 describe('Administrator User', function () {
 
 	before(function (done) {
-		this.server = app.listen(app.get('port'), function () {
-			debug('Express server listening on port ' + app.get('port'));
-			done();
-		});
+		this.server = helper.startServer(done);
 	});
 
 	after(function (done) {
@@ -32,7 +18,7 @@ describe('Administrator User', function () {
 	beforeEach(function (done) {
 		browser = new Browser({});
 
-		browser.visit("http://localhost:" + app.get("port"), function () {
+		browser.visit("http://localhost:" + helper.getPort(), function () {
 			browser.success.should.be.true;
 
 			browser.window.location.pathname.should.eql("/");
@@ -158,7 +144,6 @@ describe('Administrator User', function () {
 				done();
 			});
 		});
-
 		it("uid is required", function (done) {
 
 			browser.text("#user-add").should.eql("Add User");
@@ -174,7 +159,7 @@ describe('Administrator User', function () {
 
 		it("email address is required", function (done) {
 
-			var username = "user#" + randomInt(10000000, 100000000);
+			var username = helper.generate.username();
 			browser.text("#user-add").should.eql("Add User");
 			browser.pressButton("Save", function () {
 
@@ -196,7 +181,7 @@ describe('Administrator User', function () {
 
 		it("should block short passwords", function (done) {
 
-			var username = "user#" + randomInt(10000000, 100000000);
+			var username = helper.generate.username();
 
 			browser.text("#user-add").should.eql("Add User");
 			browser.fill("username", username).fill("password", "a").pressButton("Save", function () {
@@ -239,9 +224,9 @@ describe('Administrator User', function () {
 
 		it("should be able to create a new user", function (done) {
 
-			var username = helpers.generate.username();
-			var uid = helpers.generate.uid();
-			var email = helpers.generate.email(username);
+			var username = helper.generate.username();
+			var uid = helper.generate.uid();
+			var email = helper.generate.email(username);
 
 			browser.text("#user-add").should.eql("Add User");
 			browser.fill("username", username).fill("email", email).fill("uid", uid).fill("password", "myPassword").pressButton("Save", function () {

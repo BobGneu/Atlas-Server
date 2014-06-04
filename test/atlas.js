@@ -1,18 +1,12 @@
 var Browser = require("zombie");
 var should = require("should");
 
-var debug = require('debug')('atlas-server');
-var app = require('../app');
-
-var pkg = require("../package.json");
+var helper = require('./testHelper');
 
 describe('Non-Logged In User', function () {
 
 	before(function (done) {
-		this.server = app.listen(app.get('port'), function () {
-			debug('Express server listening on port ' + app.get('port'));
-			done();
-		});
+		this.server = helper.startServer(done);
 	});
 
 	after(function (done) {
@@ -24,7 +18,7 @@ describe('Non-Logged In User', function () {
 	beforeEach(function (done) {
 		browser = new Browser({});
 
-		browser.visit("http://localhost:" + app.get("port"), function () {
+		browser.visit("http://localhost:" + helper.getPort(), function () {
 			browser.success.should.be.true;
 
 			browser.window.location.pathname.should.eql("/");
@@ -34,7 +28,7 @@ describe('Non-Logged In User', function () {
 	});
 
 	it('Testing should be using port 3001', function () {
-		app.get("port").should.eql(3001);
+		helper.getPort().should.eql(3001);
 	});
 
 	it('Application should be running', function () {
@@ -46,7 +40,7 @@ describe('Non-Logged In User', function () {
 	});
 
 	it('Title should include the version', function () {
-		browser.window.title.should.endWith(" v." + pkg.version);
+		browser.window.title.should.endWith(" v." + helper.getVersion());
 	});
 
 	it('The page should have the header', function () {
@@ -98,7 +92,7 @@ describe('Non-Logged In User', function () {
 		});
 
 		it('should have the version shown', function () {
-			browser.text("#footer").should.startWith("v." + pkg.version);
+			browser.text("#footer").should.startWith("v." + helper.getVersion());
 		});
 	});
 

@@ -1,20 +1,12 @@
 var Browser = require("zombie");
 var should = require("should");
 
-var debug = require('debug')('atlas-server');
-var app = require('../app');
-
-app.set('port', process.env.PORT || 3001);
-
-var pkg = require("../package.json");
+var helper = require('./testHelper');
 
 describe('General User', function () {
 
 	before(function (done) {
-		this.server = app.listen(app.get('port'), function () {
-			debug('Express server listening on port ' + app.get('port'));
-			done();
-		});
+		this.server = helper.startServer(done);
 	});
 
 	after(function (done) {
@@ -26,7 +18,7 @@ describe('General User', function () {
 	beforeEach(function (done) {
 		browser = new Browser({});
 
-		browser.visit("http://localhost:" + app.get("port"), function () {
+		browser.visit("http://localhost:" + helper.getPort(), function () {
 			browser.success.should.be.true;
 
 			browser.window.location.pathname.should.eql("/");
