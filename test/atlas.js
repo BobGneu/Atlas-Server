@@ -4,8 +4,6 @@ var should = require("should");
 var debug = require('debug')('atlas-server');
 var app = require('../app');
 
-app.set('port', process.env.PORT || 3001);
-
 var pkg = require("../package.json");
 
 describe('Non-Logged In User', function () {
@@ -33,6 +31,10 @@ describe('Non-Logged In User', function () {
 
 			done();
 		});
+	});
+
+	it('Testing should be using port 3001', function () {
+		app.get("port").should.eql(3001);
 	});
 
 	it('Application should be running', function () {

@@ -78,6 +78,16 @@ router.post('/users', form( // Form filter and validation middleware
 
 		authenticate(req.body.username, passwordHash.generate(req.body.password), function (err, user) {
 
+			var done = function () {
+
+				models.User.find({}, function (err, users) {
+					res.status(201).render('admin/users', {
+						layout: 'admin',
+						users: users,
+						errors: req.session.errors
+					});
+				});
+			};
 			if (typeof user !== 'undefined' && user.length === 0) {
 				var user = new models.User({
 					Name: req.form.username,
@@ -85,7 +95,10 @@ router.post('/users', form( // Form filter and validation middleware
 					UID: req.form.uid,
 					PasswordHash: passwordHash.generate(req.form.password)
 				});
-				user.save(function (err, user) {});
+				user.save(function (err, user) {
+					done();
+				});
+				return;
 			} else if (typeof err === 'undefined') {
 				// error loading the user.
 				console.log("null");
@@ -93,8 +106,7 @@ router.post('/users', form( // Form filter and validation middleware
 				// user is known
 				console.log("known");
 			}
-
-			res.status(201).redirect('/admin/users/');
+			done();
 		});
 	} else {
 		req.session.errors = req.form.errors;

@@ -57,9 +57,8 @@ app.use(function (req, res, next) {
 
 /// error handlers
 
-// development error handler
-// will print stacktrace
 if (app.get('env') === 'development') {
+	app.set('port', process.env.PORT || 3000);
 	app.use(function (err, req, res, next) {
 		res.status(err.status || 500);
 		res.render('general/error', {
@@ -67,16 +66,24 @@ if (app.get('env') === 'development') {
 			error: err
 		});
 	});
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function (err, req, res, next) {
-	res.status(err.status || 500);
-	res.render('general/error', {
-		message: err.message,
-		error: {}
+} else if (app.get('env') === 'testing') {
+	app.set('port', process.env.PORT || 3001);
+	app.use(function (err, req, res, next) {
+		res.status(err.status || 500);
+		res.render('general/error', {
+			message: err.message,
+			error: err
+		});
 	});
-});
+} else {
+	app.set('port', process.env.PORT || 8080);
+	app.use(function (err, req, res, next) {
+		res.status(err.status || 500);
+		res.render('general/error', {
+			message: err.message,
+			error: {}
+		});
+	});
+}
 
 module.exports = app;

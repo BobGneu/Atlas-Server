@@ -1,6 +1,8 @@
 var Browser = require("zombie");
 var should = require("should");
 
+var helpers = require('./testHelper');
+
 var debug = require('debug')('atlas-server');
 var app = require('../app');
 
@@ -215,15 +217,16 @@ describe('Administrator User', function () {
 				var foundUsername = false;
 
 				var table = browser.document.getElementById("user-table");
+				if (typeof (table) !== 'undefined') {
+					for (var i = table.childNodes.length - 1; i >= 0; i--) { // 
+						for (var j = table.childNodes[i].childNodes.length - 1; j >= 1; j--) { // tr
+							for (var k = table.childNodes[i].childNodes[j].childNodes.length - 1; k >= 0; k--) { // td
+								var tmp = table.childNodes[i].childNodes[j].childNodes[k].textContent;
 
-				for (var i = table.childNodes.length - 1; i >= 0; i--) { // 
-					for (var j = table.childNodes[i].childNodes.length - 1; j >= 1; j--) { // tr
-						for (var k = table.childNodes[i].childNodes[j].childNodes.length - 1; k >= 0; k--) { // td
-							var tmp = table.childNodes[i].childNodes[j].childNodes[k].textContent;
-
-							if (tmp === "a") {
-								foundUsername = true;
-							}
+								if (tmp === "a") {
+									foundUsername = true;
+								}
+							};
 						};
 					};
 				};
@@ -236,13 +239,12 @@ describe('Administrator User', function () {
 
 		it("should be able to create a new user", function (done) {
 
-			var username = "user." + randomInt(10000000, 100000000);
-			var uid = "" + randomInt(10000000, 100000000);
-			var email = username + "@gneu.org";
+			var username = helpers.generate.username();
+			var uid = helpers.generate.uid();
+			var email = helpers.generate.email(username);
 
 			browser.text("#user-add").should.eql("Add User");
 			browser.fill("username", username).fill("email", email).fill("uid", uid).fill("password", "myPassword").pressButton("Save", function () {
-
 				browser.statusCode.should.equal(201);
 
 				var foundUsername = false;
@@ -250,28 +252,33 @@ describe('Administrator User', function () {
 				var foundUID = false;
 
 				var table = browser.document.getElementById("user-table");
+				if (typeof (table) !== 'undefined') {
+					for (var i = table.childNodes.length - 1; i >= 0; i--) { // 
+						for (var j = table.childNodes[i].childNodes.length - 1; j >= 1; j--) { // tr
+							for (var k = table.childNodes[i].childNodes[j].childNodes.length - 1; k >= 0; k--) { // td
+								var tmp = table.childNodes[i].childNodes[j].childNodes[k].textContent;
 
-				for (var i = table.childNodes.length - 1; i >= 0; i--) { // 
-					for (var j = table.childNodes[i].childNodes.length - 1; j >= 1; j--) { // tr
-						for (var k = table.childNodes[i].childNodes[j].childNodes.length - 1; k >= 0; k--) { // td
-							var tmp = table.childNodes[i].childNodes[j].childNodes[k].textContent;
+								if (tmp === username) {
+									foundUsername = true;
+								}
 
-							if (tmp === username) {
-								foundUsername = true;
-							}
+								if (tmp === email) {
+									foundEmail = true;
+								}
 
-							if (tmp === email) {
-								foundEmail = true;
-							}
-
-							if (tmp === uid) {
-								foundUID = true;
-							}
+								if (tmp === uid) {
+									foundUID = true;
+								}
+							};
 						};
 					};
 				};
 
-				(foundUID && foundEmail && foundUsername).should.be.true;
+				(foundUID).should.be.true;
+
+				(foundEmail).should.be.true;
+
+				(foundUsername).should.be.true;
 
 				done();
 			});

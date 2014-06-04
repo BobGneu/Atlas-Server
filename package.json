@@ -1,42 +1,43 @@
 {
-  "name": "atlas-server",
-  "version": "0.0.1",
-  "private": true,
-  "bugs": {
-    "url": "https://github.com/BobGneu/Atlas-Server/issues",
-    "email": "bob@gneu.org"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/BobGneu/Atlas-Server.git"
-  },
-  "scripts": {
-    "start": "nodemon ./bin/www",
-    "mongo": "mongod --dbpath ./data &"
-  },
-  "dependencies": {
-    "express": "~4.2.0",
-    "static-favicon": "~1.0.0",
-    "morgan": "~1.0.0",
-    "cookie-parser": "~1.0.1",
-    "body-parser": "~1.0.0",
-    "debug": "~0.7.4",
-    "ejs": "~0.8.5",
-    "stylus": "0.42.3",
-    "express-session": "~1.2.0",
-    "express-form": "~0.12.2",
-    "response-time": "~1.0.0",
-    "underscore": "~1.6.0",
-    "mongoose": "~3.8.12",
-    "express-ejs-layouts": "~1.1.0",
-    "express-helpers": "~1.3.1",
-    "connect-mongo": "~0.4.1",
-    "password-hash": "~1.2.2"
-  },
-  "devDependencies": {
-    "nodemon": "~1.0.20",
-    "mocha": "~1.20.0",
-    "should": "~4.0.0",
-    "zombie": "~2.0.0-alpha31"
-  }
+	"name": "atlas-server",
+	"version": "0.0.1",
+	"private": true,
+	"bugs": {
+		"url": "https://github.com/BobGneu/Atlas-Server/issues",
+		"email": "bob@gneu.org"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/BobGneu/Atlas-Server.git"
+	},
+	"scripts": {
+		"start": "nodemon ./bin/www",
+		"test": "NODE_ENV=testing mocha",
+		"mongo": "mongod --dbpath ./data"
+	},
+	"dependencies": {
+		"express": "~4.2.0",
+		"static-favicon": "~1.0.0",
+		"morgan": "~1.0.0",
+		"cookie-parser": "~1.0.1",
+		"body-parser": "~1.0.0",
+		"debug": "~0.7.4",
+		"ejs": "~0.8.5",
+		"stylus": "0.42.3",
+		"express-session": "~1.2.0",
+		"express-form": "~0.12.2",
+		"response-time": "~1.0.0",
+		"underscore": "~1.6.0",
+		"mongoose": "~3.8.12",
+		"express-ejs-layouts": "~1.1.0",
+		"express-helpers": "~1.3.1",
+		"connect-mongo": "~0.4.1",
+		"password-hash": "~1.2.2"
+	},
+	"devDependencies": {
+		"nodemon": "~1.0.20",
+		"mocha": "~1.20.0",
+		"should": "~4.0.0",
+		"zombie": "~2.0.0-alpha31"
+	}
 }
