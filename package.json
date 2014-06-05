@@ -13,7 +13,7 @@
 	"scripts": {
 		"mongo": "mongod --dbpath ./data",
 		"start": "nodemon ./bin/www",
-		"test": "NODE_ENV=testing mocha"
+		"test": "mocha"
 	},
 	"dependencies": {
 		"angular": "~1.2.16",
