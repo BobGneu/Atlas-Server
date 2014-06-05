@@ -88,6 +88,41 @@ describe('Administrator User', function () {
 		});
 	});
 
+	describe("Footer", function () {
+		it('should have the copyright notification', function () {
+			browser.text("#footer").should.endWith("Copyright Gneu LLC. © 2014");
+		});
+
+		it('should have a link to gneu.org', function () {
+			var link = browser.link("Gneu");
+
+			should.exist(link);
+			link.href.should.eql("http://gneu.org/");
+		});
+
+		it('should have a link to the issues page on github', function () {
+			var link = browser.link("Issues");
+
+			should.exist(link);
+			link.href.should.eql("https://github.com/BobGneu/Atlas-Server/issues");
+
+			browser.text("#footer").should.match(/Issues/);
+		});
+
+		it('should have a link to the wiki page on github', function () {
+			var link = browser.link("Wiki");
+
+			should.exist(link);
+			link.href.should.eql("https://github.com/BobGneu/Atlas-Server/wiki");
+
+			browser.text("#footer").should.match(/Wiki/);
+		});
+
+		it('should have the version shown', function () {
+			browser.text("#footer").should.startWith("v." + helper.getVersion());
+		});
+	});
+
 	describe("Tracking", function () {
 
 		beforeEach(function (done) {
