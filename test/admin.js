@@ -16,6 +16,9 @@ describe('Administrator User', function () {
 	var browser = {};
 
 	beforeEach(function (done) {
+
+		helper.InitializeDatabase();
+
 		browser = new Browser({});
 
 		browser.visit("http://localhost:" + helper.getPort(), function () {
@@ -236,10 +239,9 @@ describe('Administrator User', function () {
 
 				var table = helper.Table2Object(browser, "user-table");
 
-				table.found.should.be.true;
-				table.should.property('username');
+				table.found.should.be.false;
 
-				table.username.should.not.containEql("a");
+				browser.text().should.match(/There are no users to list./);
 
 				done();
 			});
@@ -301,16 +303,9 @@ describe('Administrator User', function () {
 
 					var table = helper.Table2Object(browser, "user-table");
 
-					table.found.should.be.true;
+					table.found.should.be.false;
 
-					table.should.property('username');
-					table.username.should.not.containEql(username);
-
-					table.should.property('email');
-					table.email.should.not.containEql(email);
-
-					table.should.property('uid');
-					table.uid.should.not.containEql(uid);
+					browser.text().should.match(/There are no users to list./);
 
 					done();
 				});

@@ -1,10 +1,11 @@
 var debug = require('debug')('atlas-server');
 var app = require('../app');
 var pkg = require("../package.json");
+var db = require('../src/db.js');
 
 var randomInt = function (low, high) {
 	return Math.floor(Math.random() * (high - low) + low);
-}
+};
 
 exports = {
 	pkg: pkg,
@@ -14,8 +15,42 @@ exports = {
 	getVersion: function () {
 		return pkg.version;
 	},
+
 	startServer: function (done) {
 		return app.listen(app.get('port'), done);
+	},
+	InitializeDatabase: function (done) {
+
+		var calls = 0;
+
+		var fn = function () {
+			calls++;
+
+			if (calls === 3 && done) {
+				done();
+			}
+		};
+
+		db.User.remove({}, function (err, docs) {
+			db.User.count({}, function (err, docs) {
+				docs.should.eql(0);
+				fn();
+			});
+
+		});
+		db.Application.remove({}, function (err, docs) {
+			db.Application.count({}, function (err, docs) {
+				docs.should.eql(0);
+				fn();
+			});
+
+		});
+		db.TrackingData.remove({}, function (err, docs) {
+			db.TrackingData.count({}, function (err, docs) {
+				docs.should.eql(0);
+				fn();
+			});
+		});
 	},
 	Table2Object: function (browser, id) {
 		var keysIndex = [];
