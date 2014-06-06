@@ -9,6 +9,10 @@ var bodyParser = require('body-parser');
 var pkg = require('./package.json');
 var responseTime = require('response-time');
 var session = require('express-session');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+
+var models = require('./src/db');
 
 var routes = require('./routes/index');
 var admin = require('./routes/admin');
@@ -26,19 +30,16 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(expressLayouts);
-
 app.use(responseTime());
 app.use(favicon());
-// app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(session({
-	secret: 'keyboard cat',
-	cookie: {
-		maxAge: 60000
-	}
+	secret: 'atlas is a greek god.'
 }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -57,10 +58,48 @@ app.use(function (req, res, next) {
 	next(err);
 });
 
+passport.use(new LocalStrategy({
+		usernameField: 'username',
+		passwordField: 'password'
+	},
+	function (username, password, done) {
+
+		models.User.findOne({
+			Name: username.toLowerCase()
+		}, function (err, user) {
+
+			if (err) {
+				return done(err);
+			}
+			if (!user) {
+				return done(null, false, {
+					message: 'Incorrect username.'
+				});
+			}
+			if (!user.validPassword(password)) {
+				return done(null, false, {
+					message: 'Incorrect password.'
+				});
+			}
+			return done(null, user);
+		});
+	}
+));
+
+passport.serializeUser(function (user, done) {
+	done(null, user.id);
+});
+
+passport.deserializeUser(function (id, done) {
+	models.User.findById(id, function (err, user) {
+		done(err, user);
+	});
+});
+
 /// error handlers
 
-if (app.get('env') === 'development') {
-	app.set('port', process.env.PORT || 3000);
+if (app.get('env') === 'production') {
+	app.set('port', process.env.PORT || 8080);
 	app.use(function (err, req, res, next) {
 		res.status(err.status || 500);
 		res.render('general/error', {
@@ -78,12 +117,12 @@ if (app.get('env') === 'development') {
 		});
 	});
 } else {
-	app.set('port', process.env.PORT || 8080);
+	app.set('port', process.env.PORT || 3000);
 	app.use(function (err, req, res, next) {
 		res.status(err.status || 500);
 		res.render('general/error', {
 			message: err.message,
-			error: {}
+			error: err
 		});
 	});
 }

@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var passwordHash = require('password-hash');
 
 var Schema = mongoose.Schema;
 
@@ -29,7 +30,6 @@ exports.User = mongoose.model('User', new Schema({
 	},
 	PasswordHash: {
 		type: String,
-		select: false,
 		required: true,
 		lowercase: true
 	},
@@ -38,6 +38,15 @@ exports.User = mongoose.model('User', new Schema({
 		required: true
 	}
 }));
+
+exports.User.prototype.validPassword = function (pw) {
+	if (typeof (pw) !== "string" || pw.length === 0) {
+		return false;
+	}
+
+	return passwordHash.verify(pw, this.PasswordHash)
+
+};
 
 exports.TrackingData = mongoose.model('TrackingData', new Schema({
 	Name: {

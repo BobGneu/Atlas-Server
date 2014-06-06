@@ -2,6 +2,8 @@ var debug = require('debug')('atlas-server');
 var app = require('../app');
 var pkg = require("../package.json");
 var db = require('../src/db.js');
+var async = require('async');
+var passwordHash = require('password-hash');
 
 var randomInt = function (low, high) {
 	return Math.floor(Math.random() * (high - low) + low);
@@ -21,36 +23,49 @@ exports = {
 	},
 	InitializeDatabase: function (done) {
 
-		var calls = 0;
+		async.series([
 
-		var fn = function () {
-			calls++;
+			function (cb) {
+				db.User.remove({}, function (err, docs) {
+					db.User.count({}, function (err, docs) {
+						docs.should.eql(0);
+						(err === null).should.be.true;
+						cb();
+					});
+				});
+			},
+			function (cb) {
+				db.Application.remove({}, function (err, docs) {
+					db.Application.count({}, function (err, docs) {
+						docs.should.eql(0);
+						(err === null).should.be.true;
+						cb();
+					});
+				});
+			},
+			function (cb) {
+				db.TrackingData.remove({}, function (err, docs) {
+					db.TrackingData.count({}, function (err, docs) {
+						docs.should.eql(0);
+						(err === null).should.be.true;
+						cb();
+					});
+				});
+			},
+			function (cb) {
+				var user = new db.User({
+					Name: "testAdmin",
+					Email: "admin@gneu.org",
+					UID: "0",
+					PasswordHash: passwordHash.generate("testAdmin")
+				});
 
-			if (calls === 3 && done) {
-				done();
+				user.save(function (err, user) {
+					(err === null).should.be.true;
+					cb();
+				});
 			}
-		};
-
-		db.User.remove({}, function (err, docs) {
-			db.User.count({}, function (err, docs) {
-				docs.should.eql(0);
-				fn();
-			});
-
-		});
-		db.Application.remove({}, function (err, docs) {
-			db.Application.count({}, function (err, docs) {
-				docs.should.eql(0);
-				fn();
-			});
-
-		});
-		db.TrackingData.remove({}, function (err, docs) {
-			db.TrackingData.count({}, function (err, docs) {
-				docs.should.eql(0);
-				fn();
-			});
-		});
+			], done);
 	},
 	Table2Object: function (browser, id) {
 		var keysIndex = [];

@@ -115,4 +115,17 @@ describe('Non-Logged In User', function () {
 			})
 		});
 	});
+
+	describe("access", function () {
+		it("should not be able to see /admin/overview", function (done) {
+
+			browser.visit("http://localhost:" + helper.getPort() + "/admin/overview", function () {
+				browser.success.should.be.true;
+
+				browser.window.location.pathname.should.eql("/admin/");
+
+				done();
+			});
+		});
+	});
 });
