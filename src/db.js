@@ -52,4 +52,10 @@ exports.TrackingData = mongoose.model('TrackingData', new Schema({
 
 exports.ObjectId = mongoose.Types.ObjectId;
 
-mongoose.connect('mongodb://localhost/atlas');
+if (process.env.NODE_ENV === 'production') {
+	mongoose.connect('mongodb://localhost/atlas');
+} else if (process.env.NODE_ENV === 'testing') {
+	mongoose.connect('mongodb://localhost/atlas_testing');
+} else {
+	mongoose.connect('mongodb://localhost/atlas_dev');
+}
