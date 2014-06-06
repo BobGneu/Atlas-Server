@@ -14,6 +14,13 @@ exports.Application = mongoose.model('Application', new Schema({
 	}
 }));
 
+exports.Client = mongoose.model('Client', new Schema({
+	UID: {
+		type: String,
+		required: true
+	}
+}));
+
 exports.User = mongoose.model('User', new Schema({
 	Name: {
 		type: String,

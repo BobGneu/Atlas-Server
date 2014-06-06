@@ -69,38 +69,36 @@ router.get('/overview', restricted, function (req, res) {
 	});
 });
 
-router.get('/tracking', function (req, res) {
+router.get('/tracking', restricted, function (req, res) {
 	res.render('admin/tracking', {
 		layout: 'admin'
 	});
 });
 
-router.get('/users', function (req, res) {
-	models.User.find({}, function (err, users) {
-		res.render('admin/users', {
+router.get('/applications', restricted, function (req, res) {
+	res.render('admin/applications', {
+		layout: 'admin'
+	});
+});
+
+router.get('/users', restricted, function (req, res) {
+	res.render('admin/users', {
+		layout: 'admin'
+	});
+});
+
+router.get('/clients', restricted, function (req, res) {
+	models.Client.find({}, function (err, clients) {
+		res.render('admin/clients', {
 			layout: 'admin',
-			users: users,
+			clients: clients,
 			errors: req.session.errors
 		});
 	});
 });
 
-router.post('/users', form( // Form filter and validation middleware
-	filter("username").trim(),
-	filter("email").trim(),
-	filter("password").trim(),
+router.post('/clients', restricted, form( // Form filter and validation middleware
 	filter("uid").trim(),
-	validate("username").required().custom(function (value) {
-		if (value.length < 6) {
-			throw new Error("%s must be at least 6 characters in length.");
-		}
-	}).is(/^[a-zA-Z][\w_\-\.]{5,900}$/),
-	validate("email").required().isEmail(),
-	validate("password").required().custom(function (value) {
-		if (value.length < 6) {
-			throw new Error("%s must be at least 6 characters in length.");
-		}
-	}).is(/^[\w\s+-/&*()\[\]]{6,900}$/),
 	validate("uid").required()
 ), function (req, res) {
 
