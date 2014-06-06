@@ -16,7 +16,6 @@
 		"test": "mocha"
 	},
 	"dependencies": {
-		"angular": "~1.2.16",
 		"body-parser": "~1.0.0",
 		"connect-mongo": "~0.4.1",
 		"cookie-parser": "~1.0.1",
