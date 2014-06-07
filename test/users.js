@@ -54,7 +54,15 @@ describe('Users & Authentication', function () {
 			it("should not be able to delete a report");
 		});
 
-		it("should not be able to see /clients and be redirected back to /login");
+		it("should not be able to see /clients and be redirected back to /login", function (done) {
+			browser.visit("http://localhost:" + helper.getPort() + "/clients", function () {
+				browser.success.should.be.true;
+
+				browser.window.location.pathname.should.eql("/login");
+
+				done();
+			});
+		});
 
 		describe("Client Management", function () {
 			it("should not be able to create a new client");
@@ -69,7 +77,15 @@ describe('Users & Authentication', function () {
 			it("should not be able to delete an client");
 		});
 
-		it("should not be able to see /applications and be redirected back to /login");
+		it("should not be able to see /applications and be redirected back to /login", function (done) {
+			browser.visit("http://localhost:" + helper.getPort() + "/applications", function () {
+				browser.success.should.be.true;
+
+				browser.window.location.pathname.should.eql("/login");
+
+				done();
+			});
+		});
 
 		describe("Application Management", function () {
 			it("should not be able to create a new application");
@@ -82,7 +98,15 @@ describe('Users & Authentication', function () {
 			it("should not be able to delete an application");
 		});
 
-		it("should not be able to see /users and be redirected back to /login");
+		it("should not be able to see /users and be redirected back to /login", function (done) {
+			browser.visit("http://localhost:" + helper.getPort() + "/users", function () {
+				browser.success.should.be.true;
+
+				browser.window.location.pathname.should.eql("/login");
+
+				done();
+			});
+		});
 
 		describe("User Management", function () {
 			it("should not be able to create a new manager");
@@ -96,7 +120,15 @@ describe('Users & Authentication', function () {
 			it("should not be able to delete a user");
 		});
 
-		it("should not be able to see /overview and be redirected back to /login");
+		it("should not be able to see /overview and be redirected back to /login", function (done) {
+			browser.visit("http://localhost:" + helper.getPort() + "/overview", function () {
+				browser.success.should.be.true;
+
+				browser.window.location.pathname.should.eql("/login");
+
+				done();
+			});
+		});
 	});
 
 	describe("Manager", function () {
