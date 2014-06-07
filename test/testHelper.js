@@ -17,9 +17,36 @@ exports = {
 	getVersion: function () {
 		return pkg.version;
 	},
-
 	startServer: function (done) {
 		return app.listen(app.get('port'), done);
+	},
+	createManager: function (user, pass, done) {
+		var user = new db.User({
+			Name: user,
+			Email: user + "@gneu.org",
+			Role: "Manager",
+			PasswordHash: passwordHash.generate(pass)
+		});
+
+		user.save(function (err, user) {
+			(err === null).should.be.true;
+
+			done();
+		});
+	},
+	createAdmin: function (user, pass, done) {
+		var user = new db.User({
+			Name: user,
+			Email: user + "@gneu.org",
+			Role: "Administrator",
+			PasswordHash: passwordHash.generate(pass)
+		});
+
+		user.save(function (err, user) {
+			(err === null).should.be.true;
+
+			done();
+		});
 	},
 	InitializeDatabase: function (done) {
 
@@ -52,20 +79,7 @@ exports = {
 					});
 				});
 			},
-			function (cb) {
-				var user = new db.User({
-					Name: "testAdmin",
-					Email: "admin@gneu.org",
-					UID: "0",
-					PasswordHash: passwordHash.generate("testAdmin")
-				});
-
-				user.save(function (err, user) {
-					(err === null).should.be.true;
-					cb();
-				});
-			}
-			], done);
+		], done);
 	},
 	Table2Object: function (browser, id) {
 		var keysIndex = [];

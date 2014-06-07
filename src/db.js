@@ -40,9 +40,9 @@ exports.User = mongoose.model('User', new Schema({
 		required: true,
 		lowercase: true
 	},
-	UID: {
+	Role: {
 		type: String,
-		required: true
+		Default: "Manager"
 	}
 }));
 

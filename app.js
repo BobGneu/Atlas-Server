@@ -15,8 +15,8 @@ var LocalStrategy = require('passport-local').Strategy;
 var models = require('./src/db');
 
 var routes = require('./routes/index');
-var admin = require('./routes/admin');
-var tracking = require('./routes/tracking');
+// var admin = require('./routes/admin');
+// var tracking = require('./routes/tracking');
 var db = require("./src/db");
 var expressLayouts = require('express-ejs-layouts')
 
@@ -48,8 +48,8 @@ app.locals.title = 'Atlas';
 app.locals.version = pkg.version;
 
 app.use('/', routes);
-app.use('/admin', admin);
-app.use('/tracking', tracking);
+// app.use('/admin', admin);
+// app.use('/tracking', tracking);
 
 /// catch 404 and forward to error handler
 app.use(function (req, res, next) {

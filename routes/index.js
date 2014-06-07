@@ -5,4 +5,12 @@ router.get('/', function (req, res) {
 	res.render('general/index');
 });
 
+router.get('/login', function (req, res) {
+	res.render('general/index');
+});
+
+router.get('/tracking', function (req, res) {
+	res.redirect('/login');
+});
+
 module.exports = router;
