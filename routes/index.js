@@ -8,10 +8,11 @@ var restricted = function (req, res, next) {
 
 	// Only administrators are allowed to access the users page
 	if (req.route.path === '/users') {
-		if (req.user.Role === 'Administrator')
+		if (req.user.Role === 'Administrator') {
 			return next();
-		else
+		} else {
 			return res.redirect("/overview");
+		}
 	}
 
 	// Otherwise you are fine
