@@ -138,7 +138,21 @@ describe('Users & Authentication', function () {
 		});
 
 		describe("Logging in", function () {
-			it("should land on overview page");
+			it("should land on overview page", function (done) {
+				browser = new Browser({});
+
+				browser.visit("http://localhost:" + helper.getPort() + "/login", function () {
+					browser.success.should.be.true;
+
+					browser.window.location.pathname.should.eql("/login");
+					browser.fill("username", "testManager").fill("password", "testManager").pressButton("Login", function () {
+						browser.success.should.be.true;
+
+						browser.window.location.pathname.should.eql("/overview");
+						done();
+					});
+				});
+			});
 		});
 
 		describe("Logged in", function () {
@@ -146,21 +160,32 @@ describe('Users & Authentication', function () {
 			beforeEach(function (done) {
 				browser = new Browser({});
 
-				browser.visit("http://localhost:" + helper.getPort(), function () {
+				browser.visit("http://localhost:" + helper.getPort() + "/login", function () {
 					browser.success.should.be.true;
-
-					browser.window.location.pathname.should.eql("/");
-					browser.clickLink("Login", function () {
-						browser.window.location.pathname.should.endWith("/login");
-						browser.fill("username", "testManager").fill("password", "testManager").pressButton("Login", function () {
-							done();
-						})
+					browser.window.location.pathname.should.endWith("/login");
+					browser.fill("username", "testManager").fill("password", "testManager").pressButton("Login", function () {
+						done();
 					});
 				});
 			});
 
-			it("should be able to see /overview");
-			it("should be able to see /tracking");
+			it("should be able to see /overview", function (done) {
+				browser.visit("http://localhost:" + helper.getPort() + "/overview", function () {
+					browser.success.should.be.true;
+
+					browser.window.location.pathname.should.eql("/overview");
+					done();
+				});
+			});
+
+			it("should be able to see /tracking", function (done) {
+				browser.visit("http://localhost:" + helper.getPort() + "/tracking", function () {
+					browser.success.should.be.true;
+
+					browser.window.location.pathname.should.eql("/tracking");
+					done();
+				});
+			});
 
 			describe("Tracking Management", function () {
 				it("should be able to create a new report");
@@ -169,7 +194,14 @@ describe('Users & Authentication', function () {
 				it("should be able to delete a report");
 			});
 
-			it("should be able to see /clients");
+			it("should be able to see /clients", function (done) {
+				browser.visit("http://localhost:" + helper.getPort() + "/clients", function () {
+					browser.success.should.be.true;
+
+					browser.window.location.pathname.should.eql("/clients");
+					done();
+				});
+			});
 
 			describe("Client Management", function () {
 				it("should be able to create a new client");
@@ -184,7 +216,14 @@ describe('Users & Authentication', function () {
 				it("should be able to delete an client");
 			});
 
-			it("should be able to see /applications");
+			it("should be able to see /applications", function (done) {
+				browser.visit("http://localhost:" + helper.getPort() + "/applications", function () {
+					browser.success.should.be.true;
+
+					browser.window.location.pathname.should.eql("/applications");
+					done();
+				});
+			});
 
 			describe("Application Management", function () {
 				it("should be able to create a new application");
@@ -197,7 +236,14 @@ describe('Users & Authentication', function () {
 				it("should be able to delete an application");
 			});
 
-			it("should not be able to see /users and be redirected back to /overview");
+			it("should not be able to see /users and be redirected back to /overview", function (done) {
+				browser.visit("http://localhost:" + helper.getPort() + "/users", function () {
+					browser.success.should.be.true;
+
+					browser.window.location.pathname.should.eql("/overview");
+					done();
+				});
+			});
 
 			describe("User Management", function () {
 				it("should not be able to create a new manager");
@@ -220,7 +266,21 @@ describe('Users & Authentication', function () {
 		});
 
 		describe("Logging in", function () {
-			it("should land on overview page");
+			it("should land on overview page", function (done) {
+				browser = new Browser({});
+
+				browser.visit("http://localhost:" + helper.getPort() + "/login", function () {
+					browser.success.should.be.true;
+
+					browser.window.location.pathname.should.eql("/login");
+					browser.fill("username", "testManager").fill("password", "testManager").pressButton("Login", function () {
+						browser.success.should.be.true;
+
+						browser.window.location.pathname.should.eql("/overview");
+						done();
+					});
+				});
+			});
 		});
 
 		describe("Logged in", function () {
@@ -228,22 +288,33 @@ describe('Users & Authentication', function () {
 			beforeEach(function (done) {
 				browser = new Browser({});
 
-				browser.visit("http://localhost:" + helper.getPort(), function () {
+				browser.visit("http://localhost:" + helper.getPort() + "/login", function () {
 					browser.success.should.be.true;
 
-					browser.window.location.pathname.should.eql("/");
-					browser.clickLink("Login", function () {
-						browser.window.location.pathname.should.endWith("/login");
-						browser.fill("username", "testAdmin").fill("password", "testAdmin").pressButton("Login", function () {
-							done();
-						})
+					browser.window.location.pathname.should.eql("/login");
+					browser.fill("username", "testAdmin").fill("password", "testAdmin").pressButton("Login", function () {
+						done();
 					});
 				});
 			});
 
-			it("should be able to see /overview");
+			it("should be able to see /overview", function (done) {
+				browser.visit("http://localhost:" + helper.getPort() + "/overview", function () {
+					browser.success.should.be.true;
 
-			it("should be able to see /tracking");
+					browser.window.location.pathname.should.eql("/overview");
+					done();
+				});
+			});
+
+			it("should be able to see /tracking", function (done) {
+				browser.visit("http://localhost:" + helper.getPort() + "/tracking", function () {
+					browser.success.should.be.true;
+
+					browser.window.location.pathname.should.eql("/tracking");
+					done();
+				});
+			});
 
 			describe("Tracking Management", function () {
 				it("should be able to create a new report");
@@ -252,7 +323,14 @@ describe('Users & Authentication', function () {
 				it("should be able to delete a report");
 			});
 
-			it("should be able to see /clients");
+			it("should be able to see /clients", function (done) {
+				browser.visit("http://localhost:" + helper.getPort() + "/clients", function () {
+					browser.success.should.be.true;
+
+					browser.window.location.pathname.should.eql("/clients");
+					done();
+				});
+			});
 
 			describe("Client Management", function () {
 				it("should be able to create a new client");
@@ -267,7 +345,14 @@ describe('Users & Authentication', function () {
 				it("should be able to delete an client");
 			});
 
-			it("should be able to see /applications");
+			it("should be able to see /applications", function (done) {
+				browser.visit("http://localhost:" + helper.getPort() + "/applications", function () {
+					browser.success.should.be.true;
+
+					browser.window.location.pathname.should.eql("/applications");
+					done();
+				});
+			});
 
 			describe("Application Management", function () {
 				it("should be able to create a new application");
@@ -280,7 +365,14 @@ describe('Users & Authentication', function () {
 				it("should be able to delete an application");
 			});
 
-			it("should be able to see /users/");
+			it("should be able to see /users", function (done) {
+				browser.visit("http://localhost:" + helper.getPort() + "/users", function () {
+					browser.success.should.be.true;
+
+					browser.window.location.pathname.should.eql("/users");
+					done();
+				});
+			});
 
 			describe("User Management", function () {
 				it("should be able to create a new manager");
