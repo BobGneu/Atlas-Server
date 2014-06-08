@@ -1,5 +1,10 @@
 var router = require('express').Router(),
-	passport = require("passport");
+	passport = require("passport"),
+	atlas = require("../src/atlas"),
+	users = require("../src/atlas.users"),
+	clients = require("../src/atlas.clients"),
+	applications = require("../src/atlas.applications"),
+	tracking = require("../src/atlas.tracking");
 
 var restricted = function (req, res, next) {
 	// Unauthenticated users get redirected to the login page
@@ -19,26 +24,22 @@ var restricted = function (req, res, next) {
 	next();
 };
 
-router.get('/', function (req, res) {
-	res.render('index');
+router.param(":id", function (req, res, next, id) {
+	next();
 });
 
-router.get('/login', function (req, res) {
-	res.render('login');
-});
-
+router.get('/', atlas.index);
+router.get('/login', atlas.login);
 router.post('/login', passport.authenticate('local', {
 	successRedirect: '/overview',
 	failureRedirect: '/login'
 }));
 
-router.get('/tracking', restricted, function (req, res) {
-	res.render('general/index');
-});
-
-router.post('/tracking/report', restricted, function (req, res) {
-	res.render('general/index');
-});
+router.get('/tracking', restricted, tracking.index);
+router.post('/tracking/report/create', restricted, tracking.create);
+router.get('/tracking/report/:id', restricted, tracking.read);
+router.put('/tracking/report/update/:id', restricted, tracking.update);
+router.delete('/tracking/report/delete/:id', restricted, tracking.delete);
 
 router.get('/applications', restricted, function (req, res) {
 	res.render('general/index');

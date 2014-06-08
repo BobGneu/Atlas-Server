@@ -52,7 +52,7 @@ describe('Users & Authentication', function () {
 			it("should not be able to create a new report", function (done) {
 				request({
 					method: 'POST',
-					uri: "http://localhost:" + helper.getPort() + "/tracking/report",
+					uri: "http://localhost:" + helper.getPort() + "/tracking/report/create",
 				}, function (error, response, body) {
 					response.statusCode.should.eql(302);
 					response.headers.location.should.eql("/login");
@@ -60,9 +60,42 @@ describe('Users & Authentication', function () {
 					done();
 				});
 			});
-			it("should not be able to view a report");
-			it("should not be able to update a report's query");
-			it("should not be able to delete a report");
+
+			it("should not be able to view a report", function (done) {
+				request({
+					method: 'GET',
+					uri: "http://localhost:" + helper.getPort() + "/tracking/report/42",
+				}, function (error, response, body) {
+
+					response.statusCode.should.eql(200);
+					response.request.uri.path.should.eql("/login");
+
+					done();
+				});
+			});
+
+			it("should not be able to update a report's query", function (done) {
+				request({
+					method: 'PUT',
+					uri: "http://localhost:" + helper.getPort() + "/tracking/report/update/42",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
+
+					done();
+				});
+			});
+			it("should not be able to delete a report", function (done) {
+				request({
+					method: 'DELETE',
+					uri: "http://localhost:" + helper.getPort() + "/tracking/report/delete/42",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
+
+					done();
+				});
+			});
 		});
 
 		it("should not be able to see /clients and be redirected back to /login", function (done) {
