@@ -44,7 +44,7 @@ router.delete('/clients/delete/:id', users.restricted, clients.delete);
 
 router.get('/users', users.restricted, users.index);
 
-router.post('/users/create', users.restricted, users.create);
+router.post('/users/create', users.restricted, users.createValidation, users.create);
 router.get('/users/:id', users.restricted, users.read);
 router.put('/users/update/:id', users.restricted, users.update);
 router.delete('/users/delete/:id', users.restricted, users.delete);

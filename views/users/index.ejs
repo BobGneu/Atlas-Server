@@ -1,0 +1,15 @@
+<h2>Create</h2>
+<div id="create_user" class="body">
+	<form class="pure-form" method="POST" action="/users/create">
+		<input name="name" placeholder="Name" value=""/>
+		<input name="email" placeholder="Email" value=""/>
+		<input name="password" placeholder="Password" type="password" value=""/>
+		<input name="password-conf" placeholder="Password Confirmation" type="password" value=""/>
+		<select name="role">
+			<option value="Manager">Manager</option>
+			<option value="Administrator">Administrator</option>
+		</select>
+	
+		<input class="pure-button pure-button-primary" type="submit" value="Create" />
+	</form>
+</div> 

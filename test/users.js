@@ -537,17 +537,37 @@ describe('Users & Authentication', function () {
 				it("should be able to delete an application");
 			});
 
-			it("should not be able to see /users and be redirected back to /overview", function (done) {
+			it("should be able to see /users and be redirected back to /overview", function (done) {
 				browser.visit("http://localhost:" + helper.getPort() + "/users", function () {
 					browser.success.should.be.true;
 
-					browser.window.location.pathname.should.eql("/overview");
+					browser.window.location.pathname.should.eql("/users");
 					done();
 				});
 			});
 
 			describe("User Management", function () {
-				it("should be able to create a new manager");
+				it("should be able to create a new manager", function (done) {
+
+					var testName = "User42";
+					var password = "User42";
+
+					browser.clickLink("Users", function () {
+						browser.fill("name", testName).select("role", "Manager").fill("email", testName + "@gneu.org").fill("password", password).fill("password-conf", password).pressButton("Create", function () {
+							browser.success.should.be.true;
+
+							browser.window.location.pathname.should.startWith("/users/");
+							browser.window.location.pathname.should.match(/\w+$/);
+
+							var name = browser.document.getElementById("user-name");
+
+							should.exist(name);
+							name.innerHTML.should.eql(testName.toLowerCase());
+
+							done();
+						});
+					});
+				});
 
 				it("should not be able to create a new administrator");
 
