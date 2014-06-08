@@ -18,6 +18,14 @@ exports.Client = mongoose.model('Client', new Schema({
 	UID: {
 		type: String,
 		required: true
+	},
+	AllowGame: {
+		type: Boolean,
+		default: false
+	},
+	AllowEditor: {
+		type: Boolean,
+		default: false
 	}
 }));
 

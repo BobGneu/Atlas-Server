@@ -467,7 +467,26 @@ describe('Users & Authentication', function () {
 			});
 
 			describe("Client Management", function () {
-				it("should be able to create a new client");
+				it("should be able to create a new client", function (done) {
+
+					var testUID = "00000000001";
+
+					browser.clickLink("Clients", function () {
+						browser.fill("uid", testUID).pressButton("Create", function () {
+							browser.success.should.be.true;
+
+							browser.window.location.pathname.should.startWith("/clients/");
+							browser.window.location.pathname.should.match(/\w+$/);
+
+							var uid = browser.document.getElementById("client-uid");
+
+							should.exist(uid);
+							uid.innerHTML.should.eql(testUID);
+
+							done();
+						});
+					});
+				});
 
 				it("should be able to view an client's overview");
 

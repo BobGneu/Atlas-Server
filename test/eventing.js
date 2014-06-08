@@ -15,7 +15,9 @@ describe('Eventing & Tracking', function () {
 		this.server.close(done);
 	});
 
-	beforeEach(function (done) {});
+	beforeEach(function (done) {
+		done();
+	});
 
 	describe("EVENT", function () {});
 

@@ -20,7 +20,7 @@ router.post('/login', passport.authenticate('local', {
 }));
 
 router.get('/tracking', users.restricted, tracking.index);
-router.post('/tracking/create', users.restricted, tracking.createValidate, tracking.create);
+router.post('/tracking/create', users.restricted, tracking.createValidation, tracking.create);
 router.get('/tracking/:id', users.restricted, tracking.read);
 router.put('/tracking/update/:id', users.restricted, tracking.update);
 router.delete('/tracking/delete/:id', users.restricted, tracking.delete);
@@ -35,7 +35,7 @@ router.delete('/applications/delete/:id', users.restricted, applications.delete)
 
 router.get('/clients', users.restricted, clients.index);
 
-router.post('/clients/create', users.restricted, clients.create);
+router.post('/clients/create', users.restricted, clients.createValidation, clients.create);
 router.get('/clients/:id', users.restricted, clients.read);
 router.put('/clients/update/:id', users.restricted, clients.update);
 router.put('/clients/updateSecurity/:id', users.restricted, clients.updateSecurity);

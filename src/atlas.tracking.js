@@ -9,11 +9,14 @@ API = {
 			userAuthenticated: req.isAuthenticated()
 		});
 	},
-	createValidate: form(
+	createValidation: form(
 		filter("name").trim(),
 		validate("name").required()
 	),
 	create: function (req, res, next) {
+
+		// Form needs to be checked to ensure that this is a valid submission.
+
 		var tmp = new report({
 			Name: req.form.name
 		});
