@@ -6,8 +6,10 @@ var User = require("./atlas.models").User,
 
 API = {
 	index: function (req, res) {
+		console.log();
 		res.render('users/index', {
-			userAuthenticated: req.isAuthenticated()
+			userAuthenticated: req.isAuthenticated(),
+			isAdministrator: req.user.Role === "Administrator",
 		});
 	},
 	createValidation: form(
@@ -34,7 +36,6 @@ API = {
 		});
 
 		tmp.save(function (err, user) {
-
 			res.render('users/read', {
 				userAuthenticated: req.isAuthenticated(),
 				user: {

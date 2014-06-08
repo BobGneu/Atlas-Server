@@ -5,9 +5,9 @@
 		<input name="email" placeholder="Email" value=""/>
 		<input name="password" placeholder="Password" type="password" value=""/>
 		<input name="password-conf" placeholder="Password Confirmation" type="password" value=""/>
-		<select name="role">
+		<select name="role" id="role-selector">
 			<option value="Manager">Manager</option>
-			<option value="Administrator">Administrator</option>
+			<% if(isAdministrator) { %><option value="Administrator">Administrator</option><% } %>
 		</select>
 	
 		<input class="pure-button pure-button-primary" type="submit" value="Create" />

@@ -575,19 +575,21 @@ describe('Users & Authentication', function () {
 					var password = "Admin42";
 
 					browser.clickLink("Users", function () {
-						browser.fill("name", testName).select("role", "Administrator").fill("email", testName + "@gneu.org").fill("password", password).fill("password-conf", password).pressButton("Create", function () {
-							browser.success.should.be.true;
+						var roles = browser.document.getElementById("role-selector");
+						var optionNodes = [];
 
-							browser.window.location.pathname.should.startWith("/users/");
-							browser.window.location.pathname.should.match(/\w+$/);
+						should.exist(roles);
 
-							var name = browser.document.getElementById("user-name");
+						for (var i = 0; i < roles.childNodes.length; i++) {
+							if (roles.childNodes[i].nodeName === "OPTION") {
+								optionNodes.push(roles.childNodes[i]);
+							}
+						}
 
-							should.exist(name);
-							name.innerHTML.should.eql(testName.toLowerCase());
+						optionNodes.length.should.eql(1);
 
-							done();
-						});
+						optionNodes[0].innerHTML.should.eql("Manager");
+						done();
 					});
 				});
 
