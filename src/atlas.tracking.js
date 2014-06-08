@@ -4,8 +4,10 @@ API = {
 			userAuthenticated: req.isAuthenticated()
 		});
 	},
-	create: function (req, res) {
-		res.redirect('/tracking');
+	create: function (req, res, next) {
+		res.render('tracking/read', {
+			userAuthenticated: req.isAuthenticated()
+		});
 	},
 	read: function (req, res) {
 		res.render('tracking/read', {

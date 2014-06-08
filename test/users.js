@@ -432,7 +432,18 @@ describe('Users & Authentication', function () {
 			});
 
 			describe("Tracking Management", function () {
-				it("should be able to create a new report");
+				it("should be able to create a new report", function (done) {
+					browser.clickLink("Tracking", function () {
+						browser.fill("name", "testAdmin").pressButton("Create", function () {
+							browser.success.should.be.true;
+
+							browser.window.location.pathname.should.startWith("/tracking/");
+							browser.window.location.pathname.should.match(/\w+$/);
+
+							done();
+						})
+					});
+				});
 				it("should be able to view a report");
 				it("should be able to update a report's query");
 				it("should be able to delete a report");
