@@ -569,7 +569,27 @@ describe('Users & Authentication', function () {
 					});
 				});
 
-				it("should not be able to create a new administrator");
+				it("should not be able to create a new administrator", function (done) {
+
+					var testName = "Admin42";
+					var password = "Admin42";
+
+					browser.clickLink("Users", function () {
+						browser.fill("name", testName).select("role", "Administrator").fill("email", testName + "@gneu.org").fill("password", password).fill("password-conf", password).pressButton("Create", function () {
+							browser.success.should.be.true;
+
+							browser.window.location.pathname.should.startWith("/users/");
+							browser.window.location.pathname.should.match(/\w+$/);
+
+							var name = browser.document.getElementById("user-name");
+
+							should.exist(name);
+							name.innerHTML.should.eql(testName.toLowerCase());
+
+							done();
+						});
+					});
+				});
 
 				it("should not be able to view a user's overview");
 
