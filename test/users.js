@@ -2,6 +2,7 @@ var Browser = require("zombie");
 var should = require("should");
 var async = require("async");
 var users = require("../src/db");
+var request = require("request");
 
 var helper = require('./testHelper');
 
@@ -48,7 +49,17 @@ describe('Users & Authentication', function () {
 		});
 
 		describe("Tracking Management", function () {
-			it("should not be able to create a new report");
+			it("should not be able to create a new report", function (done) {
+				request({
+					method: 'POST',
+					uri: "http://localhost:" + helper.getPort() + "/tracking/report",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
+
+					done();
+				});
+			});
 			it("should not be able to view a report");
 			it("should not be able to update a report's query");
 			it("should not be able to delete a report");
@@ -109,7 +120,9 @@ describe('Users & Authentication', function () {
 		});
 
 		describe("User Management", function () {
-			it("should not be able to create a new manager");
+			it("should not be able to create a new manager", function () {
+
+			});
 			it("should not be able to create a new administrator");
 
 			it("should not be able to view a user's overview");
