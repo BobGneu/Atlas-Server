@@ -1,6 +1,5 @@
 var Browser = require("zombie");
 var should = require("should");
-var async = require("async");
 var users = require("../src/db");
 var request = require("request");
 
@@ -26,8 +25,10 @@ describe('Users & Authentication', function () {
 
 		beforeEach(function (done) {
 			browser = new Browser({});
+
 			done();
 		});
+
 		it("should be able to see /login", function (done) {
 			browser.visit("http://localhost:" + helper.getPort() + "/login", function () {
 				browser.success.should.be.true;
@@ -52,7 +53,7 @@ describe('Users & Authentication', function () {
 			it("should not be able to create a new report", function (done) {
 				request({
 					method: 'POST',
-					uri: "http://localhost:" + helper.getPort() + "/tracking/report/create",
+					uri: "http://localhost:" + helper.getPort() + "/tracking/create",
 				}, function (error, response, body) {
 					response.statusCode.should.eql(302);
 					response.headers.location.should.eql("/login");
@@ -64,7 +65,7 @@ describe('Users & Authentication', function () {
 			it("should not be able to view a report", function (done) {
 				request({
 					method: 'GET',
-					uri: "http://localhost:" + helper.getPort() + "/tracking/report/42",
+					uri: "http://localhost:" + helper.getPort() + "/tracking/42",
 				}, function (error, response, body) {
 
 					response.statusCode.should.eql(200);
@@ -77,7 +78,7 @@ describe('Users & Authentication', function () {
 			it("should not be able to update a report's query", function (done) {
 				request({
 					method: 'PUT',
-					uri: "http://localhost:" + helper.getPort() + "/tracking/report/update/42",
+					uri: "http://localhost:" + helper.getPort() + "/tracking/update/42",
 				}, function (error, response, body) {
 					response.statusCode.should.eql(302);
 					response.headers.location.should.eql("/login");
@@ -85,10 +86,11 @@ describe('Users & Authentication', function () {
 					done();
 				});
 			});
+
 			it("should not be able to delete a report", function (done) {
 				request({
 					method: 'DELETE',
-					uri: "http://localhost:" + helper.getPort() + "/tracking/report/delete/42",
+					uri: "http://localhost:" + helper.getPort() + "/tracking/delete/42",
 				}, function (error, response, body) {
 					response.statusCode.should.eql(302);
 					response.headers.location.should.eql("/login");
@@ -109,16 +111,77 @@ describe('Users & Authentication', function () {
 		});
 
 		describe("Client Management", function () {
-			it("should not be able to create a new client");
+			it("should not be able to create a new client", function (done) {
+				request({
+					method: 'POST',
+					uri: "http://localhost:" + helper.getPort() + "/clients/create",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
 
-			it("should not be able to view an client's overview");
+					done();
+				});
+			});
 
-			it("should not be able to update an client's information");
-			it("should not be able to update an client's security values");
+			it("should not be able to view an client's overview", function (done) {
+				request({
+					method: 'GET',
+					uri: "http://localhost:" + helper.getPort() + "/clients/42",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(200);
+					response.request.uri.path.should.eql("/login");
 
-			it("should not be able to purge a clients data from the system");
+					done();
+				});
+			});
 
-			it("should not be able to delete an client");
+			it("should not be able to update an client's information", function (done) {
+				request({
+					method: 'PUT',
+					uri: "http://localhost:" + helper.getPort() + "/clients/update/42",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
+
+					done();
+				});
+			});
+
+			it("should not be able to update an client's security values", function (done) {
+				request({
+					method: 'PUT',
+					uri: "http://localhost:" + helper.getPort() + "/clients/updateSecurity/42",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
+
+					done();
+				});
+			});
+
+			it("should not be able to purge a clients data from the system", function (done) {
+				request({
+					method: 'DELETE',
+					uri: "http://localhost:" + helper.getPort() + "/clients/purge/42",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
+
+					done();
+				});
+			});
+
+			it("should not be able to delete an client", function (done) {
+				request({
+					method: 'DELETE',
+					uri: "http://localhost:" + helper.getPort() + "/clients/delete/42",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
+
+					done();
+				});
+			});
 		});
 
 		it("should not be able to see /applications and be redirected back to /login", function (done) {
@@ -132,14 +195,65 @@ describe('Users & Authentication', function () {
 		});
 
 		describe("Application Management", function () {
-			it("should not be able to create a new application");
+			it("should not be able to create a new application", function (done) {
+				request({
+					method: 'POST',
+					uri: "http://localhost:" + helper.getPort() + "/applications/create",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
 
-			it("should not be able to view an application's overview");
+					done();
+				});
+			});
 
-			it("should not be able to update an application's information");
-			it("should not be able to update an application's default security values");
+			it("should not be able to view an application's overview", function (done) {
+				request({
+					method: 'GET',
+					uri: "http://localhost:" + helper.getPort() + "/applications/42",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(200);
+					response.request.uri.path.should.eql("/login");
 
-			it("should not be able to delete an application");
+					done();
+				});
+			});
+
+			it("should not be able to update an application's information", function (done) {
+				request({
+					method: 'PUT',
+					uri: "http://localhost:" + helper.getPort() + "/applications/update/42",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
+
+					done();
+				});
+			});
+
+			it("should not be able to update an application's default security values", function (done) {
+				request({
+					method: 'PUT',
+					uri: "http://localhost:" + helper.getPort() + "/applications/updateSecurity/42",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
+
+					done();
+				});
+			});
+
+			it("should not be able to delete an application", function (done) {
+				request({
+					method: 'DELETE',
+					uri: "http://localhost:" + helper.getPort() + "/applications/delete/42",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
+
+					done();
+				});
+			});
 		});
 
 		it("should not be able to see /users and be redirected back to /login", function (done) {
@@ -153,17 +267,101 @@ describe('Users & Authentication', function () {
 		});
 
 		describe("User Management", function () {
-			it("should not be able to create a new manager", function () {
+			it("should not be able to create a new manager", function (done) {
+				request({
+					method: 'POST',
+					uri: "http://localhost:" + helper.getPort() + "/users/create",
+					params: {
+						role: "manager"
+					}
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
 
+					done();
+				});
 			});
-			it("should not be able to create a new administrator");
 
-			it("should not be able to view a user's overview");
+			it("should not be able to create a new administrator", function (done) {
+				request({
+					method: 'POST',
+					uri: "http://localhost:" + helper.getPort() + "/users/create",
+					params: {
+						role: "administrator"
+					}
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
 
-			it("should not be able to update a user's information");
-			it("should not be able to update a user's role manager -> admin");
+					done();
+				});
+			});
 
-			it("should not be able to delete a user");
+			it("should not be able to view a user's overview", function (done) {
+				request({
+					method: 'GET',
+					uri: "http://localhost:" + helper.getPort() + "/users/42",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(200);
+					response.request.uri.path.should.eql("/login");
+
+					done();
+				});
+			});
+
+			it("should not be able to update a user's information", function (done) {
+				request({
+					method: 'PUT',
+					uri: "http://localhost:" + helper.getPort() + "/users/update/42",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
+
+					done();
+				});
+			});
+
+			it("should not be able to update a user's role manager -> admin", function (done) {
+				request({
+					method: 'PUT',
+					uri: "http://localhost:" + helper.getPort() + "/users/update/42",
+					params: {
+						role: "Administrator"
+					}
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
+
+					done();
+				});
+			});
+
+			it("should not be able to update a user's role admin -> manager", function (done) {
+				request({
+					method: 'PUT',
+					uri: "http://localhost:" + helper.getPort() + "/users/update/42",
+					params: {
+						role: "Manager"
+					}
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
+
+					done();
+				});
+			});
+
+			it("should not be able to delete a user", function (done) {
+				request({
+					method: 'DELETE',
+					uri: "http://localhost:" + helper.getPort() + "/users/delete/42",
+				}, function (error, response, body) {
+					response.statusCode.should.eql(302);
+					response.headers.location.should.eql("/login");
+
+					done();
+				});
+			});
 		});
 
 		it("should not be able to see /overview and be redirected back to /login", function (done) {
@@ -292,15 +490,17 @@ describe('Users & Authentication', function () {
 			});
 
 			describe("User Management", function () {
-				it("should not be able to create a new manager");
+				it("should be able to create a new manager");
+
 				it("should not be able to create a new administrator");
 
 				it("should not be able to view a user's overview");
 
 				it("should not be able to update a user's information");
-				it("should not be able to update a user's role manager -> admin");
 
-				it("should not be able to delete a user");
+				it("should be able to delete a manager");
+
+				it("should not be able to delete an administrator");
 			});
 		});
 	});

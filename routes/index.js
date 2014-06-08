@@ -38,16 +38,17 @@ router.post('/login', passport.authenticate('local', {
 }));
 
 router.get('/tracking', restricted, tracking.index);
-router.post('/tracking/report/create', restricted, tracking.create);
-router.get('/tracking/report/:id', restricted, tracking.read);
-router.put('/tracking/report/update/:id', restricted, tracking.update);
-router.delete('/tracking/report/delete/:id', restricted, tracking.delete);
+router.post('/tracking/create', restricted, tracking.create);
+router.get('/tracking/:id', restricted, tracking.read);
+router.put('/tracking/update/:id', restricted, tracking.update);
+router.delete('/tracking/delete/:id', restricted, tracking.delete);
 
 router.get('/applications', restricted, applications.index);
 
 router.post('/applications/create', restricted, applications.create);
 router.get('/applications/:id', restricted, applications.read);
 router.put('/applications/update/:id', restricted, applications.update);
+router.put('/applications/updateSecurity/:id', restricted, applications.updateSecurity);
 router.delete('/applications/delete/:id', restricted, applications.delete);
 
 router.get('/clients', restricted, clients.index);
@@ -55,6 +56,8 @@ router.get('/clients', restricted, clients.index);
 router.post('/clients/create', restricted, clients.create);
 router.get('/clients/:id', restricted, clients.read);
 router.put('/clients/update/:id', restricted, clients.update);
+router.put('/clients/updateSecurity/:id', restricted, clients.updateSecurity);
+router.delete('/clients/purge/:id', restricted, clients.purge);
 router.delete('/clients/delete/:id', restricted, clients.delete);
 
 router.get('/users', restricted, users.index);
