@@ -1,4 +1,4 @@
-var report = require("./atlas.models").Report,
+var Report = require("./atlas.models").Report,
 	form = require("express-form"),
 	filter = form.filter,
 	validate = form.validate;
@@ -17,7 +17,7 @@ API = {
 
 		// Form needs to be checked to ensure that this is a valid submission.
 
-		var tmp = new report({
+		var tmp = new Report({
 			Name: req.form.name
 		});
 

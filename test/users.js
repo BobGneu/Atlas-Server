@@ -472,7 +472,7 @@ describe('Users & Authentication', function () {
 					var testUID = "00000000001";
 
 					browser.clickLink("Clients", function () {
-						browser.fill("uid", testUID).pressButton("Create", function () {
+						browser.fill("uid", testUID).check("Allow Game").check("Allow Editor").pressButton("Create", function () {
 							browser.success.should.be.true;
 
 							browser.window.location.pathname.should.startWith("/clients/");
@@ -508,7 +508,26 @@ describe('Users & Authentication', function () {
 			});
 
 			describe("Application Management", function () {
-				it("should be able to create a new application");
+				it("should be able to create a new application", function (done) {
+
+					var testName = "Exodus";
+
+					browser.clickLink("Applications", function () {
+						browser.fill("name", testName).check("Allow Game").check("Allow Editor").pressButton("Create", function () {
+							browser.success.should.be.true;
+
+							browser.window.location.pathname.should.startWith("/applications/");
+							browser.window.location.pathname.should.match(/\w+$/);
+
+							var name = browser.document.getElementById("application-name");
+
+							should.exist(name);
+							name.innerHTML.should.eql(testName);
+
+							done();
+						});
+					});
+				});
 
 				it("should be able to view an application's overview");
 

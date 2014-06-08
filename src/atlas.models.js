@@ -7,10 +7,17 @@ exports.Application = mongoose.model('Application', new Schema({
 	Name: {
 		type: String,
 		required: true,
-		lowercase: true,
 		index: {
 			unique: true
 		}
+	},
+	AllowGame: {
+		type: Boolean,
+		default: false
+	},
+	AllowEditor: {
+		type: Boolean,
+		default: false
 	}
 }));
 

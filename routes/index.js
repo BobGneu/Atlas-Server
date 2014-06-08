@@ -27,7 +27,7 @@ router.delete('/tracking/delete/:id', users.restricted, tracking.delete);
 
 router.get('/applications', users.restricted, applications.index);
 
-router.post('/applications/create', users.restricted, applications.create);
+router.post('/applications/create', users.restricted, applications.createValidation, applications.create);
 router.get('/applications/:id', users.restricted, applications.read);
 router.put('/applications/update/:id', users.restricted, applications.update);
 router.put('/applications/updateSecurity/:id', users.restricted, applications.updateSecurity);

@@ -1,4 +1,4 @@
-var client = require("./atlas.models").Client,
+var Client = require("./atlas.models").Client,
 	form = require("express-form"),
 	filter = form.filter,
 	validate = form.validate;
@@ -19,7 +19,7 @@ API = {
 	),
 	create: function (req, res) {
 		//form needs to be validated.
-		var tmp = new client({
+		var tmp = new Client({
 			UID: req.form.uid,
 			AllowGame: req.form.allowGame,
 			AllowEditor: req.form.allowEditor
