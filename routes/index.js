@@ -36,6 +36,10 @@ router.get('/tracking', restricted, function (req, res) {
 	res.render('general/index');
 });
 
+router.post('/tracking/report', restricted, function (req, res) {
+	res.render('general/index');
+});
+
 router.get('/applications', restricted, function (req, res) {
 	res.render('general/index');
 });
