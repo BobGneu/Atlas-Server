@@ -30,6 +30,8 @@ router.param(":id", function (req, res, next, id) {
 
 router.get('/', atlas.index);
 router.get('/login', atlas.login);
+router.get('/overview', restricted, atlas.overview);
+
 router.post('/login', passport.authenticate('local', {
 	successRedirect: '/overview',
 	failureRedirect: '/login'
@@ -41,20 +43,25 @@ router.get('/tracking/report/:id', restricted, tracking.read);
 router.put('/tracking/report/update/:id', restricted, tracking.update);
 router.delete('/tracking/report/delete/:id', restricted, tracking.delete);
 
-router.get('/applications', restricted, function (req, res) {
-	res.render('general/index');
-});
+router.get('/applications', restricted, applications.index);
 
-router.get('/clients', restricted, function (req, res) {
-	res.render('general/index');
-});
+router.post('/applications/create', restricted, applications.create);
+router.get('/applications/:id', restricted, applications.read);
+router.put('/applications/update/:id', restricted, applications.update);
+router.delete('/applications/delete/:id', restricted, applications.delete);
 
-router.get('/users', restricted, function (req, res) {
-	res.render('general/index');
-});
+router.get('/clients', restricted, clients.index);
 
-router.get('/overview', restricted, function (req, res) {
-	res.render('general/index');
-});
+router.post('/clients/create', restricted, clients.create);
+router.get('/clients/:id', restricted, clients.read);
+router.put('/clients/update/:id', restricted, clients.update);
+router.delete('/clients/delete/:id', restricted, clients.delete);
+
+router.get('/users', restricted, users.index);
+
+router.post('/users/create', restricted, users.create);
+router.get('/users/:id', restricted, users.read);
+router.put('/users/update/:id', restricted, users.update);
+router.delete('/users/delete/:id', restricted, users.delete);
 
 module.exports = router;
