@@ -21,6 +21,16 @@ exports.Client = mongoose.model('Client', new Schema({
 	}
 }));
 
+exports.Report = mongoose.model('Report', new Schema({
+	Name: {
+		type: String,
+		required: true,
+		index: {
+			unique: true
+		}
+	}
+}));
+
 exports.User = mongoose.model('User', new Schema({
 	Name: {
 		type: String,

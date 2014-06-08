@@ -1,12 +1,30 @@
+var report = require("./atlas.models").Report,
+	form = require("express-form"),
+	filter = form.filter,
+	validate = form.validate;
+
 API = {
 	index: function (req, res) {
 		res.render('tracking/index', {
 			userAuthenticated: req.isAuthenticated()
 		});
 	},
+	createValidate: form(
+		filter("name").trim(),
+		validate("name").required()
+	),
 	create: function (req, res, next) {
-		res.render('tracking/read', {
-			userAuthenticated: req.isAuthenticated()
+		var tmp = new report({
+			Name: req.form.name
+		});
+
+		tmp.save(function (err, report) {
+			res.render('tracking/read', {
+				userAuthenticated: req.isAuthenticated(),
+				report: {
+					title: report.Name
+				}
+			});
 		});
 	},
 	read: function (req, res) {

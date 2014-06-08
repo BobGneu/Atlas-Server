@@ -434,12 +434,19 @@ describe('Users & Authentication', function () {
 
 			describe("Tracking Management", function () {
 				it("should be able to create a new report", function (done) {
+
+					var testTitle = "report_title"
 					browser.clickLink("Tracking", function () {
-						browser.fill("name", "testAdmin").pressButton("Create", function () {
+						browser.fill("name", testTitle).pressButton("Create", function () {
 							browser.success.should.be.true;
 
 							browser.window.location.pathname.should.startWith("/tracking/");
 							browser.window.location.pathname.should.match(/\w+$/);
+
+							var title = browser.document.getElementById("report-title");
+
+							should.exist(title);
+							title.innerHTML.should.eql(testTitle);
 
 							done();
 						})

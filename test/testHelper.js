@@ -79,6 +79,15 @@ exports = {
 					});
 				});
 			},
+			function (cb) {
+				models.Report.remove({}, function (err, docs) {
+					models.Report.count({}, function (err, docs) {
+						docs.should.eql(0);
+						(err === null).should.be.true;
+						cb();
+					});
+				});
+			},
 		], done);
 	},
 	Table2Object: function (browser, id) {
