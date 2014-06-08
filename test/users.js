@@ -688,7 +688,26 @@ describe('Users & Authentication', function () {
 			});
 
 			describe("Client Management", function () {
-				it("should be able to create a new client");
+				it("should be able to create a new client", function (done) {
+
+					var testUID = "00000000002";
+
+					browser.clickLink("Clients", function () {
+						browser.fill("uid", testUID).check("Allow Game").check("Allow Editor").pressButton("Create", function () {
+							browser.success.should.be.true;
+
+							browser.window.location.pathname.should.startWith("/clients/");
+							browser.window.location.pathname.should.match(/\w+$/);
+
+							var uid = browser.document.getElementById("client-uid");
+
+							should.exist(uid);
+							uid.innerHTML.should.eql(testUID);
+
+							done();
+						});
+					});
+				});
 
 				it("should be able to view an client's overview");
 
@@ -710,7 +729,26 @@ describe('Users & Authentication', function () {
 			});
 
 			describe("Application Management", function () {
-				it("should be able to create a new application");
+				it("should be able to create a new application", function (done) {
+
+					var testName = "Exodus_Admin";
+
+					browser.clickLink("Applications", function () {
+						browser.fill("name", testName).check("Allow Game").check("Allow Editor").pressButton("Create", function () {
+							browser.success.should.be.true;
+
+							browser.window.location.pathname.should.startWith("/applications/");
+							browser.window.location.pathname.should.match(/\w+$/);
+
+							var name = browser.document.getElementById("application-name");
+
+							should.exist(name);
+							name.innerHTML.should.eql(testName);
+
+							done();
+						});
+					});
+				});
 
 				it("should be able to view an application's overview");
 
@@ -730,8 +768,49 @@ describe('Users & Authentication', function () {
 			});
 
 			describe("User Management", function () {
-				it("should be able to create a new manager");
-				it("should be able to create a new administrator");
+				it("should be able to create a new manager", function (done) {
+
+					var testName = "User43";
+					var password = "User43";
+
+					browser.clickLink("Users", function () {
+						browser.fill("name", testName).select("role", "Manager").fill("email", testName + "@gneu.org").fill("password", password).fill("password-conf", password).pressButton("Create", function () {
+							browser.success.should.be.true;
+
+							browser.window.location.pathname.should.startWith("/users/");
+							browser.window.location.pathname.should.match(/\w+$/);
+
+							var name = browser.document.getElementById("user-name");
+
+							should.exist(name);
+							name.innerHTML.should.eql(testName.toLowerCase());
+
+							done();
+						});
+					});
+				});
+
+				it("should be able to create a new administrator", function (done) {
+
+					var testName = "Admin43";
+					var password = "Admin43";
+
+					browser.clickLink("Users", function () {
+						browser.fill("name", testName).select("role", "Administrator").fill("email", testName + "@gneu.org").fill("password", password).fill("password-conf", password).pressButton("Create", function () {
+							browser.success.should.be.true;
+
+							browser.window.location.pathname.should.startWith("/users/");
+							browser.window.location.pathname.should.match(/\w+$/);
+
+							var name = browser.document.getElementById("user-name");
+
+							should.exist(name);
+							name.innerHTML.should.eql(testName.toLowerCase());
+
+							done();
+						});
+					});
+				});
 
 				it("should be able to view a user's overview");
 
