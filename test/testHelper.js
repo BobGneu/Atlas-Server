@@ -1,7 +1,7 @@
 var debug = require('debug')('atlas-server');
 var app = require('../app');
 var pkg = require("../package.json");
-var db = require('../src/db.js');
+var models = require('../src/atlas.models.js');
 var async = require('async');
 var passwordHash = require('password-hash');
 
@@ -21,7 +21,7 @@ exports = {
 		return app.listen(app.get('port'), done);
 	},
 	createManager: function (user, pass, done) {
-		var user = new db.User({
+		var user = new models.User({
 			Name: user,
 			Email: user + "@gneu.org",
 			Role: "Manager",
@@ -35,7 +35,7 @@ exports = {
 		});
 	},
 	createAdmin: function (user, pass, done) {
-		var user = new db.User({
+		var user = new models.User({
 			Name: user,
 			Email: user + "@gneu.org",
 			Role: "Administrator",
@@ -53,8 +53,8 @@ exports = {
 		async.series([
 
 			function (cb) {
-				db.User.remove({}, function (err, docs) {
-					db.User.count({}, function (err, docs) {
+				models.User.remove({}, function (err, docs) {
+					models.User.count({}, function (err, docs) {
 						docs.should.eql(0);
 						(err === null).should.be.true;
 						cb();
@@ -62,8 +62,8 @@ exports = {
 				});
 			},
 			function (cb) {
-				db.Application.remove({}, function (err, docs) {
-					db.Application.count({}, function (err, docs) {
+				models.Application.remove({}, function (err, docs) {
+					models.Application.count({}, function (err, docs) {
 						docs.should.eql(0);
 						(err === null).should.be.true;
 						cb();
@@ -71,8 +71,8 @@ exports = {
 				});
 			},
 			function (cb) {
-				db.TrackingData.remove({}, function (err, docs) {
-					db.TrackingData.count({}, function (err, docs) {
+				models.TrackingData.remove({}, function (err, docs) {
+					models.TrackingData.count({}, function (err, docs) {
 						docs.should.eql(0);
 						(err === null).should.be.true;
 						cb();

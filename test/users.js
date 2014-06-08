@@ -1,6 +1,7 @@
 var Browser = require("zombie");
+
 var should = require("should");
-var users = require("../src/db");
+var models = require('../src/atlas.models.js');
 var request = require("request");
 
 var helper = require('./testHelper');

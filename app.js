@@ -12,12 +12,11 @@ var session = require('express-session');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
-var models = require('./src/db');
+var models = require('./src/atlas.models.js');
 
 var routes = require('./routes/index');
 // var admin = require('./routes/admin');
 // var tracking = require('./routes/tracking');
-var db = require("./src/db");
 var expressLayouts = require('express-ejs-layouts')
 
 var app = express();
