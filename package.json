@@ -42,6 +42,7 @@
 		"nodemon": "~1.0.20",
 		"should": "~4.0.0",
 		"zombie": "~2.0.0-alpha31",
-		"request": "~2.36.0"
+		"request": "~2.36.0",
+		"sinon": "~1.10.2"
 	}
 }
