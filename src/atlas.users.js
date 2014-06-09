@@ -6,7 +6,6 @@ var User = require("./atlas.models").User,
 
 API = {
 	index: function (req, res) {
-		console.log();
 		res.render('users/index', {
 			userAuthenticated: req.isAuthenticated(),
 			isAdministrator: req.user.Role === "Administrator",

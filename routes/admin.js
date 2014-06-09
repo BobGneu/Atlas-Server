@@ -21,8 +21,6 @@ var restricted = function (req, res, next) {
 
 router.param("id", function (res, req, next, id) {
 
-	console.log(id);
-
 	models.User.find({
 		_id: new models.ObjectId(id)
 	}, function (err, user) {
