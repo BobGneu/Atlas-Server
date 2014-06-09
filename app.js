@@ -11,11 +11,11 @@ var responseTime = require('response-time');
 var session = require('express-session');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var swig = require('swig');
 
 var models = require('./src/atlas.models.js');
 
 var routes = require('./routes/index');
-var expressLayouts = require('express-ejs-layouts')
 
 var app = express();
 
@@ -24,9 +24,17 @@ helpers(app);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+app.engine('html', swig.renderFile);
+app.set('view engine', 'html');
+app.set('views', __dirname + '/views');
+app.set('view cache', false);
+swig.setDefaults({
+	cache: false
+});
+swig.setDefaults({
+	loader: swig.loaders.fs(__dirname + '/views/layouts')
+});
 
-app.use(expressLayouts);
 app.use(responseTime());
 app.use(favicon());
 app.use(bodyParser.json());
@@ -43,6 +51,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.locals.title = 'Atlas';
 app.locals.version = pkg.version;
+
+app.use(function (req, res, next) {
+
+	res.locals.userAuthenticated = req.isAuthenticated();
+	res.locals.currentPage = req.url;
+	res.locals.user = req.user;
+	res.locals.isAdministrator = (typeof req.user !== 'undefined') && (typeof req.user.Role !== 'undefined') && req.user.Role === "Administrator";
+
+	next();
+});
 
 app.use('/', routes);
 
@@ -97,16 +115,16 @@ if (app.get('env') === 'production') {
 	app.set('port', process.env.PORT || 8080);
 	app.use(function (err, req, res, next) {
 		res.status(err.status || 500);
-		res.render('general/error', {
+		res.render('error', {
 			message: err.message,
-			error: err
+			error: {}
 		});
 	});
 } else if (app.get('env') === 'testing') {
 	app.set('port', process.env.PORT || 3001);
 	app.use(function (err, req, res, next) {
 		res.status(err.status || 500);
-		res.render('general/error', {
+		res.render('error', {
 			message: err.message,
 			error: err
 		});
@@ -115,7 +133,7 @@ if (app.get('env') === 'production') {
 	app.set('port', process.env.PORT || 3000);
 	app.use(function (err, req, res, next) {
 		res.status(err.status || 500);
-		res.render('general/error', {
+		res.render('error', {
 			message: err.message,
 			error: err
 		});

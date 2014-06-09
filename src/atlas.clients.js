@@ -5,9 +5,7 @@ var Client = require("./atlas.models").Client,
 
 API = {
 	index: function (req, res) {
-		res.render('clients/index', {
-			userAuthenticated: req.isAuthenticated()
-		});
+		res.render('clients/index');
 	},
 	createValidation: form(
 		filter("uid").trim(),
@@ -27,7 +25,6 @@ API = {
 
 		tmp.save(function (err, client) {
 			res.render('clients/read', {
-				userAuthenticated: req.isAuthenticated(),
 				client: {
 					uid: client.UID,
 					allowGame: client.AllowGame,
@@ -37,9 +34,7 @@ API = {
 		});
 	},
 	read: function (req, res) {
-		res.render('clients/read', {
-			userAuthenticated: req.isAuthenticated()
-		});
+		res.render('clients/read');
 	},
 	update: function (req, res) {
 		res.redirect('/clients');

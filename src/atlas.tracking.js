@@ -5,9 +5,7 @@ var Report = require("./atlas.models").Report,
 
 API = {
 	index: function (req, res) {
-		res.render('tracking/index', {
-			userAuthenticated: req.isAuthenticated()
-		});
+		res.render('tracking/index');
 	},
 	createValidation: form(
 		filter("name").trim(),
@@ -23,7 +21,6 @@ API = {
 
 		tmp.save(function (err, report) {
 			res.render('tracking/read', {
-				userAuthenticated: req.isAuthenticated(),
 				report: {
 					title: report.Name
 				}
@@ -31,9 +28,7 @@ API = {
 		});
 	},
 	read: function (req, res) {
-		res.render('tracking/read', {
-			userAuthenticated: req.isAuthenticated()
-		});
+		res.render('tracking/read');
 	},
 	update: function (req, res) {
 		res.redirect('/tracking');

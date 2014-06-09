@@ -1,18 +1,17 @@
 API = {
 	index: function (req, res) {
-		res.render('atlas/index', {
-			userAuthenticated: req.isAuthenticated()
-		});
+		res.render('atlas/index');
 	},
 	login: function (req, res) {
-		res.render('atlas/login', {
-			userAuthenticated: req.isAuthenticated()
+		res.render('atlas/login');
+	},
+	logout: function (req, res) {
+		req.session.destroy(function () {
+			res.redirect('/');
 		});
 	},
 	overview: function (req, res) {
-		res.render('atlas/overview', {
-			userAuthenticated: req.isAuthenticated()
-		});
+		res.render('atlas/overview');
 	}
 };
 

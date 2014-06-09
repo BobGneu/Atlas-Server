@@ -12,6 +12,7 @@ router.param(":id", function (req, res, next, id) {
 
 router.get('/', atlas.index);
 router.get('/login', atlas.login);
+router.get('/logout', atlas.logout);
 router.get('/overview', users.restricted, atlas.overview);
 
 router.post('/login', passport.authenticate('local', {

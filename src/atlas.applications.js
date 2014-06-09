@@ -5,9 +5,7 @@ var Application = require("./atlas.models").Application,
 
 API = {
 	index: function (req, res) {
-		res.render('applications/index', {
-			userAuthenticated: req.isAuthenticated()
-		});
+		res.render('applications/index');
 	},
 	createValidation: form(
 		filter("name").trim(),
@@ -27,7 +25,6 @@ API = {
 
 		tmp.save(function (err, application) {
 			res.render('applications/read', {
-				userAuthenticated: req.isAuthenticated(),
 				application: {
 					name: application.Name,
 					allowGame: application.AllowGame,
@@ -37,9 +34,7 @@ API = {
 		});
 	},
 	read: function (req, res) {
-		res.render('applications/read', {
-			userAuthenticated: req.isAuthenticated()
-		});
+		res.render('applications/read');
 	},
 	update: function (req, res) {
 		res.redirect('/applications');
