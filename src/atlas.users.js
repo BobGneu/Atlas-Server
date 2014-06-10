@@ -64,12 +64,8 @@ API = {
 		});
 	},
 	read: function (req, res) {
-		User.findOne({
-			_id: models.ObjectId(req.params.userId)
-		}, function (err, user) {
-			res.render('users/read', {
-				user: user
-			});
+		res.render('users/read', {
+			user: req.params.user
 		});
 	},
 	update: function (req, res) {

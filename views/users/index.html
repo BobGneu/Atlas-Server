@@ -17,7 +17,7 @@
 </div>
 {% for user in users %}
 {% if loop.first %}<table id="users-listing"><tr><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr>{% endif %}
-<tr><td><a href="/users/{{- user._id -}}">{{ user.Name }}</a></td><td>{{ user.Email }}</td><td>{{ user.Role }}</td><td><a href="#">Edit</a> <a href="#">Delete</a> {% if (isAdministrator) %}{% if (user.Role === "Manager") %}<a href="#">To Manager</a>{% else %}<a href="#">To Administrator</a>{% endif %}{% endif %}</td></tr>
+<tr><td><a href="/users/{{- user._id.toString() -}}">{{ user.Name }}</a></td><td>{{ user.Email }}</td><td>{{ user.Role }}</td><td><a href="#">Edit</a> <a href="#">Delete</a> {% if (isAdministrator) %}{% if (user.Role === "Manager") %}<a href="#">To Manager</a>{% else %}<a href="#">To Administrator</a>{% endif %}{% endif %}</td></tr>
 {% if loop.last %}</table>{% endif %}
 {% endfor %}
 {% endblock body %}
