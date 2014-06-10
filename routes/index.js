@@ -7,9 +7,7 @@ var router = require('express').Router(),
 	tracking = require("../src/atlas.tracking");
 var models = require("../src/atlas.models");
 
-router.param(":userId", function (res, req, next, id) {
-	next();
-});
+router.param(":userId", users.paramLookup);
 router.param(":clientId", function (res, req, next, id) {
 	next();
 });

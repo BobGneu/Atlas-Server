@@ -7,21 +7,27 @@ var models = require("./atlas.models"),
 
 API = {
 	paramLookup: function (req, res, next, id) {
-		models.User.find({
-			id: models.ObjectId(id)
-		}, function (err, user) {
+		try {
+			models.User.findOne({
+				_id: models.ObjectId(id)
+			}, function (err, user) {
 
-			console.log(user);
+				if (err) {
+					return next(err);
+				} else if (!user) {
+					return next(new Error('failed to load user'));
+				}
 
-			if (err) {
-				return next(err);
-			} else if (!user) {
-				return next(new Error('failed to load user'));
+				req.params.user = user;
+				next();
+			});
+		} catch (e) {
+			if (req.isAuthenticated()) {
+				next(new Error("Invalid User ID"));
+			} else {
+				res.redirect("/login");
 			}
-
-			req.user = user;
-			next();
-		});
+		}
 	},
 	index: function (req, res) {
 		User.find({}, function (err, users) {
