@@ -11,6 +11,7 @@ API = {
 		});
 	},
 	overview: function (req, res) {
+		console.log("overview");
 		res.render('atlas/overview');
 	}
 };

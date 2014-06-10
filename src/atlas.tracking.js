@@ -4,6 +4,23 @@ var Report = require("./atlas.models").Report,
 	validate = form.validate;
 
 API = {
+	paramLookup: function (req, res, next, id) {
+		models.Tracking.find({
+			id: models.ObjectId(id)
+		}, function (err, report) {
+
+			console.log(report);
+
+			if (err) {
+				return next(err);
+			} else if (!report) {
+				return next(new Error('failed to load report'));
+			}
+
+			req.report = report;
+			next();
+		});
+	},
 	index: function (req, res) {
 		res.render('tracking/index');
 	},

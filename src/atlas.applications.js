@@ -1,11 +1,31 @@
-var Application = require("./atlas.models").Application,
+var models = require("./atlas.models"),
+	Application = models.Application,
 	form = require("express-form"),
 	filter = form.filter,
 	validate = form.validate;
 
 API = {
+	paramLookup: function (req, res, next, id) {
+		models.Application.find({
+			id: models.ObjectId(id)
+		}, function (err, app) {
+
+			if (err) {
+				return next(err);
+			} else if (!application) {
+				return next(new Error('failed to load application'));
+			}
+
+			req.application = app;
+			next();
+		});
+	},
 	index: function (req, res) {
-		res.render('applications/index');
+		Application.find({}, function (err, applications) {
+			res.render('applications/index', {
+				applications: applications
+			});
+		});
 	},
 	createValidation: form(
 		filter("name").trim(),
@@ -24,17 +44,18 @@ API = {
 		});
 
 		tmp.save(function (err, application) {
-			res.render('applications/read', {
-				application: {
-					name: application.Name,
-					allowGame: application.AllowGame,
-					allowEditor: application.AllowEditor,
-				}
-			});
+			res.redirect('/applications/' + application._id);
 		});
 	},
 	read: function (req, res) {
-		res.render('applications/read');
+		Application.findOne({
+			_id: models.ObjectId(req.params.applicationId)
+		}, function (err, application) {
+
+			res.render('applications/read', {
+				application: application
+			});
+		});
 	},
 	update: function (req, res) {
 		res.redirect('/applications');

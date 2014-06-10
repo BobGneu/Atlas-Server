@@ -6,6 +6,23 @@ var models = require("./atlas.models"),
 	passwordHash = require('password-hash');
 
 API = {
+	paramLookup: function (req, res, next, id) {
+		models.User.find({
+			id: models.ObjectId(id)
+		}, function (err, user) {
+
+			console.log(user);
+
+			if (err) {
+				return next(err);
+			} else if (!user) {
+				return next(new Error('failed to load user'));
+			}
+
+			req.user = user;
+			next();
+		});
+	},
 	index: function (req, res) {
 		User.find({}, function (err, users) {
 			res.render('users/index', {
@@ -42,7 +59,7 @@ API = {
 	},
 	read: function (req, res) {
 		User.findOne({
-			_id: models.ObjectId(req.params.id)
+			_id: models.ObjectId(req.params.userId)
 		}, function (err, user) {
 			res.render('users/read', {
 				user: user

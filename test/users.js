@@ -1,11 +1,10 @@
-var Browser = require("zombie");
-
-var should = require("should");
-var models = require('../src/atlas.models.js');
-var user = models.User;
-var request = require("request");
-
+var Browser = require("zombie"),
+	should = require("should"),
+	request = require("request");
 var helper = require('./testHelper');
+var models = require('../src/atlas.models.js'),
+	user = models.User,
+	application = models.Application;
 
 describe('Users & Authentication', function () {
 
@@ -434,6 +433,8 @@ describe('Users & Authentication', function () {
 			});
 
 			describe("Tracking Management", function () {
+				it("should include a listing of the reports");
+				it("should include actions for each entry in the listing of reports");
 				it("should be able to create a new report", function (done) {
 
 					var testTitle = "report_title"
@@ -468,6 +469,8 @@ describe('Users & Authentication', function () {
 			});
 
 			describe("Client Management", function () {
+				it("should include a listing of the clients");
+				it("should include actions for each entry in the listing of clients");
 				it("should be able to create a new client", function (done) {
 
 					var testUID = "00000000001";
@@ -509,6 +512,37 @@ describe('Users & Authentication', function () {
 			});
 
 			describe("Application Management", function () {
+				it("should include a listing of the applications", function (done) {
+					// clear out all applications
+					application.find({}, function (err, applications) {
+						browser.clickLink("Users", function () {
+							browser.success.should.be.true;
+							applications.length.should.eql(0);
+							should.not.exist(browser.document.getElementById("applications-listing"));
+
+							// create n applications and test to confirm that the table shows up. 
+
+							done();
+						});
+					});
+				});
+
+				it("should include actions for each entry in the listing of applications", function (done) {
+
+					helper.createSampleApplications(20, function () {
+						// create n applications and test to confirm that the table shows up. 
+						browser.clickLink("Applications", function () {
+							browser.success.should.be.true;
+							should.exist(browser.document.getElementById("applications-listing"));
+
+							var table = helper.Table2Object(browser, "applications-listing");
+
+							table.name.length.should.eql(table.actions.length);
+							done();
+						});
+					});
+				});
+
 				it("should be able to create a new application", function (done) {
 
 					var testName = "Exodus";
@@ -538,34 +572,31 @@ describe('Users & Authentication', function () {
 				it("should be able to delete an application");
 			});
 
-			it("should be able to see /users and be redirected back to /overview", function (done) {
+			it("should be able to see /users", function (done) {
 				browser.visit("http://localhost:" + helper.getPort() + "/users", function () {
 					browser.success.should.be.true;
 
 					browser.window.location.pathname.should.eql("/users");
+
 					done();
 				});
 			});
 
 			describe("User Management", function () {
 				it("should include a listing of the users", function (done) {
+					// clear out all users?
 					user.find({}, function (err, users) {
 						browser.clickLink("Users", function () {
 							browser.success.should.be.true;
-							if (users.length > 0) {
-								should.exist(browser.document.getElementById("users-listing"));
+							should.exist(browser.document.getElementById("users-listing"));
 
-								var table = helper.Table2Object(browser, "users-listing");
+							var table = helper.Table2Object(browser, "users-listing");
 
-								for (var i = 0; i < users.length; i++) {
-									table.name.should.containEql(users[i].Name);
-									table.email.should.containEql(users[i].Email);
-									table.role.should.containEql(users[i].Role);
-								}
-
-							} else {
-								should.not.exist(browser.document.getElementById("users-listing"));
-							}
+							for (var i = 0; i < users.length; i++) {
+								table.name.should.containEql(users[i].Name);
+								table.email.should.containEql(users[i].Email);
+								table.role.should.containEql(users[i].Role);
+							};
 							done();
 						});
 					});
@@ -709,7 +740,6 @@ describe('Users & Authentication', function () {
 			it("should be able to see /overview", function (done) {
 				browser.visit("http://localhost:" + helper.getPort() + "/overview", function () {
 					browser.success.should.be.true;
-
 					browser.window.location.pathname.should.eql("/overview");
 					done();
 				});

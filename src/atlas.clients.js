@@ -4,6 +4,23 @@ var Client = require("./atlas.models").Client,
 	validate = form.validate;
 
 API = {
+	paramLookup: function (req, res, next, id) {
+		models.Client.find({
+			id: models.ObjectId(id)
+		}, function (err, client) {
+
+			console.log(client);
+
+			if (err) {
+				return next(err);
+			} else if (!client) {
+				return next(new Error('failed to load client'));
+			}
+
+			req.client = client;
+			next();
+		});
+	},
 	index: function (req, res) {
 		res.render('clients/index');
 	},

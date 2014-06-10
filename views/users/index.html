@@ -20,5 +20,4 @@
 <tr><td><a href="/users/{{- user._id -}}">{{ user.Name }}</a></td><td>{{ user.Email }}</td><td>{{ user.Role }}</td><td><a href="#">Edit</a> <a href="#">Delete</a> {% if (isAdministrator) %}{% if (user.Role === "Manager") %}<a href="#">To Manager</a>{% else %}<a href="#">To Administrator</a>{% endif %}{% endif %}</td></tr>
 {% if loop.last %}</table>{% endif %}
 {% endfor %}
-<pre>{{ user }}</pre>
 {% endblock body %}

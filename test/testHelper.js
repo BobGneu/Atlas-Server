@@ -1,4 +1,3 @@
-var debug = require('debug')('atlas-server');
 var app = require('../app');
 var pkg = require("../package.json");
 var models = require('../src/atlas.models.js');
@@ -46,6 +45,24 @@ exports = {
 			(err === null).should.be.true;
 
 			done();
+		});
+	},
+	createSampleApplications: function (n, done) {
+		var that = this;
+		var app = {};
+
+		if (n <= 0) {
+			return done();
+		}
+
+		app = new models.Application({
+			Name: "application " + n
+		});
+
+		app.save(function (err, app) {
+			(err === null).should.be.true;
+
+			that.createSampleApplications(n - 1, done);
 		});
 	},
 	InitializeDatabase: function (done) {
