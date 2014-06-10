@@ -96,13 +96,15 @@ exports = {
 			found: false
 		};
 
-		var table = browser.document.getElementById("user-table");
+		var table = browser.document.getElementById(id);
+
 		if (typeof (table) === 'undefined' || table === null) {
 			return result;
 		}
 
 		result.found = true;
-		tbody = table.childNodes[1];
+
+		tbody = table.childNodes[0];
 
 		// build keys from header row
 		for (var i = 0; i < tbody.childNodes[0].childNodes.length; i++) {

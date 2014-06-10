@@ -1,5 +1,4 @@
 {% extends 'standard.html' %}
-
 {% block body %}
 <h2>Create</h2>
 <div id="create_user" class="body">
@@ -12,8 +11,14 @@
 			<option value="Manager">Manager</option>
 			{% if (isAdministrator) %}<option value="Administrator">Administrator</option>{% endif %}
 		</select>
-	
+		
 		<input class="pure-button pure-button-primary" type="submit" value="Create" />
 	</form>
-</div> 
+</div>
+{% for user in users %}
+{% if loop.first %}<table id="users-listing"><tr><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr>{% endif %}
+<tr><td><a href="/users/{{- user._id -}}">{{ user.Name }}</a></td><td>{{ user.Email }}</td><td>{{ user.Role }}</td><td><a href="#">Edit</a> <a href="#">Delete</a> {% if (isAdministrator) %}{% if (user.Role === "Manager") %}<a href="#">To Manager</a>{% else %}<a href="#">To Administrator</a>{% endif %}{% endif %}</td></tr>
+{% if loop.last %}</table>{% endif %}
+{% endfor %}
+<pre>{{ user }}</pre>
 {% endblock body %}

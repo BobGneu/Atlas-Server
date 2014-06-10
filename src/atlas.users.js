@@ -1,4 +1,5 @@
-var User = require("./atlas.models").User,
+var models = require("./atlas.models"),
+	User = models.User,
 	form = require("express-form"),
 	filter = form.filter,
 	validate = form.validate,
@@ -6,9 +7,10 @@ var User = require("./atlas.models").User,
 
 API = {
 	index: function (req, res) {
-		res.render('users/index', {
-			userAuthenticated: req.isAuthenticated(),
-			isAdministrator: req.user.Role === "Administrator",
+		User.find({}, function (err, users) {
+			res.render('users/index', {
+				users: users
+			});
 		});
 	},
 	createValidation: form(
@@ -35,19 +37,16 @@ API = {
 		});
 
 		tmp.save(function (err, user) {
-			res.render('users/read', {
-				userAuthenticated: req.isAuthenticated(),
-				user: {
-					name: user.Name,
-					email: user.Email,
-					role: user.Role
-				}
-			});
+			res.redirect("/users/" + user._id);
 		});
 	},
 	read: function (req, res) {
-		res.render('users/read', {
-			userAuthenticated: req.isAuthenticated()
+		User.findOne({
+			_id: models.ObjectId(req.params.id)
+		}, function (err, user) {
+			res.render('users/read', {
+				user: user
+			});
 		});
 	},
 	update: function (req, res) {

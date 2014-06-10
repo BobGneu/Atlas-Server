@@ -2,6 +2,7 @@ var Browser = require("zombie");
 
 var should = require("should");
 var models = require('../src/atlas.models.js');
+var user = models.User;
 var request = require("request");
 
 var helper = require('./testHelper');
@@ -547,6 +548,41 @@ describe('Users & Authentication', function () {
 			});
 
 			describe("User Management", function () {
+				it("should include a listing of the users", function (done) {
+					user.find({}, function (err, users) {
+						browser.clickLink("Users", function () {
+							browser.success.should.be.true;
+							if (users.length > 0) {
+								should.exist(browser.document.getElementById("users-listing"));
+
+								var table = helper.Table2Object(browser, "users-listing");
+
+								for (var i = 0; i < users.length; i++) {
+									table.name.should.containEql(users[i].Name);
+									table.email.should.containEql(users[i].Email);
+									table.role.should.containEql(users[i].Role);
+								}
+
+							} else {
+								should.not.exist(browser.document.getElementById("users-listing"));
+							}
+							done();
+						});
+					});
+				});
+
+				it("should include actions for each entry in the listing of users", function (done) {
+					browser.clickLink("Users", function () {
+						browser.success.should.be.true;
+						should.exist(browser.document.getElementById("users-listing"));
+
+						var table = helper.Table2Object(browser, "users-listing");
+
+						table.name.length.should.eql(table.actions.length);
+						done();
+					});
+				});
+
 				it("should be able to create a new manager", function (done) {
 
 					var testName = "User42";
@@ -564,7 +600,19 @@ describe('Users & Authentication', function () {
 							should.exist(name);
 							name.innerHTML.should.eql(testName.toLowerCase());
 
-							done();
+							var path = browser.window.location.pathname.split("/");
+
+							user.findOne({
+								_id: models.ObjectId(path[2])
+							}, function (err, res) {
+
+								should.not.exist(err);
+								should.exist(res);
+
+								res.Name.should.eql(testName.toLowerCase());
+
+								done();
+							});
 						});
 					});
 				});
@@ -593,7 +641,22 @@ describe('Users & Authentication', function () {
 					});
 				});
 
-				it("should not be able to view a user's overview");
+				it("should not be able to view a user's overview", function (done) {
+					user.findOne({}, function (err, user) {
+						browser.visit("http://localhost:" + helper.getPort() + "/users/" + user._id, function () {
+							browser.success.should.be.true;
+
+							browser.window.location.pathname.should.startWith("/users/");
+							browser.window.location.pathname.should.match(/\w+$/);
+
+							var name = browser.document.getElementById("user-name");
+
+							should.exist(name);
+							name.innerHTML.should.eql(user.Name);
+							done();
+						});
+					});
+				});
 
 				it("should not be able to update a user's information");
 
@@ -770,6 +833,41 @@ describe('Users & Authentication', function () {
 			});
 
 			describe("User Management", function () {
+				it("should include a listing of the users", function (done) {
+					user.find({}, function (err, users) {
+						browser.clickLink("Users", function () {
+							browser.success.should.be.true;
+							if (users.length > 0) {
+								should.exist(browser.document.getElementById("users-listing"));
+
+								var table = helper.Table2Object(browser, "users-listing");
+
+								for (var i = 0; i < users.length; i++) {
+									table.name.should.containEql(users[i].Name);
+									table.email.should.containEql(users[i].Email);
+									table.role.should.containEql(users[i].Role);
+								}
+
+							} else {
+								should.not.exist(browser.document.getElementById("users-listing"));
+							}
+							done();
+						});
+					});
+				});
+
+				it("should include actions for each entry in the listing of users", function (done) {
+					browser.clickLink("Users", function () {
+						browser.success.should.be.true;
+						should.exist(browser.document.getElementById("users-listing"));
+
+						var table = helper.Table2Object(browser, "users-listing");
+
+						table.name.length.should.eql(table.actions.length);
+						done();
+					});
+				});
+
 				it("should be able to create a new manager", function (done) {
 
 					var testName = "User43";
@@ -787,7 +885,19 @@ describe('Users & Authentication', function () {
 							should.exist(name);
 							name.innerHTML.should.eql(testName.toLowerCase());
 
-							done();
+							var path = browser.window.location.pathname.split("/");
+
+							user.findOne({
+								_id: models.ObjectId(path[2])
+							}, function (err, res) {
+
+								should.not.exist(err);
+								should.exist(res);
+
+								res.Name.should.eql(testName.toLowerCase());
+
+								done();
+							});
 						});
 					});
 				});
@@ -809,12 +919,39 @@ describe('Users & Authentication', function () {
 							should.exist(name);
 							name.innerHTML.should.eql(testName.toLowerCase());
 
-							done();
+							var path = browser.window.location.pathname.split("/");
+
+							user.findOne({
+								_id: models.ObjectId(path[2])
+							}, function (err, res) {
+
+								should.not.exist(err);
+								should.exist(res);
+
+								res.Name.should.eql(testName.toLowerCase());
+
+								done();
+							});
 						});
 					});
 				});
 
-				it("should be able to view a user's overview");
+				it("should be able to view a user's overview", function (done) {
+					user.findOne({}, function (err, user) {
+						browser.visit("http://localhost:" + helper.getPort() + "/users/" + user._id, function () {
+							browser.success.should.be.true;
+
+							browser.window.location.pathname.should.startWith("/users/");
+							browser.window.location.pathname.should.match(/\w+$/);
+
+							var name = browser.document.getElementById("user-name");
+
+							should.exist(name);
+							name.innerHTML.should.eql(user.Name);
+							done();
+						});
+					});
+				});
 
 				it("should be able to update a user's information");
 				it("should be able to update a user's role manager -> admin");
