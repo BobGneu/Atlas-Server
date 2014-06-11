@@ -676,7 +676,34 @@ describe('Users & Authentication', function () {
 					});
 				});
 
-				it("should be able to view an application's overview");
+				it("should be able to view an application's overview", function (done) {
+					async.series([
+
+						function (cb) {
+							application.remove({}, cb);
+						},
+						function (cb) {
+							helper.createSampleApplications(1, cb);
+						},
+						function (cb) {
+							application.findOne({}, function (err, app) {
+								browser.visit("http://localhost:" + helper.getPort() + "/applications/" + app._id, function () {
+									browser.success.should.be.true;
+
+									browser.window.location.pathname.should.startWith("/applications/");
+									browser.window.location.pathname.should.endWith(app._id.toString());
+
+									var name = browser.document.getElementById("application-name");
+
+									should.exist(name);
+									name.innerHTML.should.eql(app.Name);
+									cb();
+								});
+							});
+						},
+					], done);
+
+				});
 
 				it("should be able to update an application's information");
 				it("should be able to update an application's default security values");
@@ -1110,7 +1137,34 @@ describe('Users & Authentication', function () {
 					});
 				});
 
-				it("should be able to view an application's overview");
+				it("should be able to view an application's overview", function (done) {
+					async.series([
+
+						function (cb) {
+							application.remove({}, cb);
+						},
+						function (cb) {
+							helper.createSampleApplications(1, cb);
+						},
+						function (cb) {
+							application.findOne({}, function (err, app) {
+								browser.visit("http://localhost:" + helper.getPort() + "/applications/" + app._id, function () {
+									browser.success.should.be.true;
+
+									browser.window.location.pathname.should.startWith("/applications/");
+									browser.window.location.pathname.should.endWith(app._id.toString());
+
+									var name = browser.document.getElementById("application-name");
+
+									should.exist(name);
+									name.innerHTML.should.eql(app.Name);
+									cb();
+								});
+							});
+						},
+					], done);
+
+				});
 
 				it("should be able to update an application's information");
 				it("should be able to update an application's default security values");
