@@ -60,6 +60,13 @@ app.use(function (req, res, next) {
 	res.locals.user = req.user;
 	res.locals.isAdministrator = (typeof req.user !== 'undefined') && (typeof req.user.Role !== 'undefined') && req.user.Role === "Administrator";
 
+	req.failed = function () {
+		if (req.isAuthenticated())
+			res.redirect("back");
+		else
+			res.redirect("/login");
+	};
+
 	next();
 });
 
