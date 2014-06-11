@@ -9,9 +9,17 @@ describe('Navigation', function () {
 	var browser = {};
 
 	before(function (done) {
-		this.server = helper.startServer(function () {
-			helper.InitializeDatabase(done);
-		});
+		var that = this;
+
+		async.series([
+
+			function (cb) {
+				that.server = helper.startServer(cb);
+			},
+			function (cb) {
+				helper.InitializeDatabase(cb);
+			}
+		], done);
 	});
 
 	after(function (done) {
@@ -20,14 +28,20 @@ describe('Navigation', function () {
 
 	describe("Unauthenticated User", function () {
 		before(function (done) {
-			browser = new Browser({});
-			browser.visit("http://localhost:" + helper.getPort(), function () {
-				browser.success.should.be.true;
+			async.series([
 
-				browser.window.location.pathname.should.eql("/");
+				function (cb) {
+					browser = new Browser({});
+					browser.visit("http://localhost:" + helper.getPort(), cb);
+				},
+				function (cb) {
+					browser.success.should.be.true;
 
-				done();
-			});
+					browser.window.location.pathname.should.eql("/");
+
+					cb();
+				}
+			], done);
 		});
 
 		describe("Menu", function () {
@@ -66,23 +80,17 @@ describe('Navigation', function () {
 					helper.createAdmin("testManager", "testManager", cb);
 				},
 				function (cb) {
-					browser.visit("http://localhost:" + helper.getPort(), function () {
-						cb();
-					});
+					browser.visit("http://localhost:" + helper.getPort(), cb);
 				},
 				function (cb) {
 					browser.success.should.be.true;
 					browser.window.location.pathname.should.eql("/");
 
-					browser.clickLink("Login", function () {
-						cb();
-					});
+					browser.clickLink("Login", cb);
 				},
 				function (cb) {
 					browser.window.location.pathname.should.endWith("/login");
-					browser.fill("username", "testManager").fill("password", "testManager").pressButton("Login", function () {
-						cb();
-					})
+					browser.fill("username", "testManager").fill("password", "testManager").pressButton("Login", cb);
 				}
 			], done);
 		});
@@ -127,23 +135,17 @@ describe('Navigation', function () {
 					helper.createAdmin("testAdmin", "testAdmin", cb);
 				},
 				function (cb) {
-					browser.visit("http://localhost:" + helper.getPort(), function () {
-						cb();
-					});
+					browser.visit("http://localhost:" + helper.getPort(), cb);
 				},
 				function (cb) {
 					browser.success.should.be.true;
 					browser.window.location.pathname.should.eql("/");
 
-					browser.clickLink("Login", function () {
-						cb();
-					});
+					browser.clickLink("Login", cb);
 				},
 				function (cb) {
 					browser.window.location.pathname.should.endWith("/login");
-					browser.fill("username", "testAdmin").fill("password", "testAdmin").pressButton("Login", function () {
-						cb();
-					})
+					browser.fill("username", "testAdmin").fill("password", "testAdmin").pressButton("Login", cb);
 				}
 			], done);
 		});

@@ -2,7 +2,9 @@ var Browser = require("zombie"),
 	should = require("should"),
 	request = require("request"),
 	async = require("async");
+
 var helper = require('./testHelper');
+
 var models = require('../src/atlas.models.js'),
 	user = models.User,
 	client = models.Client,
@@ -14,11 +16,17 @@ describe('Users & Authentication', function () {
 	var browser = {};
 
 	before(function (done) {
-		this.server = helper.startServer(function () {
-			helper.InitializeDatabase(function (err, result) {
-				done();
-			});
-		});
+		var that = this;
+
+		async.series([
+
+			function (cb) {
+				that.server = helper.startServer(cb);
+			},
+			function (cb) {
+				helper.InitializeDatabase(cb);
+			}
+		], done);
 	});
 
 	after(function (done) {
@@ -50,13 +58,19 @@ describe('Users & Authentication', function () {
 		});
 
 		it("should not be able to see /tracking and be redirected back to /login", function (done) {
-			browser.visit("http://localhost:" + helper.getPort() + "/tracking", function () {
-				browser.success.should.be.true;
+			async.series([
 
-				browser.window.location.pathname.should.eql("/login");
+				function (cb) {
+					browser.visit("http://localhost:" + helper.getPort() + "/tracking", cb);
+				},
+				function (cb) {
+					browser.success.should.be.true;
 
-				done();
-			});
+					browser.window.location.pathname.should.eql("/login");
+
+					cb();
+				}
+			], done);
 		});
 
 		describe("Tracking Management", function () {
@@ -111,13 +125,18 @@ describe('Users & Authentication', function () {
 		});
 
 		it("should not be able to see /clients and be redirected back to /login", function (done) {
-			browser.visit("http://localhost:" + helper.getPort() + "/clients", function () {
-				browser.success.should.be.true;
+			async.series([
 
-				browser.window.location.pathname.should.eql("/login");
+				function (cb) {
+					browser.visit("http://localhost:" + helper.getPort() + "/clients", cb);
+				},
+				function (cb) {
+					browser.success.should.be.true;
 
-				done();
-			});
+					browser.window.location.pathname.should.eql("/login");
+					cb();
+				}
+			], done);
 		});
 
 		describe("Client Management", function () {
@@ -195,13 +214,18 @@ describe('Users & Authentication', function () {
 		});
 
 		it("should not be able to see /applications and be redirected back to /login", function (done) {
-			browser.visit("http://localhost:" + helper.getPort() + "/applications", function () {
-				browser.success.should.be.true;
+			async.series([
 
-				browser.window.location.pathname.should.eql("/login");
+				function (cb) {
+					browser.visit("http://localhost:" + helper.getPort() + "/applications", cb);
+				},
+				function (cb) {
+					browser.success.should.be.true;
 
-				done();
-			});
+					browser.window.location.pathname.should.eql("/login");
+					cb();
+				}
+			], done);
 		});
 
 		describe("Application Management", function () {
@@ -267,13 +291,19 @@ describe('Users & Authentication', function () {
 		});
 
 		it("should not be able to see /users and be redirected back to /login", function (done) {
-			browser.visit("http://localhost:" + helper.getPort() + "/users", function () {
-				browser.success.should.be.true;
+			async.series([
 
-				browser.window.location.pathname.should.eql("/login");
+				function (cb) {
+					browser.visit("http://localhost:" + helper.getPort() + "/users", cb);
+				},
+				function (cb) {
+					browser.success.should.be.true;
 
-				done();
-			});
+					browser.window.location.pathname.should.eql("/login");
+
+					cb();
+				}
+			], done);
 		});
 
 		describe("User Management", function () {
@@ -375,13 +405,18 @@ describe('Users & Authentication', function () {
 		});
 
 		it("should not be able to see /overview and be redirected back to /login", function (done) {
-			browser.visit("http://localhost:" + helper.getPort() + "/overview", function () {
-				browser.success.should.be.true;
+			async.series([
 
-				browser.window.location.pathname.should.eql("/login");
+				function (cb) {
+					browser.visit("http://localhost:" + helper.getPort() + "/overview", cb);
+				},
+				function (cb) {
+					browser.success.should.be.true;
 
-				done();
-			});
+					browser.window.location.pathname.should.eql("/login");
+					cb();
+				}
+			], done);
 		});
 	});
 
@@ -393,52 +428,76 @@ describe('Users & Authentication', function () {
 
 		describe("Logging in", function () {
 			it("should land on overview page", function (done) {
-				browser = new Browser({});
+				async.series([
 
-				browser.visit("http://localhost:" + helper.getPort() + "/login", function () {
-					browser.success.should.be.true;
+					function (cb) {
+						browser = new Browser({});
 
-					browser.window.location.pathname.should.eql("/login");
-					browser.fill("username", "testManager").fill("password", "testManager").pressButton("Login", function () {
+						browser.visit("http://localhost:" + helper.getPort() + "/login", cb);
+					},
+					function (cb) {
+						browser.success.should.be.true;
+
+						browser.window.location.pathname.should.eql("/login");
+						browser.fill("username", "testManager").fill("password", "testManager").pressButton("Login", cb);
+					},
+					function (cb) {
 						browser.success.should.be.true;
 
 						browser.window.location.pathname.should.eql("/overview");
-						done();
-					});
-				});
+						cb();
+					}
+				], done);
 			});
 		});
 
 		describe("Logged in", function () {
 
 			beforeEach(function (done) {
-				browser = new Browser({});
+				async.series([
 
-				browser.visit("http://localhost:" + helper.getPort() + "/login", function () {
-					browser.success.should.be.true;
-					browser.window.location.pathname.should.endWith("/login");
-					browser.fill("username", "testManager").fill("password", "testManager").pressButton("Login", function () {
-						done();
-					});
-				});
+					function (cb) {
+						browser = new Browser({});
+						browser.visit("http://localhost:" + helper.getPort() + "/login", cb);
+					},
+					function (cb) {
+						browser.success.should.be.true;
+						browser.window.location.pathname.should.endWith("/login");
+						browser.fill("username", "testManager").fill("password", "testManager").pressButton("Login", cb);
+					}
+				], done);
 			});
 
 			it("should be able to see /overview", function (done) {
-				browser.visit("http://localhost:" + helper.getPort() + "/overview", function () {
-					browser.success.should.be.true;
+				async.series([
 
-					browser.window.location.pathname.should.eql("/overview");
-					done();
-				});
+					function (cb) {
+						browser.visit("http://localhost:" + helper.getPort() + "/overview", cb);
+					},
+					function (cb) {
+						browser.success.should.be.true;
+
+						browser.window.location.pathname.should.eql("/overview");
+
+						cb();
+					}
+				], done);
 			});
 
 			it("should be able to see /tracking", function (done) {
-				browser.visit("http://localhost:" + helper.getPort() + "/tracking", function () {
-					browser.success.should.be.true;
+				async.series([
 
-					browser.window.location.pathname.should.eql("/tracking");
-					done();
-				});
+					function (cb) {
+						browser.visit("http://localhost:" + helper.getPort() + "/tracking", cb);
+					},
+					function (cb) {
+						browser.success.should.be.true;
+
+						browser.window.location.pathname.should.eql("/tracking");
+
+						cb();
+					}
+				], done);
 			});
 
 			describe("Tracking Management", function () {

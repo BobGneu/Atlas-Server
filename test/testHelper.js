@@ -43,7 +43,7 @@ exports = {
 		});
 
 		user.save(function (err, user) {
-			(err === null).should.be.true;
+			should.not.exist(err);
 
 			done();
 		});
@@ -79,7 +79,7 @@ exports = {
 		});
 
 		app.save(function (err, app) {
-			(err === null).should.be.true;
+			should.not.exist(err);
 
 			that.createSampleClients(n - 1, done);
 		});
@@ -97,7 +97,7 @@ exports = {
 		});
 
 		app.save(function (err, app) {
-			(err === null).should.be.true;
+			should.not.exist(err);
 
 			that.createSampleReports(n - 1, done);
 		});
