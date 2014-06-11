@@ -6,19 +6,16 @@ var models = require("./atlas.models"),
 
 API = {
 	paramLookup: function (req, res, next, id) {
-		console.log(id);
 		try {
 			client.findOne({
 				_id: models.ObjectId(id)
 			}, function (err, client) {
-				console.log(client);
 
 				if (err) {
 					return next(err);
 				} else if (!client) {
 					return next(new Error('failed to load Client'));
 				}
-				console.log(client);
 				req.params.client = client;
 				next();
 			});

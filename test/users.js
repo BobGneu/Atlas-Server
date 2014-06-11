@@ -1,10 +1,12 @@
 var Browser = require("zombie"),
 	should = require("should"),
-	request = require("request");
+	request = require("request"),
+	async = require("async");
 var helper = require('./testHelper');
 var models = require('../src/atlas.models.js'),
 	user = models.User,
 	client = models.Client,
+	tracking = models.Report,
 	application = models.Application;
 
 describe('Users & Authentication', function () {
@@ -32,13 +34,19 @@ describe('Users & Authentication', function () {
 		});
 
 		it("should be able to see /login", function (done) {
-			browser.visit("http://localhost:" + helper.getPort() + "/login", function () {
-				browser.success.should.be.true;
+			async.series([
 
-				browser.window.location.pathname.should.eql("/login");
+				function (cb) {
+					browser.visit("http://localhost:" + helper.getPort() + "/login", cb);
+				},
+				function (cb) {
+					browser.success.should.be.true;
 
-				done();
-			});
+					browser.window.location.pathname.should.eql("/login");
+
+					cb();
+				},
+			], done);
 		});
 
 		it("should not be able to see /tracking and be redirected back to /login", function (done) {
@@ -434,8 +442,38 @@ describe('Users & Authentication', function () {
 			});
 
 			describe("Tracking Management", function () {
-				it("should include a listing of the reports");
-				it("should include actions for each entry in the listing of reports");
+				it("should include a listing of the reports", function (done) {
+					// clear out all tracking
+					tracking.find({}, function (err, reports) {
+						reports.length.should.eql(0);
+
+						browser.clickLink("Tracking", function () {
+							browser.success.should.be.true;
+							should.not.exist(browser.document.getElementById("tracking-listing"));
+
+							// create n applications and test to confirm that the table shows up. 
+
+							done();
+						});
+					});
+				});
+
+				it("should include actions for each entry in the listing of reports", function (done) {
+
+					helper.createSampleReports(20, function () {
+						// create n applications and test to confirm that the table shows up. 
+						browser.clickLink("Tracking", function () {
+							browser.success.should.be.true;
+							should.exist(browser.document.getElementById("reports-listing"));
+
+							var table = helper.Table2Object(browser, "reports-listing");
+
+							table.name.length.should.eql(table.actions.length);
+							done();
+						});
+					});
+				});
+
 				it("should be able to create a new report", function (done) {
 
 					var testTitle = "report_title"
@@ -469,37 +507,58 @@ describe('Users & Authentication', function () {
 				});
 			});
 
-			describe.only("Client Management", function () {
+			describe("Client Management", function () {
 				it("should include a listing of the clients", function (done) {
-					// clear out all clients
-					client.find({}, function (err, clients) {
-						clients.length.should.eql(0);
+					async.series([
 
-						browser.clickLink("Clients", function () {
+						function (cb) {
+							client.remove({}, cb);
+						},
+						function (cb) {
+							browser.clickLink("Clients", cb)
+						},
+						function (cb) {
 							browser.success.should.be.true;
 							should.not.exist(browser.document.getElementById("clients-listing"));
-
-							// create n applications and test to confirm that the table shows up. 
-
-							done();
-						});
-					});
+							cb();
+						},
+						function (cb) {
+							helper.createSampleClients(20, cb);
+						},
+						function (cb) {
+							browser.clickLink("Clients", cb)
+						},
+						function (cb) {
+							browser.success.should.be.true;
+							should.exist(browser.document.getElementById("clients-listing"));
+							cb();
+						}
+					], done);
 				});
 
 				it("should include actions for each entry in the listing of clients", function (done) {
+					async.series([
 
-					helper.createSampleClients(20, function () {
-						// create n applications and test to confirm that the table shows up. 
-						browser.clickLink("Clients", function () {
+						function (cb) {
+							client.remove({}, cb);
+						},
+						function (cb) {
+							helper.createSampleClients(20, cb);
+						},
+						function (cb) {
+							browser.clickLink("Clients", cb)
+						},
+						function (cb) {
 							browser.success.should.be.true;
 							should.exist(browser.document.getElementById("clients-listing"));
 
 							var table = helper.Table2Object(browser, "clients-listing");
 
 							table.uid.length.should.eql(table.actions.length);
-							done();
-						});
-					});
+
+							cb();
+						}
+					], done);
 				});
 
 				it("should be able to create a new client", function (done) {
@@ -544,34 +603,56 @@ describe('Users & Authentication', function () {
 
 			describe("Application Management", function () {
 				it("should include a listing of the applications", function (done) {
-					// clear out all applications
-					application.find({}, function (err, applications) {
-						applications.length.should.eql(0);
-						browser.clickLink("Applications", function () {
+					async.series([
+
+						function (cb) {
+							application.remove({}, cb);
+						},
+						function (cb) {
+							browser.clickLink("Applications", cb)
+						},
+						function (cb) {
 							browser.success.should.be.true;
 							should.not.exist(browser.document.getElementById("applications-listing"));
-
-							// create n applications and test to confirm that the table shows up. 
-
-							done();
-						});
-					});
+							cb();
+						},
+						function (cb) {
+							helper.createSampleApplications(20, cb);
+						},
+						function (cb) {
+							browser.clickLink("Applications", cb)
+						},
+						function (cb) {
+							browser.success.should.be.true;
+							should.exist(browser.document.getElementById("applications-listing"));
+							cb();
+						}
+					], done);
 				});
 
 				it("should include actions for each entry in the listing of applications", function (done) {
+					async.series([
 
-					helper.createSampleApplications(20, function () {
-						// create n applications and test to confirm that the table shows up. 
-						browser.clickLink("Applications", function () {
+						function (cb) {
+							application.remove({}, cb);
+						},
+						function (cb) {
+							helper.createSampleApplications(20, cb);
+						},
+						function (cb) {
+							browser.clickLink("Applications", cb)
+						},
+						function (cb) {
 							browser.success.should.be.true;
 							should.exist(browser.document.getElementById("applications-listing"));
 
 							var table = helper.Table2Object(browser, "applications-listing");
 
 							table.name.length.should.eql(table.actions.length);
-							done();
-						});
-					});
+
+							cb();
+						}
+					], done);
 				});
 
 				it("should be able to create a new application", function (done) {
@@ -615,23 +696,28 @@ describe('Users & Authentication', function () {
 
 			describe("User Management", function () {
 				it("should include a listing of the users", function (done) {
-					// clear out all users?
-					user.find({}, function (err, users) {
-						// users.length.should.eql(0);
-						browser.clickLink("Users", function () {
+					async.series([
+
+						function (cb) {
+							browser.clickLink("Users", cb);
+						},
+						function (cb) {
 							browser.success.should.be.true;
 							should.exist(browser.document.getElementById("users-listing"));
 
 							var table = helper.Table2Object(browser, "users-listing");
+							user.find({}, function (err, users) {
 
-							for (var i = 0; i < users.length; i++) {
-								table.name.should.containEql(users[i].Name);
-								table.email.should.containEql(users[i].Email);
-								table.role.should.containEql(users[i].Role);
-							};
-							done();
-						});
-					});
+								for (var i = 0; i < users.length; i++) {
+									table.name.should.containEql(users[i].Name);
+									table.email.should.containEql(users[i].Email);
+									table.role.should.containEql(users[i].Role);
+								};
+
+								cb();
+							});
+						}
+					], done);
 				});
 
 				it("should include actions for each entry in the listing of users", function (done) {
@@ -738,19 +824,27 @@ describe('Users & Authentication', function () {
 
 		describe("Logging in", function () {
 			it("should land on overview page", function (done) {
-				browser = new Browser({});
+				async.series([
 
-				browser.visit("http://localhost:" + helper.getPort() + "/login", function () {
-					browser.success.should.be.true;
+					function (cb) {
+						browser = new Browser({});
 
-					browser.window.location.pathname.should.eql("/login");
-					browser.fill("username", "testManager").fill("password", "testManager").pressButton("Login", function () {
+						browser.visit("http://localhost:" + helper.getPort() + "/login", cb);
+					},
+					function (cb) {
+						browser.success.should.be.true;
+
+						browser.window.location.pathname.should.eql("/login");
+						browser.fill("username", "testAdmin").fill("password", "testAdmin").pressButton("Login", cb);
+					},
+					function (cb) {
 						browser.success.should.be.true;
 
 						browser.window.location.pathname.should.eql("/overview");
-						done();
-					});
-				});
+
+						cb();
+					}
+				], done);
 			});
 		});
 
@@ -787,6 +881,39 @@ describe('Users & Authentication', function () {
 			});
 
 			describe("Tracking Management", function () {
+				it("should include a listing of the reports", function (done) {
+					models.Report.remove({}, function (err, docs) {
+						models.Report.count({}, function (err, docs) {
+							docs.should.eql(0);
+
+							browser.clickLink("Tracking", function () {
+								browser.success.should.be.true;
+								should.not.exist(browser.document.getElementById("tracking-listing"));
+
+								// create n applications and test to confirm that the table shows up. 
+
+								done();
+							});
+						});
+					});
+				});
+
+				it("should include actions for each entry in the listing of reports", function (done) {
+
+					helper.createSampleReports(20, function () {
+						// create n applications and test to confirm that the table shows up. 
+						browser.clickLink("Tracking", function () {
+							browser.success.should.be.true;
+							should.exist(browser.document.getElementById("reports-listing"));
+
+							var table = helper.Table2Object(browser, "reports-listing");
+
+							table.name.length.should.eql(table.actions.length);
+							done();
+						});
+					});
+				});
+
 				it("should be able to create a new report", function (done) {
 					browser.clickLink("Tracking", function () {
 						browser.fill("name", "testAdmin").pressButton("Create", function () {
@@ -815,6 +942,59 @@ describe('Users & Authentication', function () {
 			});
 
 			describe("Client Management", function () {
+				it("should include a listing of the clients", function (done) {
+					async.series([
+
+						function (cb) {
+							client.remove({}, cb);
+						},
+						function (cb) {
+							browser.clickLink("Clients", cb)
+						},
+						function (cb) {
+							browser.success.should.be.true;
+							should.not.exist(browser.document.getElementById("clients-listing"));
+							cb();
+						},
+						function (cb) {
+							helper.createSampleClients(20, cb);
+						},
+						function (cb) {
+							browser.clickLink("Clients", cb)
+						},
+						function (cb) {
+							browser.success.should.be.true;
+							should.exist(browser.document.getElementById("clients-listing"));
+							cb();
+						}
+					], done);
+				});
+
+				it("should include actions for each entry in the listing of clients", function (done) {
+					async.series([
+
+						function (cb) {
+							client.remove({}, cb);
+						},
+						function (cb) {
+							helper.createSampleClients(20, cb);
+						},
+						function (cb) {
+							browser.clickLink("Clients", cb)
+						},
+						function (cb) {
+							browser.success.should.be.true;
+							should.exist(browser.document.getElementById("clients-listing"));
+
+							var table = helper.Table2Object(browser, "clients-listing");
+
+							table.uid.length.should.eql(table.actions.length);
+
+							cb();
+						}
+					], done);
+				});
+
 				it("should be able to create a new client", function (done) {
 
 					var testUID = "00000000002";
@@ -856,6 +1036,59 @@ describe('Users & Authentication', function () {
 			});
 
 			describe("Application Management", function () {
+				it("should include a listing of the applications", function (done) {
+					async.series([
+
+						function (cb) {
+							application.remove({}, cb);
+						},
+						function (cb) {
+							browser.clickLink("Applications", cb)
+						},
+						function (cb) {
+							browser.success.should.be.true;
+							should.not.exist(browser.document.getElementById("applications-listing"));
+							cb();
+						},
+						function (cb) {
+							helper.createSampleApplications(20, cb);
+						},
+						function (cb) {
+							browser.clickLink("Applications", cb)
+						},
+						function (cb) {
+							browser.success.should.be.true;
+							should.exist(browser.document.getElementById("applications-listing"));
+							cb();
+						}
+					], done);
+				});
+
+				it("should include actions for each entry in the listing of applications", function (done) {
+					async.series([
+
+						function (cb) {
+							application.remove({}, cb);
+						},
+						function (cb) {
+							helper.createSampleApplications(20, cb);
+						},
+						function (cb) {
+							browser.clickLink("Applications", cb)
+						},
+						function (cb) {
+							browser.success.should.be.true;
+							should.exist(browser.document.getElementById("applications-listing"));
+
+							var table = helper.Table2Object(browser, "applications-listing");
+
+							table.name.length.should.eql(table.actions.length);
+
+							cb();
+						}
+					], done);
+				});
+
 				it("should be able to create a new application", function (done) {
 
 					var testName = "Exodus_Admin";
@@ -896,26 +1129,28 @@ describe('Users & Authentication', function () {
 
 			describe("User Management", function () {
 				it("should include a listing of the users", function (done) {
-					user.find({}, function (err, users) {
-						browser.clickLink("Users", function () {
-							browser.success.should.be.true;
-							if (users.length > 0) {
-								should.exist(browser.document.getElementById("users-listing"));
+					async.series([
 
-								var table = helper.Table2Object(browser, "users-listing");
+						function (cb) {
+							browser.clickLink("Users", cb);
+						},
+						function (cb) {
+							browser.success.should.be.true;
+							should.exist(browser.document.getElementById("users-listing"));
+
+							var table = helper.Table2Object(browser, "users-listing");
+							user.find({}, function (err, users) {
 
 								for (var i = 0; i < users.length; i++) {
 									table.name.should.containEql(users[i].Name);
 									table.email.should.containEql(users[i].Email);
 									table.role.should.containEql(users[i].Role);
-								}
+								};
 
-							} else {
-								should.not.exist(browser.document.getElementById("users-listing"));
-							}
-							done();
-						});
-					});
+								cb();
+							});
+						}
+					], done);
 				});
 
 				it("should include actions for each entry in the listing of users", function (done) {

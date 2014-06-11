@@ -3,6 +3,7 @@ var pkg = require("../package.json");
 var models = require('../src/atlas.models.js');
 var async = require('async');
 var passwordHash = require('password-hash');
+var should = require("should");
 
 var randomInt = function (low, high) {
 	return Math.floor(Math.random() * (high - low) + low);
@@ -60,7 +61,7 @@ exports = {
 		});
 
 		app.save(function (err, app) {
-			(err === null).should.be.true;
+			should.not.exist(err);
 
 			that.createSampleApplications(n - 1, done);
 		});
@@ -81,6 +82,24 @@ exports = {
 			(err === null).should.be.true;
 
 			that.createSampleClients(n - 1, done);
+		});
+	},
+	createSampleReports: function (n, done) {
+		var that = this;
+		var app = {};
+
+		if (n <= 0) {
+			return done();
+		}
+
+		app = new models.Report({
+			Name: "report " + n
+		});
+
+		app.save(function (err, app) {
+			(err === null).should.be.true;
+
+			that.createSampleReports(n - 1, done);
 		});
 	},
 	InitializeDatabase: function (done) {

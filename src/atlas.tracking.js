@@ -1,28 +1,39 @@
-var Report = require("./atlas.models").Report,
+var models = require("./atlas.models"),
+	report = models.Report,
 	form = require("express-form"),
 	filter = form.filter,
 	validate = form.validate;
 
 API = {
 	paramLookup: function (req, res, next, id) {
-		models.Tracking.find({
-			id: models.ObjectId(id)
-		}, function (err, report) {
+		try {
+			report.findOne({
+				_id: models.ObjectId(id)
+			}, function (err, report) {
 
-			console.log(report);
-
-			if (err) {
-				return next(err);
-			} else if (!report) {
-				return next(new Error('failed to load report'));
+				if (err) {
+					return next(err);
+				} else if (!client) {
+					return next(new Error('failed to load Client'));
+				}
+				req.params.report = report;
+				next();
+			});
+		} catch (e) {
+			if (req.isAuthenticated()) {
+				next(new Error("Invalid Client ID"));
+			} else {
+				res.redirect("/login");
+				next();
 			}
-
-			req.report = report;
-			next();
-		});
+		}
 	},
 	index: function (req, res) {
-		res.render('tracking/index');
+		report.find({}, function (err, reports) {
+			res.render('tracking/index', {
+				reports: reports
+			});
+		});
 	},
 	createValidation: form(
 		filter("name").trim(),
@@ -32,7 +43,7 @@ API = {
 
 		// Form needs to be checked to ensure that this is a valid submission.
 
-		var tmp = new Report({
+		var tmp = new report({
 			Name: req.form.name
 		});
 

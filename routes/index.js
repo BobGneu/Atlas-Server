@@ -5,14 +5,11 @@ var router = require('express').Router(),
 	clients = require("../src/atlas.clients"),
 	applications = require("../src/atlas.applications"),
 	tracking = require("../src/atlas.tracking");
-var models = require("../src/atlas.models");
 
 router.param(":userId", users.paramLookup);
 router.param(":clientId", clients.paramLookup);
 router.param(":applicationId", applications.paramLookup);
-router.param(":reportId", function (res, req, next, id) {
-	next();
-});
+router.param(":reportId", tracking.paramLookup);
 
 router.get('/', atlas.index);
 router.get('/login', atlas.login);

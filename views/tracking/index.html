@@ -9,4 +9,9 @@
         <input class="pure-button pure-button-primary" type="submit" value="Create" />
     </form>
 </div>
+{% for report in reports %}
+{% if loop.first %}<table id="reports-listing"><tr><th>Name</th><th>Actions</th></tr>{% endif %}
+<tr><td><a href="/reports/{{- report._id.toString() -}}">{{ report.Name }}</a></td><td><a href="#">Edit</a> <a href="#">Delete</a></td></tr>
+{% if loop.last %}</table>{% endif %}
+{% endfor %}
 {% endblock body %}
