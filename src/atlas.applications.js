@@ -41,20 +41,24 @@ API = {
 		validate("name").required(),
 		filter("allowGame").trim(),
 		filter("allowEditor").trim(),
-		validate("allowGame").required(),
-		validate("allowEditor").required()
+		validate("allowGame"),
+		validate("allowEditor")
 	),
 	create: function (req, res) {
-		//form needs to be validated.
-		var tmp = new Application({
-			Name: req.form.name,
-			AllowGame: req.form.allowGame,
-			AllowEditor: req.form.allowEditor
-		});
+		if (req.form.isValid) {
+			var tmp = new Application({
+				Name: req.form.name,
+				AllowGame: req.form.allowGame,
+				AllowEditor: req.form.allowEditor
+			});
 
-		tmp.save(function (err, application) {
-			res.redirect('/applications/' + application._id);
-		});
+			tmp.save(function (err, application) {
+				res.redirect('/applications/' + application._id);
+			});
+		} else {
+			req.session.messages = req.form.errors;
+			req.failed();
+		}
 	},
 	read: function (req, res) {
 		res.render('applications/read', {

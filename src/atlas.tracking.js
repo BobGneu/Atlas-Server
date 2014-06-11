@@ -40,7 +40,6 @@ API = {
 		validate("name").required()
 	),
 	create: function (req, res, next) {
-
 		if (req.form.isValid) {
 			var tmp = new report({
 				Name: req.form.name

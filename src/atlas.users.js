@@ -50,19 +50,21 @@ API = {
 		validate("role").required()
 	),
 	create: function (req, res) {
+		if (req.form.isValid) {
+			var tmp = new User({
+				Name: req.form.name,
+				Email: req.form.email,
+				PasswordHash: passwordHash.generate(req.form.password),
+				Role: req.form.role,
+			});
 
-		// Form needs to be checked to ensure that this is a valid submission.
-
-		var tmp = new User({
-			Name: req.form.name,
-			Email: req.form.email,
-			PasswordHash: passwordHash.generate(req.form.password),
-			Role: req.form.role,
-		});
-
-		tmp.save(function (err, user) {
-			res.redirect("/users/" + user._id);
-		});
+			tmp.save(function (err, user) {
+				res.redirect("/users/" + user._id);
+			});
+		} else {
+			req.session.messages = req.form.errors;
+			req.failed();
+		}
 	},
 	read: function (req, res) {
 		res.render('users/read', {

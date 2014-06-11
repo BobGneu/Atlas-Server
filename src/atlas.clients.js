@@ -40,20 +40,24 @@ API = {
 		filter("allowGame").trim(),
 		filter("allowEditor").trim(),
 		validate("uid").required(),
-		validate("allowGame").required(),
-		validate("allowEditor").required()
+		validate("allowGame"),
+		validate("allowEditor")
 	),
 	create: function (req, res) {
-		//form needs to be validated.
-		var tmp = new client({
-			UID: req.form.uid,
-			AllowGame: req.form.allowGame,
-			AllowEditor: req.form.allowEditor
-		});
+		if (req.form.isValid) {
+			var tmp = new client({
+				UID: req.form.uid,
+				AllowGame: req.form.allowGame,
+				AllowEditor: req.form.allowEditor
+			});
 
-		tmp.save(function (err, client) {
-			res.redirect("/clients/" + client._id);
-		});
+			tmp.save(function (err, client) {
+				res.redirect("/clients/" + client._id);
+			});
+		} else {
+			req.session.messages = req.form.errors;
+			req.failed();
+		}
 	},
 	read: function (req, res) {
 		res.render('clients/read', {

@@ -18,7 +18,7 @@
 <body>
     <div id="layout">
         {% include "../templates/menu.html" %} {% include "../templates/header.html" %}
-        <div></div>
+        <div>{{ messages }}</div>
         <div id="content">
             {% block body -%}{%- endblock body %}
         </div>
