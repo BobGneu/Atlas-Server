@@ -8,9 +8,7 @@ var router = require('express').Router(),
 var models = require("../src/atlas.models");
 
 router.param(":userId", users.paramLookup);
-router.param(":clientId", function (res, req, next, id) {
-	next();
-});
+router.param(":clientId", clients.paramLookup);
 router.param(":applicationId", applications.paramLookup);
 router.param(":reportId", function (res, req, next, id) {
 	next();

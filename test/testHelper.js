@@ -65,6 +65,24 @@ exports = {
 			that.createSampleApplications(n - 1, done);
 		});
 	},
+	createSampleClients: function (n, done) {
+		var that = this;
+		var app = {};
+
+		if (n <= 0) {
+			return done();
+		}
+
+		app = new models.Client({
+			UID: "client " + n
+		});
+
+		app.save(function (err, app) {
+			(err === null).should.be.true;
+
+			that.createSampleClients(n - 1, done);
+		});
+	},
 	InitializeDatabase: function (done) {
 
 		async.series([
@@ -98,6 +116,15 @@ exports = {
 			},
 			function (cb) {
 				models.Report.remove({}, function (err, docs) {
+					models.Report.count({}, function (err, docs) {
+						docs.should.eql(0);
+						(err === null).should.be.true;
+						cb();
+					});
+				});
+			},
+			function (cb) {
+				models.Client.remove({}, function (err, docs) {
 					models.Report.count({}, function (err, docs) {
 						docs.should.eql(0);
 						(err === null).should.be.true;

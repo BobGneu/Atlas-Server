@@ -1,28 +1,42 @@
-var Client = require("./atlas.models").Client,
+var models = require("./atlas.models"),
+	client = models.Client,
 	form = require("express-form"),
 	filter = form.filter,
 	validate = form.validate;
 
 API = {
 	paramLookup: function (req, res, next, id) {
-		models.Client.find({
-			id: models.ObjectId(id)
-		}, function (err, client) {
+		console.log(id);
+		try {
+			client.findOne({
+				_id: models.ObjectId(id)
+			}, function (err, client) {
+				console.log(client);
 
-			console.log(client);
-
-			if (err) {
-				return next(err);
-			} else if (!client) {
-				return next(new Error('failed to load client'));
+				if (err) {
+					return next(err);
+				} else if (!client) {
+					return next(new Error('failed to load Client'));
+				}
+				console.log(client);
+				req.params.client = client;
+				next();
+			});
+		} catch (e) {
+			if (req.isAuthenticated()) {
+				next(new Error("Invalid Client ID"));
+			} else {
+				res.redirect("/login");
+				next();
 			}
-
-			req.client = client;
-			next();
-		});
+		}
 	},
 	index: function (req, res) {
-		res.render('clients/index');
+		client.find({}, function (err, clients) {
+			res.render('clients/index', {
+				clients: clients
+			});
+		});
 	},
 	createValidation: form(
 		filter("uid").trim(),
@@ -34,24 +48,20 @@ API = {
 	),
 	create: function (req, res) {
 		//form needs to be validated.
-		var tmp = new Client({
+		var tmp = new client({
 			UID: req.form.uid,
 			AllowGame: req.form.allowGame,
 			AllowEditor: req.form.allowEditor
 		});
 
 		tmp.save(function (err, client) {
-			res.render('clients/read', {
-				client: {
-					uid: client.UID,
-					allowGame: client.AllowGame,
-					allowEditor: client.AllowEditor,
-				}
-			});
+			res.redirect("/clients/" + client._id);
 		});
 	},
 	read: function (req, res) {
-		res.render('clients/read');
+		res.render('clients/read', {
+			client: req.params.client
+		});
 	},
 	update: function (req, res) {
 		res.redirect('/clients');

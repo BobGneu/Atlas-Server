@@ -4,6 +4,7 @@ var Browser = require("zombie"),
 var helper = require('./testHelper');
 var models = require('../src/atlas.models.js'),
 	user = models.User,
+	client = models.Client,
 	application = models.Application;
 
 describe('Users & Authentication', function () {
@@ -468,9 +469,39 @@ describe('Users & Authentication', function () {
 				});
 			});
 
-			describe("Client Management", function () {
-				it("should include a listing of the clients");
-				it("should include actions for each entry in the listing of clients");
+			describe.only("Client Management", function () {
+				it("should include a listing of the clients", function (done) {
+					// clear out all clients
+					client.find({}, function (err, clients) {
+						clients.length.should.eql(0);
+
+						browser.clickLink("Clients", function () {
+							browser.success.should.be.true;
+							should.not.exist(browser.document.getElementById("clients-listing"));
+
+							// create n applications and test to confirm that the table shows up. 
+
+							done();
+						});
+					});
+				});
+
+				it("should include actions for each entry in the listing of clients", function (done) {
+
+					helper.createSampleClients(20, function () {
+						// create n applications and test to confirm that the table shows up. 
+						browser.clickLink("Clients", function () {
+							browser.success.should.be.true;
+							should.exist(browser.document.getElementById("clients-listing"));
+
+							var table = helper.Table2Object(browser, "clients-listing");
+
+							table.uid.length.should.eql(table.actions.length);
+							done();
+						});
+					});
+				});
+
 				it("should be able to create a new client", function (done) {
 
 					var testUID = "00000000001";
@@ -515,9 +546,9 @@ describe('Users & Authentication', function () {
 				it("should include a listing of the applications", function (done) {
 					// clear out all applications
 					application.find({}, function (err, applications) {
-						browser.clickLink("Users", function () {
+						applications.length.should.eql(0);
+						browser.clickLink("Applications", function () {
 							browser.success.should.be.true;
-							applications.length.should.eql(0);
 							should.not.exist(browser.document.getElementById("applications-listing"));
 
 							// create n applications and test to confirm that the table shows up. 
@@ -586,6 +617,7 @@ describe('Users & Authentication', function () {
 				it("should include a listing of the users", function (done) {
 					// clear out all users?
 					user.find({}, function (err, users) {
+						// users.length.should.eql(0);
 						browser.clickLink("Users", function () {
 							browser.success.should.be.true;
 							should.exist(browser.document.getElementById("users-listing"));
