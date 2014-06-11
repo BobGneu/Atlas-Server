@@ -80,7 +80,6 @@ exports.User.prototype.validPassword = function (pw) {
 	}
 
 	return passwordHash.verify(pw, this.PasswordHash)
-
 };
 
 exports.TrackingData = mongoose.model('TrackingData', new Schema({

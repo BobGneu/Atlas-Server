@@ -11,9 +11,7 @@ router.param(":userId", users.paramLookup);
 router.param(":clientId", function (res, req, next, id) {
 	next();
 });
-router.param(":applicationId", function (res, req, next, id) {
-	next();
-});
+router.param(":applicationId", applications.paramLookup);
 router.param(":reportId", function (res, req, next, id) {
 	next();
 });

@@ -6,19 +6,28 @@ var models = require("./atlas.models"),
 
 API = {
 	paramLookup: function (req, res, next, id) {
-		models.Application.find({
-			id: models.ObjectId(id)
-		}, function (err, app) {
+		try {
+			models.Application.findOne({
+				_id: models.ObjectId(id)
+			}, function (err, app) {
 
-			if (err) {
-				return next(err);
-			} else if (!application) {
-				return next(new Error('failed to load application'));
+				if (err) {
+					return next(err);
+				} else if (!app) {
+					return next(new Error('failed to load app'));
+				}
+
+				req.params.application = app;
+				next();
+			});
+		} catch (e) {
+			if (req.isAuthenticated()) {
+				next(new Error("Invalid Application ID"));
+			} else {
+				res.redirect("/login");
+				next();
 			}
-
-			req.application = app;
-			next();
-		});
+		}
 	},
 	index: function (req, res) {
 		Application.find({}, function (err, applications) {
@@ -48,13 +57,8 @@ API = {
 		});
 	},
 	read: function (req, res) {
-		Application.findOne({
-			_id: models.ObjectId(req.params.applicationId)
-		}, function (err, application) {
-
-			res.render('applications/read', {
-				application: application
-			});
+		res.render('applications/read', {
+			application: req.params.application
 		});
 	},
 	update: function (req, res) {

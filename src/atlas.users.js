@@ -26,6 +26,7 @@ API = {
 				next(new Error("Invalid User ID"));
 			} else {
 				res.redirect("/login");
+				next();
 			}
 		}
 	},
@@ -76,17 +77,9 @@ API = {
 	},
 	restricted: function (req, res, next) {
 		// Unauthenticated users get redirected to the login page
-		if (!req.isAuthenticated())
+		if (!req.isAuthenticated()) {
 			return res.redirect('/login');
-
-		/*/ Only administrators are allowed to access the users page
-		if (req.route.path === '/users') {
-			if (req.user.Role === 'Administrator') {
-				return next();
-			} else {
-				return res.redirect("/overview");
-			}
-		}*/
+		}
 
 		// Otherwise you are fine
 		next();

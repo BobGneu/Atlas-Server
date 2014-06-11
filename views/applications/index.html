@@ -17,7 +17,7 @@
 </div>
 {% for app in applications %}
 {% if loop.first %}<table id="applications-listing"><tr><th>Name</th><th>Allow Game</th><th>Allow Editor</th><th>Actions</th></tr>{% endif %}
-<tr><td><a href="/applications/{{- app._id -}}">{{ app.Name }}</a></td><td>{{ app.AllowGame }}</td><td>{{ app.AllowEditor }}</td><td><a href="#">Edit</a> <a href="#">Delete</a></td></tr>
+<tr><td><a href="/applications/{{- app._id.toString() -}}">{{ app.Name }}</a></td><td>{{ app.AllowGame }}</td><td>{{ app.AllowEditor }}</td><td><a href="#">Edit</a> <a href="#">Delete</a></td></tr>
 {% if loop.last %}</table>{% endif %}
 {% endfor %}
 {% endblock body %}
