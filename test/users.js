@@ -493,7 +493,36 @@ describe('Users & Authentication', function () {
 						})
 					});
 				});
-				it("should be able to view a report");
+
+				it("should be able to view a report", function (done) {
+					async.series([
+
+						function (cb) {
+							models.Report.remove({}, cb);
+						},
+						function (cb) {
+							helper.createSampleReports(1, cb);
+						},
+						function (cb) {
+							models.Report.findOne({}, function (err, report) {
+								browser.visit("http://localhost:" + helper.getPort() + "/tracking/" + report._id, function () {
+									browser.success.should.be.true;
+
+									browser.window.location.pathname.should.startWith("/tracking/");
+									browser.window.location.pathname.should.endWith(report._id.toString());
+
+									var name = browser.document.getElementById("report-title");
+
+									should.exist(name);
+									name.innerHTML.should.eql(report.Name);
+									cb();
+								});
+							});
+						},
+					], done);
+
+				});
+
 				it("should be able to update a report's query");
 				it("should be able to delete a report");
 			});
@@ -582,7 +611,34 @@ describe('Users & Authentication', function () {
 					});
 				});
 
-				it("should be able to view an client's overview");
+				it("should be able to view an client's overview", function (done) {
+					async.series([
+
+						function (cb) {
+							client.remove({}, cb);
+						},
+						function (cb) {
+							helper.createSampleClients(1, cb);
+						},
+						function (cb) {
+							client.findOne({}, function (err, client) {
+								browser.visit("http://localhost:" + helper.getPort() + "/clients/" + client._id, function () {
+									browser.success.should.be.true;
+
+									browser.window.location.pathname.should.startWith("/clients/");
+									browser.window.location.pathname.should.endWith(client._id.toString());
+
+									var name = browser.document.getElementById("client-uid");
+
+									should.exist(name);
+									name.innerHTML.should.eql(client.UID);
+									cb();
+								});
+							});
+						},
+					], done);
+
+				});
 
 				it("should be able to update an client's information");
 				it("should be able to update an client's security values");
@@ -954,7 +1010,34 @@ describe('Users & Authentication', function () {
 					});
 				});
 
-				it("should be able to view a report");
+				it("should be able to view a report", function (done) {
+					async.series([
+
+						function (cb) {
+							models.Report.remove({}, cb);
+						},
+						function (cb) {
+							helper.createSampleReports(1, cb);
+						},
+						function (cb) {
+							models.Report.findOne({}, function (err, report) {
+								browser.visit("http://localhost:" + helper.getPort() + "/tracking/" + report._id, function () {
+									browser.success.should.be.true;
+
+									browser.window.location.pathname.should.startWith("/tracking/");
+									browser.window.location.pathname.should.endWith(report._id.toString());
+
+									var name = browser.document.getElementById("report-title");
+
+									should.exist(name);
+									name.innerHTML.should.eql(report.Name);
+									cb();
+								});
+							});
+						},
+					], done);
+
+				});
 				it("should be able to update a report's query");
 				it("should be able to delete a report");
 			});
@@ -1043,7 +1126,34 @@ describe('Users & Authentication', function () {
 					});
 				});
 
-				it("should be able to view an client's overview");
+				it("should be able to view an client's overview", function (done) {
+					async.series([
+
+						function (cb) {
+							client.remove({}, cb);
+						},
+						function (cb) {
+							helper.createSampleClients(1, cb);
+						},
+						function (cb) {
+							client.findOne({}, function (err, client) {
+								browser.visit("http://localhost:" + helper.getPort() + "/clients/" + client._id, function () {
+									browser.success.should.be.true;
+
+									browser.window.location.pathname.should.startWith("/clients/");
+									browser.window.location.pathname.should.endWith(client._id.toString());
+
+									var name = browser.document.getElementById("client-uid");
+
+									should.exist(name);
+									name.innerHTML.should.eql(client.UID);
+									cb();
+								});
+							});
+						},
+					], done);
+
+				});
 
 				it("should be able to update an client's information");
 				it("should be able to update an client's security values");

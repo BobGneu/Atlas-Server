@@ -13,7 +13,7 @@ API = {
 
 				if (err) {
 					return next(err);
-				} else if (!client) {
+				} else if (!report) {
 					return next(new Error('failed to load Client'));
 				}
 				req.params.report = report;
@@ -48,15 +48,13 @@ API = {
 		});
 
 		tmp.save(function (err, report) {
-			res.render('tracking/read', {
-				report: {
-					title: report.Name
-				}
-			});
+			res.redirect("/tracking/" + report._id);
 		});
 	},
 	read: function (req, res) {
-		res.render('tracking/read');
+		res.render('tracking/read', {
+			report: req.params.report
+		});
 	},
 	update: function (req, res) {
 		res.redirect('/tracking');
