@@ -41,15 +41,18 @@ API = {
 	),
 	create: function (req, res, next) {
 
-		// Form needs to be checked to ensure that this is a valid submission.
+		if (req.form.isValid) {
+			var tmp = new report({
+				Name: req.form.name
+			});
 
-		var tmp = new report({
-			Name: req.form.name
-		});
-
-		tmp.save(function (err, report) {
-			res.redirect("/tracking/" + report._id);
-		});
+			tmp.save(function (err, report) {
+				res.redirect("/tracking/" + report._id);
+			});
+		} else {
+			req.session.messages = req.form.errors;
+			req.failed();
+		}
 	},
 	read: function (req, res) {
 		res.render('tracking/read', {
