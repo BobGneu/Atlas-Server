@@ -71,11 +71,116 @@ API = {
 			user: req.params.user
 		});
 	},
-	update: function (req, res) {
-		res.redirect('users');
+	updateRole: function (req, res) {
+		try {
+			models.User.findOne({
+				_id: models.ObjectId(req.body.pk)
+			}, function (err, user) {
+				if (err) {
+					return res.send(500, {
+						error: err
+					});
+				} else if (!user) {
+					return res.send(400, 'Bad request');
+				} else if (req.body.value !== "Administrator" && req.body.value !== "Manager") {
+					return res.send(400, 'Invalid Input');
+				}
+
+				user.Role = req.body.value;
+
+				user.save(function (err, user) {
+
+					if (err) {
+						return res.send(500, {
+							error: err
+						});
+					} else if (!user) {
+						return res.send(400, 'Bad request');
+					}
+
+					res.send(200, user.Role);
+				});
+			});
+		} catch (e) {
+			if (req.isAuthenticated()) {
+				res.send(400, 'Bad request');
+			} else {
+				res.redirect("/login");
+			}
+			next();
+		}
+	},
+	updateEmail: function (req, res) {
+		try {
+			models.User.findOne({
+				_id: models.ObjectId(req.body.pk)
+			}, function (err, user) {
+				if (err) {
+					return res.send(500, {
+						error: err
+					});
+				} else if (!user) {
+					return res.send(400, 'Bad request');
+				}
+
+				user.Email = req.body.value;
+
+				user.save(function (err, user) {
+
+					if (err) {
+						return res.send(500, {
+							error: err
+						});
+					} else if (!user) {
+						return res.send(400, 'Bad request');
+					}
+
+					res.send(200, user.Role);
+				});
+			});
+		} catch (e) {
+			if (req.isAuthenticated()) {
+				res.send(400, 'Bad request');
+			} else {
+				res.redirect("/login");
+			}
+			next();
+		}
 	},
 	delete: function (req, res) {
-		res.redirect('users');
+		try {
+			models.User.findOne({
+				_id: models.ObjectId(req.body.pk)
+			}, function (err, user) {
+				if (err) {
+					return res.send(500, {
+						error: err
+					});
+				} else if (!user) {
+					return res.send(400, 'Bad request');
+				}
+
+				user.remove(function (err, user) {
+
+					if (err) {
+						return res.send(500, {
+							error: err
+						});
+					} else if (!user) {
+						return res.send(400, 'Bad request2');
+					}
+
+					res.send(200);
+				});
+			});
+		} catch (e) {
+			if (req.isAuthenticated()) {
+				res.send(400, 'Bad request3');
+			} else {
+				res.redirect("/login");
+			}
+			next();
+		}
 	},
 	restricted: function (req, res, next) {
 		// Unauthenticated users get redirected to the login page

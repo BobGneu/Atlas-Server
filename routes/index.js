@@ -48,7 +48,8 @@ router.get('/users', users.restricted, users.index);
 
 router.post('/users/create', users.restricted, users.createValidation, users.create);
 router.get('/users/:userId', users.restricted, users.read);
-router.put('/users/update/:userId', users.restricted, users.update);
-router.delete('/users/delete/:userId', users.restricted, users.delete);
+router.put('/users/role', users.restricted, users.updateRole);
+router.put('/users/email', users.restricted, users.updateEmail);
+router.delete('/users', users.restricted, users.delete);
 
 module.exports = router;

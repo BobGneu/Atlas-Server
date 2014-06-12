@@ -352,7 +352,10 @@ describe('Users & Authentication', function () {
 			it("should not be able to update a user's information", function (done) {
 				request({
 					method: 'PUT',
-					uri: "http://localhost:" + helper.getPort() + "/users/update/42",
+					uri: "http://localhost:" + helper.getPort() + "/users/email",
+					params: {
+						role: "tony@yahoo.com"
+					}
 				}, function (error, response, body) {
 					response.statusCode.should.eql(302);
 					response.headers.location.should.eql("/login");
@@ -364,7 +367,7 @@ describe('Users & Authentication', function () {
 			it("should not be able to update a user's role manager -> admin", function (done) {
 				request({
 					method: 'PUT',
-					uri: "http://localhost:" + helper.getPort() + "/users/update/42",
+					uri: "http://localhost:" + helper.getPort() + "/users/role",
 					params: {
 						role: "Administrator"
 					}
@@ -379,8 +382,9 @@ describe('Users & Authentication', function () {
 			it("should not be able to update a user's role admin -> manager", function (done) {
 				request({
 					method: 'PUT',
-					uri: "http://localhost:" + helper.getPort() + "/users/update/42",
+					uri: "http://localhost:" + helper.getPort() + "/users/role",
 					params: {
+						pk: 42,
 						role: "Manager"
 					}
 				}, function (error, response, body) {
@@ -394,7 +398,7 @@ describe('Users & Authentication', function () {
 			it("should not be able to delete a user", function (done) {
 				request({
 					method: 'DELETE',
-					uri: "http://localhost:" + helper.getPort() + "/users/delete/42",
+					uri: "http://localhost:" + helper.getPort() + "/users",
 				}, function (error, response, body) {
 					response.statusCode.should.eql(302);
 					response.headers.location.should.eql("/login");
@@ -1476,7 +1480,32 @@ describe('Users & Authentication', function () {
 				it("should be able to update a user's information");
 				it("should be able to update a user's role manager -> admin");
 
-				it("should be able to delete a user");
+				it("should be able to delete a user", function (done) {
+
+					async.series([
+
+						function (cb) {
+							// create a user here
+							cb();
+						},
+						function (cb) {
+							// confirm that it is set
+							cb();
+						},
+						function (cb) {
+							// click the delete button
+							cb();
+						},
+						function (cb) {
+							// clear the alert
+							cb();
+						},
+						function (cb) {
+							// confirm the user is gone now
+							cb();
+						}
+					], done);
+				});
 			});
 		});
 	});

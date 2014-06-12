@@ -16,7 +16,37 @@
 </div>
 {% for user in users %}
 {% if loop.first %}<table id="users-listing" class="listingTable"><tr><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr>{% endif %}
-<tr><td><a href="/users/{{- user._id.toString() -}}">{{ user.Name }}</a></td><td>{{ user.Email }}</td><td>{{ user.Role }}</td><td><a href="#">Edit</a> <a href="#">Delete</a> {% if (isAdministrator) %}{% if (user.Role === "Manager") %}<a href="#">To Manager</a>{% else %}<a href="#">To Administrator</a>{% endif %}{% endif %}</td></tr>
+<tr><td><a href="/users/{{- user._id.toString() -}}">{{ user.Name }}</a></td>
+<td><a href="#" id="user_email{{ loop.index }}" data-type="email" data-name="Email" data-pk="{{- user._id.toString() -}}" data-url="/users/email" data-title="Input Email">{{ user.Email }}</a></td>
+<td><a href="#" id="user_role{{ loop.index }}" data-type="select" data-name="Role" data-pk="{{- user._id.toString() -}}" data-url="/users/role" data-title="Choose Role">{{ user.Role }}</a></td>
+<td><a href="#" id="user_delete{{ loop.index }}" class="pure-button" style="font-size: 80%;">Delete</a></td></tr>
 {% if loop.last %}</table>{% endif %}
 {% endfor %}
+
+
+{% for user in users %}
+<script>$(document).ready(function() { $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
+$('#user_role{{ loop.index }}').editable({
+        value: "{{ user.Role }}",    
+        source: [
+              {value: "Manager", text: 'Manager'},
+              {value: "Administrator", text: 'Administrator'},
+           ]
+    });
+$('#user_email{{ loop.index }}').editable();
+$('#user_delete{{ loop.index }}').click(function () {
+	if (confirm("Are you sure?"))
+	{	
+		$.ajax({
+			url: "/users",
+			type: "DELETE",
+			data: {pk: "{{ user._id.toString() }}" }
+		}).done(function() {
+		  	location.reload();
+		});
+	}
+})
+});</script>
+{% endfor %}
+
 {% endblock body %}

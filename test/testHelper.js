@@ -190,27 +190,25 @@ exports = {
 
 			keysIndex.push(key.toLowerCase());
 
-			if (key.length === 0) {
-				continue;
-			};
-
 			result[key.toLowerCase()] = [];
 		}
 
 		// populate lists from the rest of the table
 
 		// build keys from header row
+		var counter = 0;
 		for (var i = 1; i < tbody.childNodes.length; i++) {
+			counter = 0;
 			for (var j = 0; j < tbody.childNodes[i].childNodes.length; j++) {
 				var value = tbody.childNodes[i].childNodes[j].textContent;
 
 				value = value.trim();
-
 				if (value.length === 0) {
 					continue;
-				};
+				}
 
-				result[keysIndex[j]].push(value);
+				result[keysIndex[counter]].push(value);
+				counter++;
 			}
 		}
 
