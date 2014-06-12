@@ -19,7 +19,7 @@
 <tr><td><a href="/users/{{- user._id.toString() -}}">{{ user.Name }}</a></td>
 <td><a href="#" id="user_email{{ loop.index }}" data-type="email" data-name="Email" data-pk="{{- user._id.toString() -}}" data-url="/users/email" data-title="Input Email">{{ user.Email }}</a></td>
 <td><a href="#" id="user_role{{ loop.index }}" data-type="select" data-name="Role" data-pk="{{- user._id.toString() -}}" data-url="/users/role" data-title="Choose Role">{{ user.Role }}</a></td>
-<td><a href="#" id="user_delete{{ loop.index }}" class="pure-button" style="font-size: 80%;">Delete</a></td></tr>
+<td>{% if (!isAdministrator && user.Role !== "Administrator" ) or isAdministrator %}<a href="#" id="user_delete{{ loop.index }}" data-pk="{{- user._id.toString() -}}" class="pure-button" style="font-size: 80%;">Delete</a>{% endif %}</td></tr>
 {% if loop.last %}</table>{% endif %}
 {% endfor %}
 

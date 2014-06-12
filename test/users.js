@@ -955,9 +955,101 @@ describe('Users & Authentication', function () {
 
 				it("should not be able to update a user's information");
 
-				it("should be able to delete a manager");
+				it("should be able to delete a manager", function (done) {
+					this.timeout = 3000;
 
-				it("should not be able to delete an administrator");
+					var testName = "DeleteUser22",
+						password = "password",
+						id = -1;
+
+					async.series([
+
+						function (cb) {
+							browser.clickLink("Users", cb);
+						},
+
+						function (cb) {
+							browser.fill("name", testName).select("role", "Manager").fill("email", testName + "@gneu.org").fill("password", password).fill("password-conf", password).pressButton("Create", cb);
+						},
+						function (cb) {
+							browser.success.should.be.true;
+
+							var name = browser.document.getElementById("user-name");
+
+							should.exist(name);
+							name.innerHTML.should.eql(testName.toLowerCase());
+
+							var path = browser.window.location.pathname.split("/");
+							id = path[2];
+							cb();
+						},
+						function (cb) {
+							browser.clickLink("Users", cb);
+						},
+						function (cb) {
+							browser.clickLink("[data-pk='" + id + "'][id^='user_delete']", cb);
+						},
+						function (cb) {
+							browser.onconfirm("Are you sure?", true);
+							cb();
+						},
+						function (cb) {
+							browser.clickLink("Users", cb);
+						},
+						function (cb) {
+							should.exist(browser.document.getElementById("users-listing"));
+
+							var table = helper.Table2Object(browser, "users-listing");
+
+							table.name.should.not.containEql(testName);
+
+							cb();
+						},
+					], done);
+				});
+
+				it("should not be able to delete an administrator", function (done) {
+					this.timeout = 3000;
+
+					var testName = "DeleteAdminUser2",
+						id = -1;
+
+					async.series([
+
+						function (cb) {
+							var tmp = new user({
+								Name: testName,
+								Email: testName + "@gneu.org",
+								PasswordHash: "password",
+								Role: "Administrator"
+							});
+
+							tmp.save(function (err, user) {
+								id = user._id.toString();
+								cb();
+							});
+						},
+						function (cb) {
+							browser.clickLink("Users", cb);
+						},
+						function (cb) {
+							should.exist(browser.document.getElementById("users-listing"));
+
+							var table = helper.Table2Object(browser, "users-listing");
+
+							table.name.should.containEql(testName.toLowerCase());
+
+							cb();
+						},
+						function (cb) {
+							var link = browser.document.querySelector("[data-pk='" + id + "'][id^='user_delete']");
+
+							(link === null).should.be.true;
+
+							cb();
+						}
+					], done);
+				});
 			});
 		});
 	});
@@ -1481,29 +1573,55 @@ describe('Users & Authentication', function () {
 				it("should be able to update a user's role manager -> admin");
 
 				it("should be able to delete a user", function (done) {
+					this.timeout = 3000;
+
+					var testName = "DeleteUser",
+						password = "password",
+						id = -1;
 
 					async.series([
 
 						function (cb) {
-							// create a user here
+							browser.clickLink("Users", cb);
+						},
+
+						function (cb) {
+							browser.fill("name", testName).select("role", "Administrator").fill("email", testName + "@gneu.org").fill("password", password).fill("password-conf", password).pressButton("Create", cb);
+						},
+						function (cb) {
+							browser.success.should.be.true;
+
+							var name = browser.document.getElementById("user-name");
+
+							should.exist(name);
+							name.innerHTML.should.eql(testName.toLowerCase());
+
+							var path = browser.window.location.pathname.split("/");
+							id = path[2];
 							cb();
 						},
 						function (cb) {
-							// confirm that it is set
+							browser.clickLink("Users", cb);
+						},
+						function (cb) {
+							browser.clickLink("[data-pk='" + id + "'][id^='user_delete']", cb);
+						},
+						function (cb) {
+							browser.onconfirm("Are you sure?", true);
 							cb();
 						},
 						function (cb) {
-							// click the delete button
-							cb();
+							browser.clickLink("Users", cb);
 						},
 						function (cb) {
-							// clear the alert
+							should.exist(browser.document.getElementById("users-listing"));
+
+							var table = helper.Table2Object(browser, "users-listing");
+
+							table.name.should.not.containEql(testName);
+
 							cb();
 						},
-						function (cb) {
-							// confirm the user is gone now
-							cb();
-						}
 					], done);
 				});
 			});
