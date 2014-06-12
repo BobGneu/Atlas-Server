@@ -16,8 +16,47 @@
 	</form>
 </div>
 {% for app in applications %}
-{% if loop.first %}<table id="applications-listing"><tr><th>Name</th><th>Allow Game</th><th>Allow Editor</th><th>Actions</th></tr>{% endif %}
-<tr><td><a href="/applications/{{- app._id.toString() -}}">{{ app.Name }}</a></td><td>{{ app.AllowGame }}</td><td>{{ app.AllowEditor }}</td><td><a href="#">Edit</a> <a href="#">Delete</a></td></tr>
+{% if loop.first %}<table id="applications-listing" class="listingTable"><tr><th>Name</th><th>Allow Game</th><th>Allow Editor</th><th>Actions</th></tr>{% endif %}
+<tr>
+<td><a href="/applications/{{- app._id.toString() -}}">{{ app.Name }}</a></td>
+<td><a href="#" id="app_allowGame{{ loop.index }}" data-type="select" data-name="AllowGame" data-pk="{{- app._id.toString() -}}" data-url="/applications/allowgame" data-title="Should Anonymous Players be allowed to play the game?">{{ app.AllowGame }}</a></td>
+<td><a href="#" id="app_allowEditor{{ loop.index }}" data-type="select" data-name="AllowEditor" data-pk="{{- app._id.toString() -}}" data-url="/applications/alloweditor" data-title="Should Anonymous Players be allowed to open the editor?">{{ app.AllowEditor }}</a></td>
+<td><a href="#">Delete</a></td>
+</tr>
 {% if loop.last %}</table>{% endif %}
 {% endfor %}
+
+{% for app in applications %}
+<script>$(document).ready(function() { $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
+	$('#app_allowGame{{ loop.index }}').editable({
+	    value: "{{ app.AllowGame }}",    
+	    source: [
+	          {value: "true", text: 'Yes'},
+	          {value: "false", text: 'No'},
+	       ]
+	});
+
+	$('#app_allowEditor{{ loop.index }}').editable({
+	    value: "{{ app.AllowEditor }}",    
+	    source: [
+	          {value: "true", text: 'Yes'},
+	          {value: "false", text: 'No'},
+	       ]
+	});
+
+	$('#app_delete{{ loop.index }}').click(function () {
+		if (confirm("Are you sure?"))
+		{	
+			$.ajax({
+				url: "/applications",
+				type: "DELETE",
+				data: {pk: "{{ app._id.toString() }}" }
+			}).done(function() {
+			  	location.reload();
+			});
+		}
+	});
+});</script>
+{% endfor %}
+
 {% endblock body %}

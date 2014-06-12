@@ -16,8 +16,43 @@
 	</form>
 </div>
 {% for client in clients %}
-{% if loop.first %}<table id="clients-listing"><tr><th>UID</th><th>Allow Game</th><th>Allow Editor</th><th>Actions</th></tr>{% endif %}
-<tr><td><a href="/clients/{{- client._id.toString() -}}">{{ client.UID }}</a></td><td>{{ client.AllowGame }}</td><td>{{ client.AllowEditor }}</td><td><a href="#">Edit</a> <a href="#">Delete</a></td></tr>
+{% if loop.first %}<table id="clients-listing" class="listingTable"><tr><th>UID</th><th>Allow Game</th><th>Allow Editor</th><th>Actions</th></tr>{% endif %}
+<tr><td><a href="/clients/{{- client._id.toString() -}}">{{ client.UID }}</a></td>
+<td><a href="#" id="client_allowGame{{ loop.index }}" data-type="select" data-name="AllowGame" data-pk="{{- user._id.toString() -}}" data-url="/clients/allowgame" data-title="Should Anonymous Players be allowed to play the game?">{{ client.AllowGame }}</a></td>
+<td><a href="#" id="client_allowEditor{{ loop.index }}" data-type="select" data-name="AllowEditor" data-pk="{{- user._id.toString() -}}" data-url="/clients/alloweditor" data-title="Should Anonymous Players be allowed to open the editor?">{{ client.AllowEditor }}</a></td>
+<td><a href="#" id="user_delete{{ loop.index }}">Delete</a></td></tr>
 {% if loop.last %}</table>{% endif %}
 {% endfor %}
+
+{% for client in clients %}
+<script>$(document).ready(function() { $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
+$('#client_allowGame{{ loop.index }}').editable({
+        value: "{{ client.AllowGame }}",    
+        source: [
+              {value: "true", text: 'Yes'},
+              {value: "false", text: 'No'},
+           ]
+    });
+$('#client_allowEditor{{ loop.index }}').editable({
+        value: "{{ client.AllowEditor }}",    
+        source: [
+              {value: "true", text: 'Yes'},
+              {value: "false", text: 'No'},
+           ]
+    });
+$('#user_delete{{ loop.index }}').click(function () {
+	if (confirm("Are you sure?"))
+	{	
+		$.ajax({
+			url: "/clients",
+			type: "DELETE",
+			data: {pk: "{{ client._id.toString() }}" }
+		}).done(function() {
+		  	location.reload();
+		});
+	}
+})
+});</script>
+{% endfor %}
+
 {% endblock body %}

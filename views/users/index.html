@@ -23,7 +23,6 @@
 {% if loop.last %}</table>{% endif %}
 {% endfor %}
 
-
 {% for user in users %}
 <script>$(document).ready(function() { $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
 $('#user_role{{ loop.index }}').editable({

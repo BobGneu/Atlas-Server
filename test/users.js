@@ -1569,9 +1569,6 @@ describe('Users & Authentication', function () {
 					});
 				});
 
-				it("should be able to update a user's information");
-				it("should be able to update a user's role manager -> admin");
-
 				it("should be able to delete a user", function (done) {
 					this.timeout = 3000;
 
