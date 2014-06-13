@@ -14,13 +14,15 @@
 	
 		<input class="pure-button pure-button-primary" type="submit" value="Create" />
 	</form>
-</div
->{% for client in clients %}
-{% if loop.first %}<table id="clients-listing" class="listingTable"><tr><th>UID</th><th>Allow Game</th><th>Allow Editor</th><th>Last Login</th><th>Actions</th></tr>{% endif %}
+</div>{% for client in clients %}
+{% if loop.first %}<table id="clients-listing" class="listingTable"><tr><th>UID</th><th>Allow Game</th><th>Allow Editor</th><th>Last Login</th><th>Last Application</th><th>Last IP</th><th>Requests</th><th>Actions</th></tr>{% endif %}
 <tr><td><a href="/clients/{{- client._id.toString() -}}">{{ client.UID }}</a></td>
 <td><a href="#" id="client_allowGame{{ loop.index }}" data-type="select" data-name="AllowGame" data-pk="{{- client._id.toString() -}}" data-url="/clients" data-title="Anonymous Players Should be allowed to play the game?">{{ client.AllowGame|title }}</a></td>
 <td><a href="#" id="client_allowEditor{{ loop.index }}" data-type="select" data-name="AllowEditor" data-pk="{{- client._id.toString() -}}" data-url="/clients" data-title="Anonymous Players Should be allowed to open the editor?">{{ client.AllowEditor|title }}</a></td>
-<td>{{ client.LastLogin|date('Y m d H:i:s O', +7*60, 'PDT') }}</td>
+<td>{{ client.LastLogin|date('Y m d H:i:s', +7*60, 'PDT') }}</td>
+<td>{{ client.LastApplication }}</td>
+<td>{{ client.LastIP }}</td>
+<td>{{ client.Auths }}</td>
 <td><a href="#" id="client_delete{{ loop.index }}" data-pk="{{- client._id.toString() -}}" class="pure-button" style="font-size: 80%;">Delete</a>
 <a href="#" id="client_purge{{ loop.index }}" data-pk="{{- client._id.toString() -}}" class="pure-button" style="font-size: 80%;">Purge Data</a></td>
 {% if loop.last %}</table>{% endif %}

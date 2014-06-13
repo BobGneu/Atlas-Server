@@ -126,30 +126,33 @@ API = {
 		if (req.params.application.found) {
 			response.AllowGame = req.params.application.AllowGame;
 			response.AllowEditor = req.params.application.AllowEditor;
-		}
 
-		if (req.params.client.found) {
-			response.AllowGame = req.params.client.AllowGame;
-			response.AllowEditor = req.params.client.AllowEditor;
+			if (req.params.client.found) {
+				response.AllowGame = req.params.client.AllowGame;
+				response.AllowEditor = req.params.client.AllowEditor;
 
-			req.params.client.LastLogin = Date.now();
-			req.params.client.markModified('LastLogin');
+				req.params.client.LastLogin = Date.now();
+				req.params.client.LastIP = req.ip;
+				req.params.client.LastApplication = req.params.application.Name;
+				req.params.client.Auths++;
 
-			console.log(Date.now().toString());
+				req.params.client.save(function (err, client) {
+					res.json(response);
+				})
+			} else {
+				var tmp = new models.Client({
+					UID: req.params.client.UID,
+					AllowGame: response.AllowGame,
+					AllowEditor: response.AllowEditor,
+					LastLogin: Date.now(),
+					LastIP: req.ip,
+					LastApplication: req.params.application.Name
+				});
 
-			req.params.client.save(function (err, client) {
-				res.json(response);
-			})
-		} else {
-			var tmp = new models.Client({
-				UID: req.params.client.UID,
-				AllowGame: response.AllowGame,
-				AllowEditor: response.AllowEditor
-			});
-
-			tmp.save(function (err, client) {
-				res.json(response);
-			});
+				tmp.save(function (err, client) {
+					res.json(response);
+				});
+			}
 		}
 	}
 };

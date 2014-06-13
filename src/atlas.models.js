@@ -37,6 +37,16 @@ exports.Client = mongoose.model('Client', new Schema({
 		type: Date,
 		default: Date.now()
 	},
+	LastApplication: {
+		type: String
+	},
+	LastIP: {
+		type: String
+	},
+	Auths: {
+		type: Number,
+		default: 1
+	},
 	AllowEditor: {
 		type: Boolean,
 		default: false
