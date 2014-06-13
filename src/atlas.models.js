@@ -43,6 +43,9 @@ exports.Client = mongoose.model('Client', new Schema({
 	LastIP: {
 		type: String
 	},
+	SessionID: {
+		type: String
+	},
 	Auths: {
 		type: Number,
 		default: 1
@@ -60,6 +63,36 @@ exports.Report = mongoose.model('Report', new Schema({
 		index: {
 			unique: true
 		}
+	}
+}));
+
+exports.Event = mongoose.model('Event', new Schema({
+	SessionID: {
+		type: String,
+		required: true
+	},
+	ApplicationID: {
+		type: String,
+		required: true
+	},
+	Platform: {
+		type: String,
+		required: true
+	},
+	Version: {
+		type: String,
+		required: true
+	},
+	Name: {
+		type: String,
+		required: true
+	},
+	Date: {
+		type: Date,
+		default: Date.now()
+	},
+	Data: {
+		type: String
 	}
 }));
 
