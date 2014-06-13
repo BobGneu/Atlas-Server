@@ -11,8 +11,25 @@
 </div>
 {% for report in reports %}
 {% if loop.first %}<table id="reports-listing" class="listingTable"><tr><th>Name</th><th>Actions</th></tr>{% endif %}
-<tr><td><a href="/tracking/{{- report._id.toString() -}}">{{ report.Name }}</a></td><td><a href="#">Edit</a> <a href="#">Delete</a></td></tr>
+<tr><td><a href="/tracking/{{- report._id.toString() -}}">{{ report.Name }}</a></td><td><a href="#" id="report_delete{{ loop.index }}" data-pk="{{- report._id.toString() -}}" class="pure-button" style="font-size: 80%;">Delete</a></td></tr>
 {% if loop.last %}</table>{% endif %}
+{% endfor %}
+
+{% for report in reports %}
+<script>$(document).ready(function() { $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
+	$('#report_delete{{ loop.index }}').click(function () {
+		if (confirm("Are you sure?"))
+		{	
+			$.ajax({
+				url: "/tracking",
+				type: "DELETE",
+				data: {pk: "{{ report._id.toString() }}" }
+			}).done(function() {
+			  	location.reload();
+			});
+		}
+	})
+});</script>
 {% endfor %}
 
 {% endblock body %}

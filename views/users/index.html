@@ -1,7 +1,7 @@
 {% extends 'standard.html' %}
 {% block body %}
 <div id="create_user" class="body">
-	<form class="pure-form" method="POST" action="/users/create">
+	<form class="pure-form" method="POST" action="/users">
 		<input name="name" placeholder="Name" value=""/>
 		<input name="email" placeholder="Email" value=""/>
 		<input name="password" placeholder="Password" type="password" value=""/>
@@ -17,8 +17,8 @@
 {% for user in users %}
 {% if loop.first %}<table id="users-listing" class="listingTable"><tr><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr>{% endif %}
 <tr><td><a href="/users/{{- user._id.toString() -}}">{{ user.Name }}</a></td>
-<td><a href="#" id="user_email{{ loop.index }}" data-type="email" data-name="Email" data-pk="{{- user._id.toString() -}}" data-url="/users/email" data-title="Input Email">{{ user.Email }}</a></td>
-<td><a href="#" id="user_role{{ loop.index }}" data-type="select" data-name="Role" data-pk="{{- user._id.toString() -}}" data-url="/users/role" data-title="Choose Role">{{ user.Role }}</a></td>
+<td><a href="#" id="user_email{{ loop.index }}" data-type="email" data-name="Email" data-pk="{{- user._id.toString() -}}" data-url="/users" data-title="Input Email">{{ user.Email }}</a></td>
+<td><a href="#" id="user_role{{ loop.index }}" data-type="select" data-name="Role" data-pk="{{- user._id.toString() -}}" data-url="/users" data-title="Choose Role">{{ user.Role }}</a></td>
 <td>{% if (!isAdministrator && user.Role !== "Administrator" ) or isAdministrator %}<a href="#" id="user_delete{{ loop.index }}" data-pk="{{- user._id.toString() -}}" class="pure-button" style="font-size: 80%;">Delete</a>{% endif %}</td></tr>
 {% if loop.last %}</table>{% endif %}
 {% endfor %}

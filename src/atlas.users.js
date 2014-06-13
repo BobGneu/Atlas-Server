@@ -71,46 +71,8 @@ API = {
 			user: req.params.user
 		});
 	},
-	updateRole: function (req, res) {
-		try {
-			models.User.findOne({
-				_id: models.ObjectId(req.body.pk)
-			}, function (err, user) {
-				if (err) {
-					return res.send(500, {
-						error: err
-					});
-				} else if (!user) {
-					return res.send(400, 'Bad request');
-				} else if (req.body.value !== "Administrator" && req.body.value !== "Manager") {
-					return res.send(400, 'Invalid Input');
-				}
+	update: function (req, res) {
 
-				user.Role = req.body.value;
-
-				user.save(function (err, user) {
-
-					if (err) {
-						return res.send(500, {
-							error: err
-						});
-					} else if (!user) {
-						return res.send(400, 'Bad request');
-					}
-
-					res.send(200, user.Role);
-				});
-			});
-		} catch (e) {
-			if (req.isAuthenticated()) {
-				res.send(400, 'Bad request');
-			} else {
-				res.redirect("/login");
-			}
-			next();
-		}
-	},
-	updateEmail: function (req, res) {
 		try {
 			models.User.findOne({
 				_id: models.ObjectId(req.body.pk)
@@ -123,7 +85,13 @@ API = {
 					return res.send(400, 'Bad request');
 				}
 
-				user.Email = req.body.value;
+				if (req.body.name === 'Role') {
+					user.Role = req.body.value === "Administrator" ? "Administrator" : "Manager";
+				} else if (req.body.name === 'Email') {
+					user.Email = req.body.value.toLowerCase();
+				}
+
+				console.log(user);
 
 				user.save(function (err, user) {
 
@@ -148,10 +116,12 @@ API = {
 		}
 	},
 	delete: function (req, res) {
+
 		try {
 			models.User.findOne({
 				_id: models.ObjectId(req.body.pk)
 			}, function (err, user) {
+
 				if (err) {
 					return res.send(500, {
 						error: err

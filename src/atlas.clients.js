@@ -65,16 +65,97 @@ API = {
 		});
 	},
 	update: function (req, res) {
-		res.redirect('/clients');
+		try {
+			models.Client.findOne({
+				_id: models.ObjectId(req.body.pk)
+			}, function (err, Client) {
+				if (err) {
+					return res.send(500, {
+						error: err
+					});
+				} else if (!Client) {
+					return res.send(400, 'Bad request');
+				}
+
+				if (req.body.name === 'AllowGame') {
+					Client.AllowGame = req.body.value === "True";
+				} else if (req.body.name === 'AllowEditor') {
+					Client.AllowEditor = req.body.value === "True";
+				}
+
+				Client.save(function (err, Client) {
+
+					if (err) {
+						return res.send(500, {
+							error: err
+						});
+					} else if (!Client) {
+						return res.send(400, 'Bad request');
+					}
+					res.send(200);
+				});
+			});
+		} catch (e) {
+			if (req.isAuthenticated()) {
+				res.send(400, 'Bad request');
+			} else {
+				res.redirect("/login");
+			}
+			next();
+		}
 	},
 	delete: function (req, res) {
-		res.redirect('/clients');
+
+		try {
+			models.Client.findOne({
+				_id: models.ObjectId(req.body.pk)
+			}, function (err, client) {
+
+				if (err) {
+					return res.send(500, {
+						error: err
+					});
+				} else if (!client) {
+					return res.send(400, 'Bad request');
+				}
+
+				client.remove(function (err, client) {
+
+					if (err) {
+						return res.send(500, {
+							error: err
+						});
+					} else if (!client) {
+						return res.send(400, 'Bad request2');
+					}
+
+					res.send(200);
+				});
+			});
+		} catch (e) {
+			if (req.isAuthenticated()) {
+				res.send(400, 'Bad request3');
+			} else {
+				res.redirect("/login");
+			}
+			next();
+		}
 	},
-	updateSecurity: function (req, res) {
-		res.redirect('/clients');
-	},
-	purge: function (req, res) {
-		res.redirect('/clients');
+	paramNameLookup: function (req, res, next, id) {
+		models.Client.findOne({
+			UID: id
+		}, function (err, client) {
+			if (err || typeof client === "undefined" || client === null) {
+				req.params.client = {
+					found: false,
+					UID: id
+				};
+			} else {
+				req.params.client = client;
+				req.params.client.found = true;
+			}
+			next();
+		});
 	}
 };
 

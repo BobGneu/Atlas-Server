@@ -66,13 +66,82 @@ API = {
 		});
 	},
 	update: function (req, res) {
-		res.redirect('/applications');
-	},
-	updateSecurity: function (req, res) {
-		res.redirect('/applications');
+		try {
+			models.Application.findOne({
+				_id: models.ObjectId(req.body.pk)
+			}, function (err, app) {
+				if (err) {
+					return res.send(500, {
+						error: err
+					});
+				} else if (!app) {
+					return res.send(400, 'Bad request');
+				}
+
+				if (req.body.name === 'AllowGame') {
+					app.AllowGame = req.body.value === "True";
+				} else if (req.body.name === 'AllowEditor') {
+					app.AllowEditor = req.body.value === "True";
+				}
+
+				app.save(function (err, app) {
+
+					if (err) {
+						return res.send(500, {
+							error: err
+						});
+					} else if (!app) {
+						return res.send(400, 'Bad request');
+					}
+
+					res.send(200);
+				});
+			});
+		} catch (e) {
+			if (req.isAuthenticated()) {
+				res.send(400, 'Bad request');
+			} else {
+				res.redirect("/login");
+			}
+			next();
+		}
 	},
 	delete: function (req, res) {
-		res.redirect('/applications');
+
+		try {
+			models.Application.findOne({
+				_id: models.ObjectId(req.body.pk)
+			}, function (err, app) {
+
+				if (err) {
+					return res.send(500, {
+						error: err
+					});
+				} else if (!app) {
+					return res.send(400, 'Bad request');
+				}
+
+				app.remove(function (err, app) {
+
+					if (err) {
+						return res.send(500, {
+							error: err
+						});
+					} else if (!app) {
+						return res.send(400, 'Bad request');
+					}
+
+					res.send(200);
+				});
+			});
+		} catch (e) {
+			if (req.isAuthenticated()) {
+				res.send(400, 'Bad request');
+			} else {
+				res.redirect("/login");
+			}
+			next();
+		}
 	}
 };
 

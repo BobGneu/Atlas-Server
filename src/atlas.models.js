@@ -33,6 +33,10 @@ exports.Client = mongoose.model('Client', new Schema({
 		type: Boolean,
 		default: false
 	},
+	LastLogin: {
+		type: Date,
+		default: Date.now()
+	},
 	AllowEditor: {
 		type: Boolean,
 		default: false

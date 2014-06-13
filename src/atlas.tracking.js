@@ -62,7 +62,95 @@ API = {
 		res.redirect('/tracking');
 	},
 	delete: function (req, res) {
-		res.redirect('/tracking');
+		try {
+			models.Report.findOne({
+				_id: models.ObjectId(req.body.pk)
+			}, function (err, report) {
+
+				if (err) {
+					return res.send(500, {
+						error: err
+					});
+				} else if (!report) {
+					return res.send(400, 'Bad request');
+				}
+
+				report.remove(function (err, report) {
+
+					if (err) {
+						return res.send(500, {
+							error: err
+						});
+					} else if (!report) {
+						return res.send(400, 'Bad request2');
+					}
+
+					res.send(200);
+				});
+			});
+		} catch (e) {
+			if (req.isAuthenticated()) {
+				res.send(400, 'Bad request3');
+			} else {
+				res.redirect("/login");
+			}
+			next();
+		}
+	},
+	paramBoolLookup: function (req, res, next, id) {
+		req.params.private = id === 'true';
+
+		next();
+	},
+	paramNameLookup: function (req, res, next, id) {
+		models.Application.findOne({
+			Name: id
+		}, function (err, app) {
+			if (err || typeof app === "undefined") {
+				req.params.application = {
+					found: false
+				};
+			} else {
+				req.params.application = app;
+				req.params.application.found = true;
+			}
+			next();
+		});
+	},
+	authUser: function (req, res) {
+		var response = {
+			AllowGame: false,
+			AllowEditor: false
+		};
+
+		if (req.params.application.found) {
+			response.AllowGame = req.params.application.AllowGame;
+			response.AllowEditor = req.params.application.AllowEditor;
+		}
+
+		if (req.params.client.found) {
+			response.AllowGame = req.params.client.AllowGame;
+			response.AllowEditor = req.params.client.AllowEditor;
+
+			req.params.client.LastLogin = Date.now();
+			req.params.client.markModified('LastLogin');
+
+			console.log(Date.now().toString());
+
+			req.params.client.save(function (err, client) {
+				res.json(response);
+			})
+		} else {
+			var tmp = new models.Client({
+				UID: req.params.client.UID,
+				AllowGame: response.AllowGame,
+				AllowEditor: response.AllowEditor
+			});
+
+			tmp.save(function (err, client) {
+				res.json(response);
+			});
+		}
 	}
 };
 

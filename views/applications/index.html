@@ -3,13 +3,13 @@
 {% block body %}
 <h2>Create</h2>
 <div id="create_application" class="body">
-	<form class="pure-form" method="POST" action="/applications/create">
+	<form class="pure-form" method="POST" action="/applications">
 		<input name="name" placeholder="Name" value=""/>
 		<label for="allowGame">
-            <input id="allowGame" type="checkbox"> Allow Game
+            <input id="allowGame" name="allowGame" type="checkbox"> Allow Game
         </label>
 		<label for="allowEditor">
-            <input id="allowEditor" type="checkbox"> Allow Editor
+            <input id="allowEditor" name="allowEditor" type="checkbox"> Allow Editor
         </label>
 	
 		<input class="pure-button pure-button-primary" type="submit" value="Create" />
@@ -19,9 +19,9 @@
 {% if loop.first %}<table id="applications-listing" class="listingTable"><tr><th>Name</th><th>Allow Game</th><th>Allow Editor</th><th>Actions</th></tr>{% endif %}
 <tr>
 <td><a href="/applications/{{- app._id.toString() -}}">{{ app.Name }}</a></td>
-<td><a href="#" id="app_allowGame{{ loop.index }}" data-type="select" data-name="AllowGame" data-pk="{{- app._id.toString() -}}" data-url="/applications/allowgame" data-title="Should Anonymous Players be allowed to play the game?">{{ app.AllowGame }}</a></td>
-<td><a href="#" id="app_allowEditor{{ loop.index }}" data-type="select" data-name="AllowEditor" data-pk="{{- app._id.toString() -}}" data-url="/applications/alloweditor" data-title="Should Anonymous Players be allowed to open the editor?">{{ app.AllowEditor }}</a></td>
-<td><a href="#">Delete</a></td>
+<td><a href="#" id="app_allowGame{{ loop.index }}" data-type="select" data-name="AllowGame" data-pk="{{- app._id.toString() -}}" data-url="/applications" data-title="Anonymous Players Should be allowed to play the game?">{{ app.AllowGame|title }}</a></td>
+<td><a href="#" id="app_allowEditor{{ loop.index }}" data-type="select" data-name="AllowEditor" data-pk="{{- app._id.toString() -}}" data-url="/applications" data-title="Anonymous Players Should be allowed to open the editor?">{{ app.AllowEditor|title }}</a></td>
+<td><a href="#" id="app_delete{{ loop.index }}" data-pk="{{- app._id.toString() -}}" class="pure-button" style="font-size: 80%;">Delete</a></td>
 </tr>
 {% if loop.last %}</table>{% endif %}
 {% endfor %}
@@ -29,18 +29,18 @@
 {% for app in applications %}
 <script>$(document).ready(function() { $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
 	$('#app_allowGame{{ loop.index }}').editable({
-	    value: "{{ app.AllowGame }}",    
+	    value: "{{ app.AllowGame|title }}",    
 	    source: [
-	          {value: "true", text: 'Yes'},
-	          {value: "false", text: 'No'},
+	          {value: "True", text: 'True'},
+	          {value: "False", text: 'False'},
 	       ]
 	});
 
 	$('#app_allowEditor{{ loop.index }}').editable({
-	    value: "{{ app.AllowEditor }}",    
+	    value: "{{ app.AllowEditor|title }}",    
 	    source: [
-	          {value: "true", text: 'Yes'},
-	          {value: "false", text: 'No'},
+	          {value: "True", text: 'True'},
+	          {value: "False", text: 'False'},
 	       ]
 	});
 
