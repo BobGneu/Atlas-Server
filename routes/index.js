@@ -13,6 +13,7 @@ router.param(":reportId", tracking.paramLookup);
 router.param(":appName", tracking.paramNameLookup);
 router.param(":userName", clients.paramNameLookup);
 router.param(":sessionID", tracking.paramSessionLookup);
+router.param(":eventName", tracking.paramEventName);
 router.param(":private", tracking.paramBoolLookup);
 
 router.get('/', atlas.index);
@@ -32,7 +33,7 @@ router.put('/tracking', users.restricted, tracking.update);
 router.delete('/tracking', users.restricted, tracking.delete);
 
 router.get("/auth/:appName/:userName/:private", tracking.authUser);
-router.post("/event/:appName/:sessionID", tracking.event);
+router.post("/event/:appName/:sessionID/:eventName", tracking.event);
 
 router.get('/applications', users.restricted, applications.index);
 router.get('/applications/:applicationId', users.restricted, applications.read);

@@ -162,6 +162,9 @@ API = {
 			}
 		}
 	},
+	paramEventName: function (req, res, next, id) {
+		next();
+	},
 	event: function (req, res) {
 
 		var UA = req.headers["user-agent"].split(" ");
@@ -171,29 +174,13 @@ API = {
 			ApplicationID: req.params.application._id,
 			Version: UA[1],
 			Platform: UA[2],
-			Name: "",
-			Data: ""
+			Name: req.params.eventName,
+			Data: req.body
 		});
 
-		console.log(ev);
-
-		/*{ appName: 'exodus',
-  sessionID: 'b18cd330-f326-11e3-b630-cf16ad576a9e',
-  application:
-   { Name: 'exodus',
-     _id: 539a99d41c755ff4538fea44,
-     __v: 0,
-     AllowEditor: true,
-     AllowGame: false } } {} { 'user-agent': 'exodus 1.0.0 Windows',
-  'content-length': '28',
-  host: 'localhost:3000',
-  connection: 'Keep-Alive',
-  'cache-control': 'no-cache',
-  cookie: 'connect.sid=s%3AUkZqElPUxWEkA0C7D3O7baMy.Mcueyv5bj9kMeXDn7t8AVWV2CrhU%2Fz9OL6tzCGYyuXg' }
-*/
-		console.log(req);
-
-		res.json({});
+		ev.save(function (err, ev) {
+			res.json({});
+		});
 	}
 };
 

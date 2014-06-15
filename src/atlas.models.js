@@ -92,7 +92,7 @@ exports.Event = mongoose.model('Event', new Schema({
 		default: Date.now()
 	},
 	Data: {
-		type: String
+		type: Schema.Types.Mixed
 	}
 }));
 
