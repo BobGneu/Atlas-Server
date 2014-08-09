@@ -8,7 +8,7 @@
 		validate = form.validate,
 		passwordHash = require('password-hash');
 
-	API = {
+	var API = {
 		paramLookup: function (req, res, next, id) {
 			try {
 				models.User.findOne({
@@ -167,4 +167,4 @@
 	};
 
 	module.exports = API;
-})();
+})(module);

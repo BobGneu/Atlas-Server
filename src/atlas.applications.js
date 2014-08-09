@@ -7,7 +7,7 @@
 		filter = form.filter,
 		validate = form.validate;
 
-	API = {
+	var API = {
 		paramLookup: function (req, res, next, id) {
 			try {
 				models.Application.findOne({
