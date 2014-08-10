@@ -37,7 +37,7 @@
 	router.put('/tracking', users.restricted, tracking.update);
 	router.delete('/tracking', users.restricted, tracking.delete);
 
-	router.get('/auth/:appName/:userName/:private', tracking.authUser);
+	router.get('/auth/:appName/:private/:userName', tracking.authUser);
 	router.post('/event/:appName/:sessionID/:eventName', tracking.event);
 
 	router.get('/applications', users.restricted, applications.index);
