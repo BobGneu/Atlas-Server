@@ -1,0 +1,15 @@
+{% extends 'standard.html' %} {% block body %}
+<p>There is not currently an administrator on this system. Please use the following interface to configure the application.</p>
+<div id="login" class="body">
+
+	<form class="pure-form" method="POST" action="/setup">
+		<fieldset class="pure-group">
+			<input name="name" placeholder="Name" value="" size="80" />
+			<input name="email" placeholder="Email" value="" size="80" />
+			<input name="password" placeholder="Password" type="password" value="" size="80" />
+			<input name="password-conf" placeholder="Password Confirmation" type="password" value="" size="80" />
+			<button type='submit' class="pure-button pure-button-primary">Create</button>
+		</fieldset>
+	</form>
+</div>
+{% endblock body %}

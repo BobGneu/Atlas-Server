@@ -29,6 +29,8 @@
 		failureRedirect: '/login'
 	}));
 
+	router.post('/setup', atlas.setupValidation, atlas.setup);
+
 	router.get('/tracking', users.restricted, tracking.index);
 	router.get('/tracking/:reportId', users.restricted, tracking.read);
 	router.post('/tracking', users.restricted, tracking.createValidation, tracking.create);
