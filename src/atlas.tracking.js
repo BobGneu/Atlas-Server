@@ -3,7 +3,9 @@
 
 	var form = require('express-form'),
 		uuid = require('node-uuid'),
+		Application = require('./atlas.models').Application,
 		Report = require('./atlas.models').Report,
+		Client = require('./atlas.models').Client,
 		filter = form.filter,
 		validate = form.validate;
 
@@ -123,7 +125,7 @@
 			var response = {
 				AllowGame: false,
 				AllowEditor: false,
-				SessionID: uuid.v1()
+				SessionID: uuid.v4()
 			};
 
 			if (req.params.application.found) {
@@ -144,7 +146,7 @@
 						res.json(response);
 					});
 				} else {
-					var tmp = new models.Client({
+					var tmp = new Client({
 						UID: req.params.client.UID,
 						AllowGame: response.AllowGame,
 						AllowEditor: response.AllowEditor,
