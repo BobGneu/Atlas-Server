@@ -86,30 +86,34 @@
 		next(err);
 	});
 
-	passport.use(new LocalStrategy({usernameField: 'username', passwordField: 'password'},
-		function (username, password, done) {
+	passport.use(new LocalStrategy({
+		usernameField: 'username',
+		passwordField: 'password'
+	}, function (username, password, done) {
 
-			models.User.findOne({
-				Name: username.toLowerCase()
-			}, function (err, user) {
+		models.User.findOne({
+			Name: username.toLowerCase()
+		}, function (err, user) {
 
-				if (err) {
-					return done(err);
-				}
-				if (!user) {
-					return done(null, false, {
-						message: 'Incorrect username.'
-					});
-				}
-				if (!user.validPassword(password)) {
-					return done(null, false, {
-						message: 'Incorrect password.'
-					});
-				}
-				return done(null, user);
-			});
-		}
-	));
+			if (err) {
+				return done(err);
+			}
+			if (!user) {
+				return done(null, false, {
+					message: 'Incorrect username.'
+				});
+			}
+			if (!user.validPassword(password)) {
+				return done(null, false, {
+					message: 'Incorrect password.'
+				});
+			}
+
+			user.completeLogin();
+
+			return done(null, user);
+		});
+	}));
 
 	passport.serializeUser(function (user, done) {
 		done(null, user.id);
