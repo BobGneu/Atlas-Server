@@ -1,35 +1,49 @@
-{% extends 'standard.html' %}
-
-{% block body %}
+{% extends 'standard.html' %} {% block body %}
 <h2>Create</h2>
 <div id="create_report" class="body">
-    <form class="pure-form" method="POST" action="/tracking/create">
-        <input name="name" placeholder="Name" value="" />
+	<form class="pure-form" method="POST" action="/tracking">
+		<input name="name" placeholder="Name" value="" />
 
-        <input class="pure-button pure-button-primary" type="submit" value="Create" />
-    </form>
+		<input class="pure-button pure-button-primary" type="submit" value="Create" />
+	</form>
 </div>
-{% for report in reports %}
-{% if loop.first %}<table id="reports-listing" class="listingTable"><tr><th>Name</th><th>Actions</th></tr>{% endif %}
-<tr><td><a href="/tracking/{{- report._id.toString() -}}">{{ report.Name }}</a></td><td><a href="#" id="report_delete{{ loop.index }}" data-pk="{{- report._id.toString() -}}" class="pure-button" style="font-size: 80%;">Delete</a></td></tr>
-{% if loop.last %}</table>{% endif %}
-{% endfor %}
-
-{% for report in reports %}
-<script>$(document).ready(function() { $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
-	$('#report_delete{{ loop.index }}').click(function () {
+{% for report in reports %} {% if loop.first %}
+<table id="reports-listing" class="listingTable">
+	<tr>
+		<th>Name</th>
+		<th>Actions</th>
+	</tr>{% endif %}
+	<tr>
+		<td><a href="/tracking/{{- report._id.toString() -}}">{{ report.Name }}</a>
+		</td>
+		<td><a href="#" id="report_delete{{ loop.index }}" data-pk="{{- report._id.toString() -}}" class="pure-button" style="font-size: 80%;">Delete</a>
+		</td>
+	</tr>
+	{% if loop.last %}</table>{% endif %} {% endfor %} {% for report in reports %}
+<script>
+$(document).ready(function()
+{
+	$.fn.editable.defaults.ajaxOptions = {
+		type: "PUT"
+	};
+	$('#report_delete{{ loop.index }}').click(function()
+	{
 		if (confirm("Are you sure?"))
-		{	
-			$.ajax({
+		{
+			$.ajax(
+			{
 				url: "/tracking",
 				type: "DELETE",
-				data: {pk: "{{ report._id.toString() }}" }
-			}).done(function() {
-			  	location.reload();
+				data:
+				{
+					pk: "{{ report._id.toString() }}"
+				}
+			}).done(function()
+			{
+				location.reload();
 			});
 		}
 	})
-});</script>
-{% endfor %}
-
-{% endblock body %}
+});
+</script>
+{% endfor %} {% endblock body %}

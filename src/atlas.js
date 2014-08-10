@@ -56,7 +56,7 @@
 						});
 
 						tmp.save(function (err, user) {
-							// login with that user & redirect to the login 
+							// login with that user & redirect to the login
 							res.redirect('/login');
 						});
 					} else {

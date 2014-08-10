@@ -1,7 +1,7 @@
 (function (module) {
 	'use strict';
-	var models = require('./atlas.models'),
-		Client = models.Client,
+
+	var Client = require('./atlas.models').Client,
 		form = require('express-form'),
 		filter = form.filter,
 		validate = form.validate;
@@ -9,9 +9,7 @@
 	var API = {
 		paramLookup: function (req, res, next, id) {
 			try {
-				client.findOne({
-					_id: models.ObjectId(id)
-				}, function (err, client) {
+				Client.findOne(id, function (err, client) {
 
 					if (err) {
 						return next(err);
@@ -31,7 +29,7 @@
 			}
 		},
 		index: function (req, res) {
-			client.find({}, function (err, clients) {
+			Client.find({}, function (err, clients) {
 				res.render('clients/index', {
 					clients: clients
 				});
@@ -68,9 +66,7 @@
 		},
 		update: function (req, res) {
 			try {
-				models.Client.findOne({
-					_id: models.ObjectId(req.body.pk)
-				}, function (err, Client) {
+				Client.findOne(req.body.pk, function (err, Client) {
 					if (err) {
 						return res.send(500, {
 							error: err
@@ -109,9 +105,7 @@
 		delete: function (req, res) {
 
 			try {
-				models.Client.findOne({
-					_id: models.ObjectId(req.body.pk)
-				}, function (err, client) {
+				Client.findOne(req.body.pk, function (err, client) {
 
 					if (err) {
 						return res.send(500, {
@@ -144,7 +138,7 @@
 			}
 		},
 		paramNameLookup: function (req, res, next, id) {
-			models.Client.findOne({
+			Client.findOne({
 				UID: id
 			}, function (err, client) {
 				if (err || typeof client === 'undefined' || client === null) {

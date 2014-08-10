@@ -1,74 +1,116 @@
-{% extends 'standard.html' %}
-
-{% block body %}
+{% extends 'standard.html' %} {% block body %}
 <h2>Create</h2>
 <div id="create_client" class="body">
-	<form class="pure-form" method="POST" action="/clients/create">
-		<input name="uid" placeholder="UID" value=""/>
+	<form class="pure-form" method="POST" action="/clients">
+		<input name="uid" placeholder="UID" value="" />
 		<label for="allowGame">
-            <input id="allowGame" name="allowGame" type="checkbox"> Allow Game
-        </label>
+			<input id="allowGame" name="allowGame" type="checkbox">Allow Game
+		</label>
 		<label for="allowEditor">
-            <input id="allowEditor" name="allowEditor" type="checkbox"> Allow Editor
-        </label>
-	
+			<input id="allowEditor" name="allowEditor" type="checkbox">Allow Editor
+		</label>
+
 		<input class="pure-button pure-button-primary" type="submit" value="Create" />
 	</form>
-</div>{% for client in clients %}
-{% if loop.first %}<table id="clients-listing" class="listingTable"><tr><th>UID</th><th>Allow Game</th><th>Allow Editor</th><th>Last Login</th><th>Last Application</th><th>Last IP</th><th>Requests</th><th>Actions</th></tr>{% endif %}
-<tr><td><a href="/clients/{{- client._id.toString() -}}">{{ client.UID }}</a></td>
-<td><a href="#" id="client_allowGame{{ loop.index }}" data-type="select" data-name="AllowGame" data-pk="{{- client._id.toString() -}}" data-url="/clients" data-title="Anonymous Players Should be allowed to play the game?">{{ client.AllowGame|title }}</a></td>
-<td><a href="#" id="client_allowEditor{{ loop.index }}" data-type="select" data-name="AllowEditor" data-pk="{{- client._id.toString() -}}" data-url="/clients" data-title="Anonymous Players Should be allowed to open the editor?">{{ client.AllowEditor|title }}</a></td>
-<td>{{ client.LastLogin|date('Y m d H:i:s', +7*60, 'PDT') }}</td>
-<td>{{ client.LastApplication }}</td>
-<td>{{ client.LastIP }}</td>
-<td>{{ client.Auths }}</td>
-<td><a href="#" id="client_delete{{ loop.index }}" data-pk="{{- client._id.toString() -}}" class="pure-button" style="font-size: 80%;">Delete</a>
-<a href="#" id="client_purge{{ loop.index }}" data-pk="{{- client._id.toString() -}}" class="pure-button" style="font-size: 80%;">Purge Data</a></td>
-{% if loop.last %}</table>{% endif %}
-{% endfor %}
-
-{% for client in clients %}
-<script>$(document).ready(function() { $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
-	$('#client_allowGame{{ loop.index }}').editable({
-	    value: "{{ client.AllowGame|title }}",    
-	    source: [
-	          {value: "True", text: 'True'},
-	          {value: "False", text: 'False'},
-	       ]
+</div>{% for client in clients %} {% if loop.first %}
+<table id="clients-listing" class="listingTable">
+	<tr>
+		<th>UID</th>
+		<th>Allow Game</th>
+		<th>Allow Editor</th>
+		<th>Last Login</th>
+		<th>Last Application</th>
+		<th>Last IP</th>
+		<th>Requests</th>
+		<th>Actions</th>
+	</tr>{% endif %}
+	<tr>
+		<td><a href="/clients/{{- client._id.toString() -}}">{{ client.UID }}</a>
+		</td>
+		<td><a href="#" id="client_allowGame{{ loop.index }}" data-type="select" data-name="AllowGame" data-pk="{{- client._id.toString() -}}"
+			data-url="/clients" data-title="Anonymous Players Should be allowed to play the game?">{{ client.AllowGame|title }}</a>
+		</td>
+		<td><a href="#" id="client_allowEditor{{ loop.index }}" data-type="select" data-name="AllowEditor" data-pk="{{- client._id.toString() -}}"
+			data-url="/clients" data-title="Anonymous Players Should be allowed to open the editor?">{{ client.AllowEditor|title }}</a>
+		</td>
+		<td>{{ client.LastLogin|date('Y m d H:i:s', +7*60, 'PDT') }}</td>
+		<td>{{ client.LastApplication }}</td>
+		<td>{{ client.LastIP }}</td>
+		<td>{{ client.Auths }}</td>
+		<td><a href="#" id="client_delete{{ loop.index }}" data-pk="{{- client._id.toString() -}}" class="pure-button" style="font-size: 80%;">Delete</a>
+			<a href="#" id="client_purge{{ loop.index }}" data-pk="{{- client._id.toString() -}}" class="pure-button" style="font-size: 80%;">Purge Data</a>
+		</td>
+		{% if loop.last %}</table>{% endif %} {% endfor %} {% for client in clients %}
+<script>
+$(document).ready(function()
+{
+	$.fn.editable.defaults.ajaxOptions = {
+		type: "PUT"
+	};
+	$('#client_allowGame{{ loop.index }}').editable(
+	{
+		value: "{{ client.AllowGame|title }}",
+		source: [
+		{
+			value: "True",
+			text: 'True'
+		},
+		{
+			value: "False",
+			text: 'False'
+		}, ]
 	});
-	$('#client_allowEditor{{ loop.index }}').editable({
-	    value: "{{ client.AllowEditor|title }}",    
-	    source: [
-	          {value: "True", text: 'True'},
-	          {value: "False", text: 'False'},
-	       ]
+	$('#client_allowEditor{{ loop.index }}').editable(
+	{
+		value: "{{ client.AllowEditor|title }}",
+		source: [
+		{
+			value: "True",
+			text: 'True'
+		},
+		{
+			value: "False",
+			text: 'False'
+		}, ]
 	});
-	$('#client_delete{{ loop.index }}').click(function () {
+	$('#client_delete{{ loop.index }}').click(function()
+	{
 		if (confirm("Are you sure?"))
-		{	
-			$.ajax({
+		{
+			$.ajax(
+			{
 				url: "/clients",
 				type: "DELETE",
-				data: {pk: "{{ client._id.toString() }}", "action" : "Delete" }
-			}).done(function() {
-			  	location.reload();
+				data:
+				{
+					pk: "{{ client._id.toString() }}",
+					"action": "Delete"
+				}
+			}).done(function()
+			{
+				location.reload();
 			});
 		}
 	})
-	$('#client_purge{{ loop.index }}').click(function () {
+	$('#client_purge{{ loop.index }}').click(function()
+	{
 		if (confirm("Are you sure?"))
-		{	
-			$.ajax({
+		{
+			$.ajax(
+			{
 				url: "/clients",
 				type: "DELETE",
-				data: {pk: "{{ client._id.toString() }}", "action" : "Purge" }
-			}).done(function() {
-			  	location.reload();
+				data:
+				{
+					pk: "{{ client._id.toString() }}",
+					"action": "Purge"
+				}
+			}).done(function()
+			{
+				location.reload();
 			});
 		}
 	})
-});</script>
-{% endfor %}
-
-{% endblock body %}
+});
+</script>
+{% endfor %} {% endblock body %}

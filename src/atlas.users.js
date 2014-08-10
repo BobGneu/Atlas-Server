@@ -1,8 +1,7 @@
 (function (module) {
 	'use strict';
 
-	var models = require('./atlas.models'),
-		User = models.User,
+	var User = require('./atlas.models').User,
 		form = require('express-form'),
 		filter = form.filter,
 		validate = form.validate,
@@ -11,9 +10,7 @@
 	var API = {
 		paramLookup: function (req, res, next, id) {
 			try {
-				models.User.findOne({
-					_id: models.ObjectId(id)
-				}, function (err, user) {
+				User.findOne(id, function (err, user) {
 
 					if (err) {
 						return next(err);
@@ -77,9 +74,7 @@
 		update: function (req, res) {
 
 			try {
-				models.User.findOne({
-					_id: models.ObjectId(req.body.pk)
-				}, function (err, user) {
+				User.findOne(req.body.pk, function (err, user) {
 					if (err) {
 						return res.send(500, {
 							error: err
@@ -93,8 +88,6 @@
 					} else if (req.body.name === 'Email') {
 						user.Email = req.body.value.toLowerCase();
 					}
-
-					console.log(user);
 
 					user.save(function (err, user) {
 
@@ -121,31 +114,30 @@
 		delete: function (req, res) {
 
 			try {
-				models.User.findOne({
-					_id: models.ObjectId(req.body.pk)
-				}, function (err, user) {
-
-					if (err) {
-						return res.send(500, {
-							error: err
-						});
-					} else if (!user) {
-						return res.send(400, 'Bad request');
-					}
-
-					user.remove(function (err, user) {
+				User.findOne(req.body.pk,
+					function (err, user) {
 
 						if (err) {
 							return res.send(500, {
 								error: err
 							});
 						} else if (!user) {
-							return res.send(400, 'Bad request2');
+							return res.send(400, 'Bad request');
 						}
 
-						res.send(200);
+						user.remove(function (err, user) {
+
+							if (err) {
+								return res.send(500, {
+									error: err
+								});
+							} else if (!user) {
+								return res.send(400, 'Bad request2');
+							}
+
+							res.send(200);
+						});
 					});
-				});
 			} catch (e) {
 				if (req.isAuthenticated()) {
 					res.send(400, 'Bad request3');

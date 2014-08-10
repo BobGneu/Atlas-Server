@@ -1,19 +1,16 @@
 (function (module) {
 	'use strict';
 
-	var models = require('./atlas.models'),
-		form = require('express-form'),
+	var form = require('express-form'),
 		uuid = require('node-uuid'),
-		Report = models.Report,
+		Report = require('./atlas.models').Report,
 		filter = form.filter,
 		validate = form.validate;
 
 	var API = {
 		paramLookup: function (req, res, next, id) {
 			try {
-				report.findOne({
-					_id: models.ObjectId(id)
-				}, function (err, report) {
+				Report.findOne(id, function (err, report) {
 
 					if (err) {
 						return next(err);
@@ -33,7 +30,7 @@
 			}
 		},
 		index: function (req, res) {
-			report.find({}, function (err, reports) {
+			Report.find({}, function (err, reports) {
 				res.render('tracking/index', {
 					reports: reports
 				});
@@ -67,9 +64,7 @@
 		},
 		delete: function (req, res) {
 			try {
-				models.Report.findOne({
-					_id: models.ObjectId(req.body.pk)
-				}, function (err, report) {
+				Report.findOne(req.body.pk, function (err, report) {
 
 					if (err) {
 						return res.send(500, {
@@ -107,7 +102,7 @@
 			next();
 		},
 		paramNameLookup: function (req, res, next, id) {
-			models.Application.findOne({
+			Application.findOne({
 				Name: id
 			}, function (err, app) {
 				if (err || typeof app === 'undefined') {

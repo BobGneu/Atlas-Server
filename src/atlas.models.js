@@ -120,6 +120,14 @@
 		Role: {
 			type: String,
 			Default: 'Manager'
+		},
+		CreateDate: {
+			type: Date,
+			default: Date.now()
+		},
+		LastLogin: {
+			type: Date,
+			default: null
 		}
 	}));
 
@@ -129,6 +137,14 @@
 		}
 
 		return passwordHash.verify(pw, this.PasswordHash);
+	};
+
+	exports.User.prototype.completeLogin = function () {
+		exports.User.findOne(this._id, function (err, user) {
+			user.LastLogin = Date.now();
+
+			user.save();
+		});
 	};
 
 	exports.TrackingData = mongoose.model('TrackingData', new Schema({

@@ -1,51 +1,84 @@
-{% extends 'standard.html' %}
-{% block body %}
+{% extends 'standard.html' %} {% block body %}
 <div id="create_user" class="body">
 	<form class="pure-form" method="POST" action="/users">
-		<input name="name" placeholder="Name" value=""/>
-		<input name="email" placeholder="Email" value=""/>
-		<input name="password" placeholder="Password" type="password" value=""/>
-		<input name="password-conf" placeholder="Password Confirmation" type="password" value=""/>
+		<input name="name" placeholder="Name" value="" />
+		<input name="email" placeholder="Email" value="" />
+		<input name="password" placeholder="Password" type="password" value="" />
+		<input name="password-conf" placeholder="Password Confirmation" type="password" value="" />
 		<select name="role" id="role-selector">
 			<option value="Manager">Manager</option>
-			{% if (isAdministrator) %}<option value="Administrator">Administrator</option>{% endif %}
+			{% if (isAdministrator) %}
+			<option value="Administrator">Administrator</option>{% endif %}
 		</select>
-		
+
 		<input class="pure-button pure-button-primary" type="submit" value="Create" />
 	</form>
 </div>
-{% for user in users %}
-{% if loop.first %}<table id="users-listing" class="listingTable"><tr><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr>{% endif %}
-<tr><td><a href="/users/{{- user._id.toString() -}}">{{ user.Name }}</a></td>
-<td><a href="#" id="user_email{{ loop.index }}" data-type="email" data-name="Email" data-pk="{{- user._id.toString() -}}" data-url="/users" data-title="Input Email">{{ user.Email }}</a></td>
-<td><a href="#" id="user_role{{ loop.index }}" data-type="select" data-name="Role" data-pk="{{- user._id.toString() -}}" data-url="/users" data-title="Choose Role">{{ user.Role }}</a></td>
-<td>{% if (!isAdministrator && user.Role !== "Administrator" ) or isAdministrator %}<a href="#" id="user_delete{{ loop.index }}" data-pk="{{- user._id.toString() -}}" class="pure-button" style="font-size: 80%;">Delete</a>{% endif %}</td></tr>
-{% if loop.last %}</table>{% endif %}
-{% endfor %}
-
-{% for user in users %}
-<script>$(document).ready(function() { $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
-$('#user_role{{ loop.index }}').editable({
-        value: "{{ user.Role }}",    
-        source: [
-              {value: "Manager", text: 'Manager'},
-              {value: "Administrator", text: 'Administrator'},
-           ]
-    });
-$('#user_email{{ loop.index }}').editable();
-$('#user_delete{{ loop.index }}').click(function () {
-	if (confirm("Are you sure?"))
-	{	
-		$.ajax({
-			url: "/users",
-			type: "DELETE",
-			data: {pk: "{{ user._id.toString() }}" }
-		}).done(function() {
-		  	location.reload();
-		});
-	}
-})
-});</script>
-{% endfor %}
-
-{% endblock body %}
+{% for user in users %} {% if loop.first %}
+<table id="users-listing" class="listingTable">
+	<tr>
+		<th>Name</th>
+		<th>Email</th>
+		<th>Role</th>
+		<th>Created</th>
+		<th>Last Login</th>
+		<th>Actions</th>
+	</tr>{% endif %}
+	<tr>
+		<td><a href="/users/{{- user._id.toString() -}}">{{ user.Name }}</a>
+		</td>
+		<td><a href="#" id="user_email{{ loop.index }}" data-type="email" data-name="Email" data-pk="{{- user._id.toString() -}}" data-url="/users"
+			data-title="Input Email">{{ user.Email }}</a>
+		</td>
+		<td><a href="#" id="user_role{{ loop.index }}" data-type="select" data-name="Role" data-pk="{{- user._id.toString() -}}" data-url="/users"
+			data-title="Choose Role">{{ user.Role }}</a>
+		</td>
+		<td>{{ user.CreateDate|date('Y/m/d H:i A') }}
+		</td>
+		<td>{{ user.LastLogin|date('Y/m/d H:i A') }}
+		</td>
+		<td>{% if (!isAdministrator && user.Role !== "Administrator" ) or isAdministrator %}<a href="#" id="user_delete{{ loop.index }}"
+			data-pk="{{- user._id.toString() -}}" class="pure-button" style="font-size: 80%;">Delete</a>{% endif %}</td>
+	</tr>
+	{% if loop.last %}</table>{% endif %} {% endfor %} {% for user in users %}
+<script>
+$(document).ready(function()
+{
+	$.fn.editable.defaults.ajaxOptions = {
+		type: "PUT"
+	};
+	$('#user_role{{ loop.index }}').editable(
+	{
+		value: "{{ user.Role }}",
+		source: [
+		{
+			value: "Manager",
+			text: 'Manager'
+		},
+		{
+			value: "Administrator",
+			text: 'Administrator'
+		}, ]
+	});
+	$('#user_email{{ loop.index }}').editable();
+	$('#user_delete{{ loop.index }}').click(function()
+	{
+		if (confirm("Are you sure?"))
+		{
+			$.ajax(
+			{
+				url: "/users",
+				type: "DELETE",
+				data:
+				{
+					pk: "{{ user._id.toString() }}"
+				}
+			}).done(function()
+			{
+				location.reload();
+			});
+		}
+	})
+});
+</script>
+{% endfor %} {% endblock body %}

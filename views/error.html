@@ -1,10 +1,4 @@
-{% extends 'standard.html' %}
-
-{% block pageTitle %}
-Error
-{% endblock pageTitle %}
-
-{% block body %}
+{% extends 'standard.html' %} {% block pageTitle %} Error {% endblock pageTitle %} {% block body %}
 <h1>{{ message }}</h1>
 <h2>{{ error.status }}</h2>
 <pre>{{ error.stack }}</pre>

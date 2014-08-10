@@ -1,8 +1,7 @@
 (function (module) {
 	'use strict';
 
-	var models = require('./atlas.models'),
-		Application = models.Application,
+	var Application = require('./atlas.models').Application,
 		form = require('express-form'),
 		filter = form.filter,
 		validate = form.validate;
@@ -10,9 +9,7 @@
 	var API = {
 		paramLookup: function (req, res, next, id) {
 			try {
-				models.Application.findOne({
-					_id: models.ObjectId(id)
-				}, function (err, app) {
+				Application.findOne(id, function (err, app) {
 
 					if (err) {
 						return next(err);
@@ -70,9 +67,7 @@
 		},
 		update: function (req, res) {
 			try {
-				models.Application.findOne({
-					_id: models.ObjectId(req.body.pk)
-				}, function (err, app) {
+				Application.findOne(req.body.pk, function (err, app) {
 					if (err) {
 						return res.send(500, {
 							error: err
@@ -112,9 +107,7 @@
 		delete: function (req, res) {
 
 			try {
-				models.Application.findOne({
-					_id: models.ObjectId(req.body.pk)
-				}, function (err, app) {
+				Application.findOne(req.body.pk, function (err, app) {
 
 					if (err) {
 						return res.send(500, {
