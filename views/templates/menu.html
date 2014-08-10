@@ -1,44 +1,44 @@
 <div class='pure-menu pure-menu-open pure-menu-horizontal'>
-    {% if (userAuthenticated) %}
-    <ul id='user-logout' class="right">
-        <li><a href="/logout" id='nav-logout'>Logout</a>
-        </li>
-    </ul>
-    {% else %}
-    <ul id='user-login' class="right">
-        <li><a href="/login" id='nav-login'>Login</a>
-        </li>
-    </ul>
-    {% endif %}
+	{% if (userAuthenticated) %}
+	<ul id='user-logout' class="right">
+		<li><a href="/logout" id='nav-logout'>Logout</a>
+		</li>
+	</ul>
+	{% else %}
+	<ul id='user-login' class="right">
+		<li><a href="/login" id='nav-login'>Login</a>
+		</li>
+	</ul>
+	{% endif %}
 </div>
 <div class='pure-menu pure-menu-open pure-menu-horizontal'>
-    <ul>
-        <li class='{% if (is_current_page("/")) -%} pure-menu-selected {%- endif %}'>
-            <a href='/{% if (userAuthenticated) %}overview{% endif %}' id='nav-home'>
-                <span>Home</span>
-            </a>
-        </li>
-        {% if (userAuthenticated) %}
-        <li class=''>
-            <a href='/tracking' id='nav-tracking'>
-                <span>Tracking</span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/clients' id='nav-clients'>
-                <span>Clients</span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/applications' id='nav-applications'>
-                <span>Applications</span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/users' id='nav-users'>
-                <span>Users</span>
-            </a>
-        </li>
-        {% endif %}
-    </ul>
+	<ul>
+		<li class='{% if (currentPage === "/" || currentPage.indexOf("/overview") === 0) -%} pure-menu-selected {%- endif %}'>
+			<a href='/{% if (userAuthenticated) %}overview{% endif %}' id='nav-home'>
+				<span>Home</span>
+			</a>
+		</li>
+		{% if (userAuthenticated) %}
+		<li class='{% if (currentPage.indexOf("/tracking") === 0) -%} pure-menu-selected {%- endif %}'>
+			<a href='/tracking' id='nav-tracking'>
+				<span>Tracking</span>
+			</a>
+		</li>
+		<li class='{% if (currentPage.indexOf("/clients") === 0) -%} pure-menu-selected {%- endif %}'>
+			<a href='/clients' id='nav-clients'>
+				<span>Clients</span>
+			</a>
+		</li>
+		<li class='{% if (currentPage.indexOf("/applications") === 0) -%} pure-menu-selected {%- endif %}'>
+			<a href='/applications' id='nav-applications'>
+				<span>Applications</span>
+			</a>
+		</li>
+		<li class='{% if (currentPage.indexOf("/users") === 0) -%} pure-menu-selected {%- endif %}'>
+			<a href='/users' id='nav-users'>
+				<span>Users</span>
+			</a>
+		</li>
+		{% endif %}
+	</ul>
 </div>
